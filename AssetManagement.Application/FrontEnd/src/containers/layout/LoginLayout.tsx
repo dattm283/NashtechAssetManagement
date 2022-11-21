@@ -9,7 +9,6 @@ import logo from '../../assets/images/logo-transparent.png';
 const LoginPage = ({ checkIsLoginFirstTime }) => {
 
     const [isValid, setIsValid] = useState(true);
-    console.log("Login");
     const login = useLogin();
     const notify = useNotify();
     // let theme = createTheme();

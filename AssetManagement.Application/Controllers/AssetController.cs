@@ -2,11 +2,14 @@
 
 namespace AssetManagement.Application.Controllers
 {
-    public class AssetController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AssetController : ControllerBase
     {
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> GetAssets()
         {
-            return View();
+            return Ok();
         }
     }
 }

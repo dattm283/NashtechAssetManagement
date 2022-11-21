@@ -1,6 +1,7 @@
 {
    "api":{ 
       "base": ".",
-      "auth": "./api/auth"
+      "auth": "./api/auth",
+      "asset": "./api/asset"
    }
 }

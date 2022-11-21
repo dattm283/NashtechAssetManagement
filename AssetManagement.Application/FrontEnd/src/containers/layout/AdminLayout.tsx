@@ -7,7 +7,8 @@ import {
     NotFound,
     ListGuesser,
     ShowGuesser,
-    usePermissions
+    usePermissions,
+    useAuthProvider
 } from 'react-admin';
 import { theme } from '../../theme';
 import Layout from '../Layout';
@@ -19,21 +20,18 @@ import HomeList from '../../pages/home/HomeList';
 
 import config from "../../connectionConfigs/config.json";
 import { assetProvider } from '../../providers/assetProvider/assetProvider';
-
-
+import AssetManager from '../../pages/asset/AssetManager';
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
 
 const App = () => {
     const [loginFirstTime, setLoginFirstTime] = useState(false);
-    const { permissions } = usePermissions();
-    // const permissions: string = "Admin";
+    const permissions = localStorage.getItem("permissions");
 
     const checkIsLoginFirstTime = () => {
         authService.getUserProfile()
             .then(data => {
-                console.log("User data", data);
                 if (data.isLoginFirstTime) {
                     setLoginFirstTime(true);
                     localStorage.setItem('loginFirstTime', "new");
@@ -63,7 +61,7 @@ const App = () => {
                 requireAuth={true}
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
-                {permissions == 'Admin' ? <Resource name="assets" options={{ label: 'Manage Asset' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="assets" list={AssetManager} options={{ label: 'Manage Asset' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="users" options={{ label: 'Manage User' }} list={ListGuesser} show={ShowGuesser} /> : null}
             </Admin>
 

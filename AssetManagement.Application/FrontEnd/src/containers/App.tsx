@@ -6,9 +6,9 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 function App() {
     console.log("App");
     return (
-        <QueryClientProvider client={new QueryClient()}>
-            <Admin />
-        </QueryClientProvider>
+        // <QueryClientProvider client={new QueryClient()}>
+        <Admin />
+        /* </QueryClientProvider> */
     );
 }
 
