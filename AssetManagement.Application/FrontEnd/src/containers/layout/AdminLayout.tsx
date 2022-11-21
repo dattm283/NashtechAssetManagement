@@ -18,8 +18,9 @@ import ChangePasswordModal from "../../components/modal/changePasswordModal/Chan
 import HomeList from '../../pages/home/HomeList';
 
 import config from "../../connectionConfigs/config.json";
+import { assetProvider } from '../../providers/assetProvider/assetProvider';
 
-const dataProvider = jsonServerProvider("https://jsonplaceholder.typicode.com");
+
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
@@ -53,7 +54,7 @@ const App = () => {
         <>
             <Admin
                 title="Nashtech"
-                dataProvider={dataProvider}
+                dataProvider={assetProvider}
                 authProvider={authProvider}
                 theme={theme}
                 layout={Layout}
