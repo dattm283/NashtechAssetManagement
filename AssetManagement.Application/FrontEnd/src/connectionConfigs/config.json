@@ -1,0 +1,6 @@
+{
+   "api":{ 
+      "base": ".",
+      "auth": "./api/auth"
+   }
+}

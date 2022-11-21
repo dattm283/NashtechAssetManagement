@@ -17,6 +17,7 @@ namespace AssetManagement.Data.Extensions
             var adminRoleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC");
             var staffRoleId = new Guid("12147FE0-4571-4AD2-B8F7-D2C863EB78A5");
             var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
+            var staffId = Guid.NewGuid();
 
             modelBuilder.Entity<AppRole>().HasData(new AppRole
             {
@@ -53,6 +54,26 @@ namespace AssetManagement.Data.Extensions
                 Gender = "Male",
                 Location = "HCM",
                 RoleId = adminRoleId
+            });
+
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = staffId,
+                UserName = "staff",
+                NormalizedUserName = "staff",
+                Email = "staff@gmail.com",
+                NormalizedEmail = "staff@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "12345678"),
+                SecurityStamp = string.Empty,
+                FirstName = "Toan",
+                LastName = "Bach",
+                Dob = new DateTime(2020, 01, 31),
+                IsLoginFirstTime = true,
+                CreatedDate = DateTime.Now,
+                Gender = "Male",
+                Location = "HCM",
+                RoleId = staffRoleId
             });
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>

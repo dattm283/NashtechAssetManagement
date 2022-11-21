@@ -17,10 +17,12 @@ import authService from '../../services/changePasswordFirstTime/auth';
 import ChangePasswordModal from "../../components/modal/changePasswordModal/ChangePasswordModal";
 import HomeList from '../../pages/home/HomeList';
 
+import config from "../../connectionConfigs/config.json";
+
 const dataProvider = jsonServerProvider("https://jsonplaceholder.typicode.com");
 
 // You will fix this API-URL
-const authProvider = AuthProvider('https://localhost:50569')
+const authProvider = AuthProvider(config.api.base);
 
 const App = () => {
     const [loginFirstTime, setLoginFirstTime] = useState(false);
@@ -33,12 +35,20 @@ const App = () => {
                 console.log("User data", data);
                 if (data.isLoginFirstTime) {
                     setLoginFirstTime(true);
+                    localStorage.setItem('loginFirstTime', "new");
                 }
             })
             .catch(error => {
                 console.log(error)
             })
     }
+
+    useEffect(() => {
+        if (localStorage.getItem('loginFirstTime') == "new") {
+            setLoginFirstTime(true);
+        }
+    })
+
     return (
         <>
             <Admin

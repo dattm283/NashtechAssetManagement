@@ -72,7 +72,7 @@ const ChangePasswordModal = ({
                 {"Change Password"}
             </DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
+                <DialogContentText component={"div"} id="alert-dialog-description">
                     <DialogContentText>
                         This is the first time you login. <br />
                         You have to change the password to continue

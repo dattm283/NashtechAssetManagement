@@ -1,9 +1,9 @@
 import axiosInstance from "../../connectionConfigs/axiosInstance";
-
-const baseUrl = "https://localhost:50569/api/auth/";
+import config from "../../connectionConfigs/config.json"
+const baseUrl = config.api.auth;
 
 const getUserProfile = async () => {
-    let url = baseUrl + "user-profile";
+    let url = baseUrl + "/user-profile";
     const response = await axiosInstance.get(url);
 
     return response.data;
