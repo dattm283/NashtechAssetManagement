@@ -2,7 +2,7 @@
 using AssetManagement.Contracts.Authority.Response;
 using AssetManagement.Contracts.Common;
 using AssetManagement.Data.EF;
-using AssetManagement.Data.Entities;
+using AssetManagement.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

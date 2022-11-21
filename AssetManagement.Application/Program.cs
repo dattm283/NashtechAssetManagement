@@ -1,6 +1,6 @@
 using AssetManagement.Contracts.AutoMapper;
 using AssetManagement.Data.EF;
-using AssetManagement.Data.Entities;
+using AssetManagement.Domain.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -149,6 +149,5 @@ app.UseSpa(spa =>
         spa.UseReactDevelopmentServer(npmScript: "start");
     }
 });
-
 
 app.Run();

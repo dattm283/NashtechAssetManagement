@@ -1,5 +1,5 @@
 ﻿using AssetManagement.Contracts.Authority.Response;
-using AssetManagement.Data.Entities;
+using AssetManagement.Domain.Models;
 using AutoMapper;
 using System;
 using System.Collections.Generic;

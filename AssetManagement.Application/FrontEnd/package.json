@@ -3,15 +3,26 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mui/icons-material": "^5.10.14",
+    "@mui/material": "^5.10.14",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.3",
-    "@types/react": "^18.0.25",
-    "@types/react-dom": "^18.0.9",
+    "axios": "^1.1.3",
+    "jsonexport": "^3.2.0",
+    "jwt-decode": "^3.1.2",
+    "prop-types": "^15.8.1",
+    "query-string": "^7.1.1",
+    "ra-core": "^4.5.2",
+    "ra-data-json-server": "^4.5.0",
+    "ra-data-simple-rest": "^4.5.1",
     "react": "^18.2.0",
+    "react-admin": "^4.5.2",
     "react-dom": "^18.2.0",
+    "react-query": "^3.39.2",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "^2.1.3",
     "typescript": "^4.9.3",
     "web-vitals": "^2.1.4"
@@ -35,6 +46,8 @@
     ]
   },
   "devDependencies": {
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
     "jest-editor-support": "^30.2.1"
   }
 }

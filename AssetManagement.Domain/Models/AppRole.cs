@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssetManagement.Data.Entities
+namespace AssetManagement.Domain.Models
 {
     public class AppRole : IdentityRole<Guid>
     {

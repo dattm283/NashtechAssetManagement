@@ -4,7 +4,7 @@ using AssetManagement.Contracts.Authority.Response;
 using AssetManagement.Contracts.AutoMapper;
 using AssetManagement.Contracts.Common;
 using AssetManagement.Data.EF;
-using AssetManagement.Data.Entities;
+using AssetManagement.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
