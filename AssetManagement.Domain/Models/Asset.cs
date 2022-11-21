@@ -19,6 +19,7 @@ namespace AssetManagement.Domain.Models
         public string Specification { get; set; }
         public DateTime InstalledDate { get; set; }
         public AssetManagement.Domain.Enums.Asset.State State { get; set; }
+        public Boolean IsActive { get; set; }
 
         //public virtual List<Assignment> Assignments { get; set; }
         //[ForeignKey("CategoryId")]
