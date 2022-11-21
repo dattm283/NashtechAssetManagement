@@ -17,7 +17,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 builder.Services.AddDbContext<AssetManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AssetManagement")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AssetManagement"), b => b.MigrationsAssembly("AssetManagement.Application")));
 
 builder.Services.AddIdentity<AppUser, AppRole>()
                .AddEntityFrameworkStores<AssetManagementDbContext>()

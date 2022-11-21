@@ -56,7 +56,7 @@ namespace AssetManagement.Application.Controllers
 
             var role = await _dbContext.AppRoles.FindAsync(user.RoleId);
 
-            return Ok(new SuccessResponseResult<LoginSuccessResponse>(new LoginSuccessResponse { Token = CreateToken(user, request.Username, role.Name), Role = role.Name }));
+            return Ok(new SuccessResponseResult<LoginResponse>(new LoginResponse { Token = CreateToken(user, request.Username, role.Name), Role = role.Name }));
         }
 
         [HttpGet("auth/user-profile/")]

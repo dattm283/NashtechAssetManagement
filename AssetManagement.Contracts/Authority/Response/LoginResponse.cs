@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AssetManagement.Contracts.Authority.Response
 {
-    public class LoginSuccessResponse
+    public class LoginResponse
     {
         public string Token { get; set; }
 
