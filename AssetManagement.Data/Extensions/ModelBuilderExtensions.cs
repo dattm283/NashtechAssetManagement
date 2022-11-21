@@ -51,8 +51,8 @@ namespace AssetManagement.Data.Extensions
                 Dob = new DateTime(2020, 01, 31),
                 IsLoginFirstTime = true,
                 CreatedDate = DateTime.Now,
-                Gender = "Male",
-                Location = "HCM",
+                Gender = Domain.Enums.AppUser.UserGender.Male,
+                Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
                 RoleId = adminRoleId
             });
 
@@ -71,8 +71,8 @@ namespace AssetManagement.Data.Extensions
                 Dob = new DateTime(2020, 01, 31),
                 IsLoginFirstTime = true,
                 CreatedDate = DateTime.Now,
-                Gender = "Male",
-                Location = "HCM",
+                Gender = Domain.Enums.AppUser.UserGender.Female,
+                Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
                 RoleId = staffRoleId
             });
 

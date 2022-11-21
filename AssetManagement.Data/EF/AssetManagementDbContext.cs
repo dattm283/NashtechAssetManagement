@@ -25,5 +25,7 @@ namespace AssetManagement.Data.EF
         public DbSet<AppUser> AppUsers { get; set; }
 
         public DbSet<AppRole> AppRoles { get; set; }
+
+        public DbSet<Asset> Assets { get; set; }
     }
 }

@@ -20,10 +20,10 @@ namespace AssetManagement.Domain.Models
         public DateTime Dob { get; set; }
 
         [MaxLength(50)]
-        public string Gender { get; set; }
+        public AssetManagement.Domain.Enums.AppUser.UserGender Gender { get; set; }
 
         [MaxLength(50)]
-        public string Location { get; set; }
+        public AssetManagement.Domain.Enums.AppUser.AppUserLocation Location { get; set; }
 
         public DateTime CreatedDate { get; set; }
 

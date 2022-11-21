@@ -257,8 +257,8 @@ namespace AssetManagement.Application.Tests
                     UserName = "binhnv",
                     Email = "bnv@gmail.com",
                     PasswordHash = "abc",
-                    Gender = "Male",
-                    Location = "HCM",
+                    Gender = Domain.Enums.AppUser.UserGender.Male,
+                    Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
                     RoleId = _roles[0].Id,
                     IsLoginFirstTime = true
                 },
@@ -270,8 +270,8 @@ namespace AssetManagement.Application.Tests
                     UserName = "annv",
                     Email = "anv@gmail.com",
                     PasswordHash = "xyz",
-                    Gender = "Female",
-                    Location = "HCM",
+                    Gender = Domain.Enums.AppUser.UserGender.Male,
+                    Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
                     RoleId = _roles[0].Id,
                     IsLoginFirstTime = true
                 }
