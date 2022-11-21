@@ -50,7 +50,7 @@ namespace AssetManagement.Application.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "6eaee78c-093a-4ea3-a5e1-8d9245a12a8d",
+                            ConcurrencyStamp = "3dd51b6c-a535-4693-a21c-5ff3509a8474",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -58,7 +58,7 @@ namespace AssetManagement.Application.Migrations
                         new
                         {
                             Id = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"),
-                            ConcurrencyStamp = "ad312867-52f4-48dc-a653-8031bb1efb45",
+                            ConcurrencyStamp = "86a0073b-f39f-4722-b85b-f6d67c2b16d4",
                             Description = "Staff role",
                             Name = "Staff",
                             NormalizedName = "staff"
@@ -94,10 +94,9 @@ namespace AssetManagement.Application.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
+                    b.Property<int>("Gender")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsLoginFirstTime")
                         .HasColumnType("bit");
@@ -107,10 +106,9 @@ namespace AssetManagement.Application.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
+                    b.Property<int>("Location")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -160,21 +158,21 @@ namespace AssetManagement.Application.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "bdfbdcdf-a68c-47bd-84e0-370489341671",
-                            CreatedDate = new DateTime(2022, 11, 21, 15, 59, 20, 17, DateTimeKind.Local).AddTicks(8813),
+                            ConcurrencyStamp = "d640663f-9128-4a96-b305-691cc8b4dd0f",
+                            CreatedDate = new DateTime(2022, 11, 21, 17, 13, 44, 166, DateTimeKind.Local).AddTicks(3670),
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Toan",
-                            Gender = "Male",
+                            Gender = 0,
                             IsLoginFirstTime = true,
                             LastName = "Bach",
-                            Location = "HCM",
+                            Location = 0,
                             LockoutEnabled = false,
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NormalizedEmail = "admin@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDkLkSGku3kri69pqxPJUAoYO9xi8S+3MB2zLqvUJO9cOJJoCTER128qfJl2NuWGpg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHMrQZKXmh3eULJbo9hLRm2bhn9NNCd3WWxh7nE4AkEMc4XNX91Rk1Rgdt31l2YrTw==",
                             PhoneNumberConfirmed = false,
                             RoleId = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
                             SecurityStamp = "",
@@ -183,29 +181,60 @@ namespace AssetManagement.Application.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0ce6ae9c-55ab-408d-b37e-b88acec37bbb"),
+                            Id = new Guid("fda3982b-dd10-4fca-a42e-590d8eedbb28"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "02622f58-6ca9-4c49-a934-2b3ee21baca5",
-                            CreatedDate = new DateTime(2022, 11, 21, 15, 59, 20, 24, DateTimeKind.Local).AddTicks(1093),
+                            ConcurrencyStamp = "88214f8d-4b07-41e9-a98f-2f3484931726",
+                            CreatedDate = new DateTime(2022, 11, 21, 17, 13, 44, 173, DateTimeKind.Local).AddTicks(1664),
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "staff@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Toan",
-                            Gender = "Male",
+                            Gender = 1,
                             IsLoginFirstTime = true,
                             LastName = "Bach",
-                            Location = "HCM",
+                            Location = 1,
                             LockoutEnabled = false,
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NormalizedEmail = "staff@gmail.com",
                             NormalizedUserName = "staff",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDS8zgwRISVAJ14CFqvJ/m398fhVHfunH0al66aS4jqdi5Aq1rs6XB6CsXXtcXXGkA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGhFzgdOggZJflYdr66fIxQ3LtS/zYuDS01hHCzSa4pfio+ooh1nqx04PLC3bBwq9A==",
                             PhoneNumberConfirmed = false,
                             RoleId = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"),
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
                             UserName = "staff"
                         });
+                });
+
+            modelBuilder.Entity("AssetManagement.Domain.Models.Asset", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AssetCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("InstalledDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Specification")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Assets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
