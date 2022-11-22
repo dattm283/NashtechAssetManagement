@@ -17,7 +17,7 @@ namespace AssetManagement.Data.Extensions
             var adminRoleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC");
             var staffRoleId = new Guid("12147FE0-4571-4AD2-B8F7-D2C863EB78A5");
             var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
-            var staffId = Guid.NewGuid();
+            var staffId = new Guid("70BD714F-9576-45BA-B5B7-F00649BE00DE");
 
             modelBuilder.Entity<AppRole>().HasData(new AppRole
             {

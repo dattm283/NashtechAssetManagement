@@ -40,7 +40,4 @@ export const assetProvider: DataProvider = {
    deleteMany: function <RecordType extends RaRecord = any>(resource: string, params: DeleteManyParams<RecordType>): Promise<DeleteManyResult<RecordType>> {
       throw new Error("Function not implemented.");
    },
-   getList: function <RecordType extends RaRecord = any>(resource: string, params: GetListParams): Promise<GetListResult<RecordType>> {
-      throw new Error("Function not implemented.");
-   }
 };
