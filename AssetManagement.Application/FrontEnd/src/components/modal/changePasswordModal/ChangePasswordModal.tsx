@@ -50,8 +50,9 @@ const ChangePasswordModal = ({
 
         authService.changePassword(changePasswordRequest)
             .then(() => {
+                localStorage.removeItem("loginFirstTime");
                 setLoginFirstTime(false);
-            })
+            }, (err) => console.log(err))
             .catch(() => {
                 notify('Invalid password');
             })

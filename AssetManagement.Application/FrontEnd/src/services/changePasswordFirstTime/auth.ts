@@ -10,9 +10,9 @@ const getUserProfile = async () => {
 }
 
 const changePassword = async (changePasswordRequest) => {
-    let url = baseUrl + "change-password";
+    let url = baseUrl + "/change-password";
     const response = await axiosInstance.post(url, changePasswordRequest);
-
+    console.log(response);
     return response.data;
 }
 

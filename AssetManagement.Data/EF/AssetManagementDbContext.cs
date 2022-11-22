@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AssetManagement.Data.Extensions;
+using Microsoft.Extensions.Configuration;
 
 namespace AssetManagement.Data.EF
 {
@@ -21,6 +22,16 @@ namespace AssetManagement.Data.EF
 
             modelBuilder.Seed();
         }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    IConfigurationRoot configuration = new ConfigurationBuilder()
+        //    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        //    .AddJsonFile("appsettings.json")
+        //    .Build();
+        //    optionsBuilder.UseSqlServer(configuration.GetConnectionString("AssetManagement"));
+        //    base.OnConfiguring(optionsBuilder);
+        //}
 
         public DbSet<AppUser> AppUsers { get; set; }
 
