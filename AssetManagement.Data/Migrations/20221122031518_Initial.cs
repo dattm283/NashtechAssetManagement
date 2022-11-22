@@ -154,12 +154,12 @@ namespace AssetManagement.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AppRole",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[] { new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"), "144dca14-671a-4eac-aaf9-e9f1edf991a9", "Staff role", "Staff", "staff" });
+                values: new object[] { new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"), "7027a446-e8c2-4b00-bc09-2aefc892ba57", "Staff role", "Staff", "staff" });
 
             migrationBuilder.InsertData(
                 table: "AppRole",
                 columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
-                values: new object[] { new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"), "84a19875-767d-4639-8664-6695b2da024b", "Administrator role", "Admin", "admin" });
+                values: new object[] { new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"), "acfb6c92-c938-4485-ae2c-32addb60154a", "Administrator role", "Admin", "admin" });
 
             migrationBuilder.InsertData(
                 table: "AppUserRoles",
@@ -169,12 +169,12 @@ namespace AssetManagement.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AppUser",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedDate", "Dob", "Email", "EmailConfirmed", "FirstName", "Gender", "IsLoginFirstTime", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RoleId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"), 0, "8a88a4f7-f8e5-4cf0-bf81-3f03051d7be6", new DateTime(2022, 11, 22, 9, 48, 2, 134, DateTimeKind.Local).AddTicks(6940), new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, "Toan", 0, true, "Bach", 0, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", "admin", "AQAAAAEAACcQAAAAEOqt8byWR0RVgkcF0Gdxou4mB0/Fm0QgB0KTl2LfD7h+9f+o0hdSwcrVxBVqcCklwQ==", null, false, new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"), "", false, "admin" });
+                values: new object[] { new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"), 0, "1f5d5de4-0a8f-4e38-aad2-629dc6548e1f", new DateTime(2022, 11, 22, 10, 15, 18, 550, DateTimeKind.Local).AddTicks(6959), new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, "Toan", 0, true, "Bach", 0, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", "admin", "AQAAAAEAACcQAAAAEJa907HNcTamMkcpMbHn3vH53c5Ppq4K14JUMo393SmcCtzM/ar4u0XN1lH2g2OWFQ==", null, false, new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"), "", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AppUser",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "CreatedDate", "Dob", "Email", "EmailConfirmed", "FirstName", "Gender", "IsLoginFirstTime", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "ModifiedDate", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RoleId", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"), 0, "2bd5b56d-0d65-4c87-b037-8a4b87be2583", new DateTime(2022, 11, 22, 9, 48, 2, 140, DateTimeKind.Local).AddTicks(6497), new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "staff@gmail.com", true, "Toan", 1, true, "Bach", 1, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "staff@gmail.com", "staff", "AQAAAAEAACcQAAAAEK52G9w8dMdjI/qbs+BvDNGLMMEQo+al2EuoJGdxPYKUGozeE9X1iQfz0jaLLspJAA==", null, false, new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"), "", false, "staff" });
+                values: new object[] { new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"), 0, "134fc0d3-2394-4738-bc9c-43acef5271d4", new DateTime(2022, 11, 22, 10, 15, 18, 557, DateTimeKind.Local).AddTicks(3674), new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "staff@gmail.com", true, "Toan", 1, true, "Bach", 1, false, null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "staff@gmail.com", "staff", "AQAAAAEAACcQAAAAEJFjyQiaZQe3BwtkxgGbZEJ4ZqZT+swVAzTdM1KdC1aNTALr7Oy5OpYkHBMsS4hH/Q==", null, false, new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"), "", false, "staff" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppUser_RoleId",
