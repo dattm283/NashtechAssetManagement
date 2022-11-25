@@ -5,7 +5,7 @@ import { createTheme, ThemeProvider, unstable_createMuiStrictModeTheme } from '@
 import { useNavigate } from 'react-router-dom';
 import SelectBoxWithFormInside from '../../components/custom/SelectBoxWithFormInside'
 import RadioButtonGroup from '../../components/custom/RadioButtonGroupInput'
-import AssetCreateToolbar from '../../components/formToolbar/AssetCreateToolbar'
+import AssetCreateToolbar from '../../components/toolbar/AssetCreateToolbar'
 import * as categoryService from '../../services/category'
 
 var today = new Date();

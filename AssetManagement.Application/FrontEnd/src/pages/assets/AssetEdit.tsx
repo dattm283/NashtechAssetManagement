@@ -7,7 +7,7 @@ import * as assetService from '../../services/assets'
 import * as categoryService from '../../services/category'
 import CategorySelectBoxDisabled from '../../components/custom/CategorySelectBoxDisabled'
 import RadioButtonGroup from '../../components/custom/RadioButtonGroupInput'
-import AssetEditToolbar from '../../components/formToolbar/AssetEditToolbar'
+import AssetEditToolbar from '../../components/toolbar/AssetEditToolbar'
 
 
 var today = new Date();
