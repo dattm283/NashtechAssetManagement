@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Form, TextInput, useLogin, useNotify } from 'react-admin';
-import { Avatar, Button, Box, CssBaseline, Typography, Container } from '@mui/material';
-import { createTheme, ThemeProvider, unstable_createMuiStrictModeTheme } from '@mui/material/styles';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Form, TextInput, useLogin, useNotify, PasswordInput } from 'react-admin';
+import { Button, Box, CssBaseline, Typography, Container } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '../../theme';
 import logo from '../../assets/images/logo-transparent.png';
 
@@ -11,8 +10,6 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
     const [isValid, setIsValid] = useState(true);
     const login = useLogin();
     const notify = useNotify();
-    // let theme = createTheme();
-    // theme = unstable_createMuiStrictModeTheme(theme);
 
     const handleFormSubmit = ({ userName, password }: any) => {
         login({ username: userName, password: password })
@@ -21,7 +18,7 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
             })
             .catch(error => {
                 console.log(error);
-                notify('Invalid email or password');
+                notify('Username or password is incorrect. Please try again');
             });
     };
 
@@ -74,12 +71,11 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
                                     sx={{ gridColumn: "span 5" }}
                                     source="username"
                                 />
-                                <TextInput
+                                <PasswordInput
                                     fullWidth
                                     id="password"
                                     label="Password"
                                     name="password"
-                                    type="password"
                                     autoComplete="current-password"
                                     sx={{ gridColumn: "span 5" }}
                                     source="password"

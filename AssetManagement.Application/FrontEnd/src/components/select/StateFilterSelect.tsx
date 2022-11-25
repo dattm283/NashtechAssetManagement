@@ -2,7 +2,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { useInput, useListContext } from 'react-admin';
 import React, { useEffect, useState } from 'react';
-import { Checkbox, FormControl, InputLabel, ListItemIcon, ListItemText } from '@mui/material';
+import { Checkbox, FormControl, InputLabel, ListItemText } from '@mui/material';
 
 
 export default (props) => {
