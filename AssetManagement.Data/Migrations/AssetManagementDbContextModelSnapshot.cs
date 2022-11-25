@@ -50,7 +50,7 @@ namespace AssetManagement.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "53c17004-d6c6-4b61-ba94-016863e21591",
+                            ConcurrencyStamp = "4935d186-d557-40b6-b9e1-8cc00902625c",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -58,7 +58,7 @@ namespace AssetManagement.Data.Migrations
                         new
                         {
                             Id = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"),
-                            ConcurrencyStamp = "a105cbf2-5a53-4c16-8f42-b62c5425608f",
+                            ConcurrencyStamp = "183a608f-7f1b-4df2-bfe9-2ce1f3e00651",
                             Description = "Staff role",
                             Name = "Staff",
                             NormalizedName = "staff"
@@ -162,8 +162,8 @@ namespace AssetManagement.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "56a12768-c35d-4d6f-b371-a7d2aa46c5aa",
-                            CreatedDate = new DateTime(2022, 11, 25, 3, 14, 22, 580, DateTimeKind.Local).AddTicks(6226),
+                            ConcurrencyStamp = "c3c4e3b7-c645-4376-b6ba-4aa34379a94e",
+                            CreatedDate = new DateTime(2022, 11, 25, 12, 5, 8, 959, DateTimeKind.Local).AddTicks(7971),
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
@@ -176,7 +176,7 @@ namespace AssetManagement.Data.Migrations
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NormalizedEmail = "admin@gmail.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAq7/PyW9OOqv2Px2/XSsD51D/svp/sG/xKz6ggVVI9gg/tdF5LZtiCghLK5mGhz3A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFk3Zpnen1deslXZAuRBM9qpRRLmn5NAHHu+6wacZcIFmbXpG5Ahlf+5COyu85hHJQ==",
                             PhoneNumberConfirmed = false,
                             RoleId = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
                             SecurityStamp = "",
@@ -187,8 +187,8 @@ namespace AssetManagement.Data.Migrations
                         {
                             Id = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "321bed9e-ad74-4ed2-8161-a5ef7100835c",
-                            CreatedDate = new DateTime(2022, 11, 25, 3, 14, 22, 593, DateTimeKind.Local).AddTicks(9726),
+                            ConcurrencyStamp = "edd821d4-20c6-41cb-8127-ac11041551ff",
+                            CreatedDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(3933),
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "staff@gmail.com",
                             EmailConfirmed = true,
@@ -201,7 +201,7 @@ namespace AssetManagement.Data.Migrations
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NormalizedEmail = "staff@gmail.com",
                             NormalizedUserName = "staff",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMBGzTSjBcDfwUfgC/u8BvZQtgPhbGU+kfCWSepIG1K5Z0fn+oHyeoq3n6Ml3tViWA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBwRUX4VeHBDbWBzsPNClvL/oKntEqEXqrXyeRJ4xJrCL5tCgSugOrrKIviXAxDzrQ==",
                             PhoneNumberConfirmed = false,
                             RoleId = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"),
                             SecurityStamp = "",
@@ -250,7 +250,7 @@ namespace AssetManagement.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Assets", null, t => t.ExcludeFromMigrations());
+                    b.ToTable("Assets");
 
                     b.HasData(
                         new
@@ -258,7 +258,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 1,
                             AssetCode = "LA100001",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(203),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4189),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 1",
@@ -270,7 +270,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 2,
                             AssetCode = "LA100002",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(229),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4202),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 2",
@@ -282,7 +282,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 3,
                             AssetCode = "LA100003",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(245),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4211),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 3",
@@ -294,7 +294,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 4,
                             AssetCode = "LA100004",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(261),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4219),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 4",
@@ -306,7 +306,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 5,
                             AssetCode = "LA100005",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(378),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4228),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 5",
@@ -318,7 +318,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 6,
                             AssetCode = "LA100006",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(408),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4242),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 6",
@@ -330,7 +330,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 7,
                             AssetCode = "LA100007",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(424),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4307),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 7",
@@ -342,7 +342,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 8,
                             AssetCode = "LA100008",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(440),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4319),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 8",
@@ -354,7 +354,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 9,
                             AssetCode = "LA100009",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(456),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4328),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 9",
@@ -366,7 +366,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 10,
                             AssetCode = "LA1000010",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 25, 3, 14, 22, 594, DateTimeKind.Local).AddTicks(477),
+                            InstalledDate = new DateTime(2022, 11, 25, 12, 5, 8, 966, DateTimeKind.Local).AddTicks(4339),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 10",
@@ -433,7 +433,7 @@ namespace AssetManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", null, t => t.ExcludeFromMigrations());
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
