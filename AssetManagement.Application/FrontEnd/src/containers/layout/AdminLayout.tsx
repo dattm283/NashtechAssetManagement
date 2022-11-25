@@ -8,7 +8,8 @@ import {
     ListGuesser,
     ShowGuesser,
     usePermissions,
-    useAuthProvider
+    useAuthProvider,
+    DateTimeInput
 } from 'react-admin';
 import { theme } from '../../theme';
 import Layout from '../Layout';
@@ -20,6 +21,9 @@ import HomeList from '../../pages/home/HomeList';
 
 import config from "../../connectionConfigs/config.json";
 import { assetProvider } from '../../providers/assetProvider/assetProvider';
+import AssetList from '../../pages/assets/AssetList';
+import AssetEdit  from '../../pages/assets/AssetEdit';
+import AssetCreate from '../../pages/assets/AssetCreate';
 // import AssetManager from '../../pages/asset/AssetManager';
 
 // You will fix this API-URL
@@ -48,6 +52,18 @@ const App = () => {
         }
     })
 
+    useEffect(() => {
+        let expTick = localStorage.getItem("expTime");
+        if (expTick) {
+            var exp = new Date(parseInt(expTick) * 1000);
+            var now = new Date();
+            if (now > exp) {
+                localStorage.removeItem("auth");
+                authProvider.logout();
+            }
+        }
+    }, [])
+
     return (
         <>
             <Admin
@@ -61,7 +77,7 @@ const App = () => {
                 requireAuth={true}
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
-                {permissions == 'Admin' ? <Resource name="assets" list={ListGuesser} options={{ label: 'Manage Asset' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="users" options={{ label: 'Manage User' }} list={ListGuesser} show={ShowGuesser} /> : null}
             </Admin>
 

@@ -22,7 +22,6 @@ const Header = (props) => (
             variant="h6"
             color="inherit"
             className="Header"
-            id="react-admin-title"
         />
         <span />
     </AppBar>

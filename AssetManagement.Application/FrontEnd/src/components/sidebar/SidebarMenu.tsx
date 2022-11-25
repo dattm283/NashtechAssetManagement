@@ -15,15 +15,33 @@ const theme = createTheme();
 const SidebarMenu = () => {
     const { isLoading, permissions } = usePermissions();
     return(
-    <Menu>
-        <img src={logo} alt="logo" className="logo" />
+    <Menu sx={{
+        ".css-y07vd-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root.RaMenuItemLink-active": {
+            color: "#fff",
+            backgroundColor: '#cf2338',
+            fontWeight: "bold",
+            ".css-cveggr-MuiListItemIcon-root" :{
+                color: "#fff",
+            }
+        },
+        ".css-y07vd-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root" :{
+            color:"#000",
+            backgroundColor: "#eff1f5",
+            fontWeight: "bold",
+            ".css-cveggr-MuiListItemIcon-root" :{
+                color: "#000",
+            }
+        },
+        
+    }}>
+        <img src={logo} alt="logo" className="logo"/>
         <Typography textAlign="center" variant="h3" component="h2" color="#cf2338" fontSize='1rem' fontWeight="bold" mb={3}>Online Asset Management</Typography>
-        <Menu.Item to="/home" primaryText="Home" leftIcon={<HomeIcon />} />
-            {permissions === 'Admin' ?<Menu.Item to="/users" primaryText="Manage User" leftIcon={<PeopleIcon />} />:null }
-            {permissions === 'Admin' ?<Menu.Item to="/assets" primaryText="Manage Asset" leftIcon={<LabelIcon />} />:null }
-            {permissions === 'Admin' ?<Menu.Item to="/assignments" primaryText="Manage Assignment" leftIcon={<AssignmentIcon />} />:null  }
-            {permissions === 'Admin' ?<Menu.Item to="/returning" primaryText="Request for Returning" leftIcon={<RedoIcon />} />:null  }
-            {permissions === 'Admin' ?<Menu.Item to="/report" primaryText="Report" leftIcon={<PieChartIcon />} />:null}
+        <Menu.Item to="/home" primaryText="Home" leftIcon={<HomeIcon/>}/>
+            {permissions === 'Admin' ?<Menu.Item to="/users" primaryText="Manage User" leftIcon={<PeopleIcon/>}/>:null }
+            {permissions === 'Admin' ?<Menu.Item to="/assets" primaryText="Manage Asset" leftIcon={<LabelIcon/>}/>:null }
+            {permissions === 'Admin' ?<Menu.Item to="/assignments" primaryText="Manage Assignment" leftIcon={<AssignmentIcon/>}/>:null  }
+            {permissions === 'Admin' ?<Menu.Item to="/returning" primaryText="Request for Returning" leftIcon={<RedoIcon/>}/>:null  }
+            {permissions === 'Admin' ?<Menu.Item to="/report" primaryText="Report" leftIcon={<PieChartIcon/>}/>:null}
     </Menu >
     )
 };

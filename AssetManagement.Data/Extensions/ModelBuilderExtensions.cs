@@ -1,4 +1,5 @@
-﻿using AssetManagement.Domain.Models;
+﻿using AssetManagement.Domain.Enums.Asset;
+using AssetManagement.Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -81,6 +82,48 @@ namespace AssetManagement.Data.Extensions
                 RoleId = adminRoleId,
                 UserId = adminId
             });
+
+            modelBuilder.Entity<Category>().HasData(new Category
+            {
+                Id = 1,
+                Name = "Laptop",
+                Prefix = "LA",
+                IsDeleted = false,
+            });
+
+            modelBuilder.Entity<Category>().HasData(new Category
+            {
+                Id = 2,
+                Name = "Monitor",
+                Prefix = "MO",
+                IsDeleted = false,
+            });
+
+            for (int i = 1; i <= 10; i++)
+            {
+                modelBuilder.Entity<Asset>().HasData(new Asset
+                {
+                    Id = i,
+                    Name = "Laptop " + i,
+                    AssetCode = "LA10000" + i,
+                    Specification = $"Core i{i}, {i}GB RAM, {i}50 GB HDD, Window {i}",
+                    CategoryId = i % 2 == 0 ? 1 : 2,
+                    InstalledDate = DateTime.Now,
+                    State = i % 2 == 0 ? State.Available : State.NotAvailable,
+                    IsDeleted = i % 2 == 0 ? true : false,
+                });
+            }
+
+            //modelBuilder.Entity<Assignment>().HasData(new Assignment
+            //{
+            //    Id = 1,
+            //    AssignedDate = DateTime.Now,
+            //    ReturnedDate = DateTime.Now,
+            //    State = Domain.Enums.Assignment.State.Accepted,
+            //    AssetId = 1,
+            //    AssignedTo = adminId,
+            //    AssignedBy = staffId
+            //});
         }
     }
 }

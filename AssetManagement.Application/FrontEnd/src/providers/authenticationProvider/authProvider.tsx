@@ -22,18 +22,26 @@ function AuthProvider(authURL) {
         // send username and password to the auth server and get back credentials
         login: ({ username, password }) => {
             return axiosInstance.post(`${authURL}/api/auth/token`, { Username: username, Password: password }, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
                 .then(response => {
                     if (response.status < 200 || response.status >= 300) {
                         throw new Error("Username or password is incorrect. Please try again");
                     }
                     localStorage.setItem('auth', response.data.result.token);
                     localStorage.setItem('role', response.data.result.role);
-                    // const decodedToken = decodeJwt(response.data.result.token);
+
+                    interface MyToken {
+                        name: string;
+                        exp: number;
+                        // whatever else is in the JWT.
+                    }
+
+                    const decodedToken: MyToken = decodeJwt(response.data.result.token);
+                    localStorage.setItem("expTime", decodedToken.exp.toString());
                     // localStorage.setItem('token', response.data.result.token);
                     localStorage.setItem('permissions', response.data.result.role);
                 })

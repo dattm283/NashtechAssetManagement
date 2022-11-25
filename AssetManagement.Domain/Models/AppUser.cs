@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace AssetManagement.Domain.Models
 {
@@ -34,5 +35,12 @@ namespace AssetManagement.Domain.Models
         [ForeignKey("AppRole")]
         public Guid RoleId { get; set; }
         public AppRole AppRole { get; set; }
+
+        [InverseProperty(nameof(Assignment.AssignedToAppUser))]
+        public virtual ICollection<Assignment> AssignedToAssignments { get; set; }
+
+        [InverseProperty(nameof(Assignment.AssignedByToAppUser))]
+        public virtual ICollection<Assignment> AssignedByAssignments { get; set; }
+
     }
 }

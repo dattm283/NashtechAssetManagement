@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Security.Principal;
+using Xunit;
 
 #nullable disable
 namespace AssetManagement.Application.Tests

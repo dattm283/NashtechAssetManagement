@@ -19,6 +19,10 @@ namespace AssetManagement.Data.EF
             modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
             modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
+            modelBuilder.Entity<AppUser>().HasIndex(x => x.UserName).IsUnique();
+
+            modelBuilder.Entity<Asset>().ToTable("Assets", t=>t.ExcludeFromMigrations());
+            modelBuilder.Entity<Category>().ToTable("Categories", t=>t.ExcludeFromMigrations());
 
             modelBuilder.Seed();
         }
@@ -38,5 +42,9 @@ namespace AssetManagement.Data.EF
         public DbSet<AppRole> AppRoles { get; set; }
 
         public DbSet<Asset> Assets { get; set; }
+
+        public DbSet<Category> Categories { get; set; }
+
+        public DbSet<Assignment> Assignments { get; set; }
     }
 }

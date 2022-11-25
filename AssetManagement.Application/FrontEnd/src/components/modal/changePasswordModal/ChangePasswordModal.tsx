@@ -97,13 +97,6 @@ const ChangePasswordModal = ({
                     </Form>
                 </DialogContentText>
             </DialogContent>
-            {/* <DialogActions>
-                <Button type="submit" form="change_password_first_login_form"
-                    onClick={handleChangePassword} autoFocus
-                    sx={style}>
-                    Agree
-                </Button>
-            </DialogActions> */}
         </Dialog>
     )
 }
