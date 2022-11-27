@@ -6,14 +6,20 @@ import {
   TextInput,
   EditButton,
   useDataProvider,
+  FunctionField,
+  ListBase,
+  FilterForm,
+  CreateButton,
+  Button
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
 import AssetShow from "./AssetShow";
-import { ButtonGroup } from "@mui/material";
+import { ButtonGroup, Stack } from "@mui/material";
 import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
+import { useNavigate } from "react-router-dom";
 
 export default () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -22,6 +28,7 @@ export default () => {
   const dataProvider = useDataProvider();
   let data = dataProvider.getList("category", { pagination: { page: 1, perPage: 99 }, sort: { field: "name", order: "ASC" }, filter: {} }).then(res => res.data)
 
+  const navigate = useNavigate();
   const toggle = () => {
     setIsOpened(!isOpened);
   };
@@ -32,7 +39,6 @@ export default () => {
   };
 
   const assetsFilter = [
-    <TextInput label="Search" source="searchString" alwaysOn />,
     // <SelectArrayInput source="states" choices={[
     //     { id: '0', name: 'Available' },
     //     { id: '1', name: 'Not available' },
@@ -47,11 +53,14 @@ export default () => {
         { value: 2, text: "Waiting for recycling" },
         { value: 3, text: "Recycled" },
       ]}
+      alwaysOn
     />,
     <CategoryFilterSelect
       source="categories"
       statesList={data}
-    />
+      alwaysOn
+    />,
+    <TextInput label="Search" source="searchString" alwaysOn />
   ];
 
 
@@ -59,13 +68,27 @@ export default () => {
 
   return (
     <>
-      <List
+      <ListBase
         perPage={5}
-        pagination={<AssetsPagination />}
-        filters={assetsFilter}
-        exporter={false}
         sort={{ field: "name", order: "DESC" }}
       >
+        <h2 style={{ color: "#cf2338" }}>Assets List</h2>
+        <Stack direction="row" justifyContent="space-between" alignContent="center">
+          <FilterForm style={{ justifyContent: "space-evenly" }} filters={assetsFilter} />
+          <div style={{ display: "flex", alignItems: "end" }}>
+            <Button
+              size="large"
+              variant="contained"
+              onClick={(e) => navigate("/assets")}
+              color="secondary"
+              label="Create new asset"
+              sx={{
+                width: "250px",
+              }}
+            />
+          </div>
+        </Stack>
+
         <Datagrid
           rowClick={postRowClick}
           empty={
@@ -75,11 +98,10 @@ export default () => {
           }
           bulkActionButtons={false}
         >
-          <TextField source="id" />
-          <TextField source="name" />
           <TextField source="assetCode" />
-          <TextField source="categoryName" />
-          <TextField source="state" />
+          <TextField label="Asset Name" source="name" />
+          <TextField label="Category" source="categoryName" />
+          <FunctionField source="state" render={(record) => record.state == "NotAvailable" ? "Not available" : record.state} />
           <ButtonGroup sx={{ border: null }}>
             <EditButton variant="text" size="small" label="" />
             <CustomDeleteWithConfirmButton
@@ -89,7 +111,8 @@ export default () => {
             />
           </ButtonGroup>
         </Datagrid>
-      </List>
+        <AssetsPagination />
+      </ListBase>
       <AssetShow isOpened={isOpened} toggle={toggle} record={record} />
     </>
   );
