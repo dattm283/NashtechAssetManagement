@@ -68,6 +68,9 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
                                     name="userName"
                                     autoComplete="current-userName"
                                     autoFocus
+                                    inputProps={{
+                                        "maxLength":"50"
+                                    }}
                                     sx={{ gridColumn: "span 5" }}
                                     source="username"
                                 />
