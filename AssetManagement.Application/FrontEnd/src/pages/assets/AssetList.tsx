@@ -62,7 +62,7 @@ export default () => {
       statesList={data}
       alwaysOn
     />,
-    <SearchInput source="searchString" alwaysOn />
+    <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
   ];
 
 
@@ -74,14 +74,13 @@ export default () => {
         perPage={5}
         sort={{ field: "name", order: "DESC" }}
       >
-        <h2 style={{ color: "#cf2338" }}>Assets List</h2>
+        <h2 style={{ color: "#cf2338" }}>Asset List</h2>
         <Stack direction="row" justifyContent="end" alignContent="center">
           <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assetsFilter} /></div>
           <div style={{ display: "flex", alignItems: "end" }}>
-            <Button
+            <CreateButton
               size="large"
               variant="contained"
-              onClick={(e) => navigate("/assets")}
               color="secondary"
               label="Create new asset"
               sx={{
@@ -95,7 +94,7 @@ export default () => {
           rowClick={postRowClick}
           empty={
             <p>
-              <h2>No Result found</h2>
+              <h2>No Data found</h2>
             </p>
           }
           bulkActionButtons={false}
