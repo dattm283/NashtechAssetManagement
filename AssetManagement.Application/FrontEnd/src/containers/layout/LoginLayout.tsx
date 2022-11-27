@@ -80,6 +80,9 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
                                     label="Password"
                                     name="password"
                                     autoComplete="current-password"
+                                    inputProps={{
+                                        "maxLength":"50"
+                                    }}
                                     sx={{ gridColumn: "span 5" }}
                                     source="password"
                                 />
