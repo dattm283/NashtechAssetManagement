@@ -1,47 +1,60 @@
 import { Menu, usePermissions  } from 'react-admin';
 import React from 'react';
 import { Typography } from '@mui/material';
-import PeopleIcon from '@mui/icons-material/People';
-import LabelIcon from '@mui/icons-material/Label';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import RedoIcon from '@mui/icons-material/Redo';
-import PieChartIcon from '@mui/icons-material/PieChart';
+import CardMedia from '@mui/material/CardMedia';
 import logo from '../../assets/images/logo-transparent.png';
 import HomeIcon from '@mui/icons-material/Home';
-import { createTheme } from '@mui/material/styles';
 
-const theme = createTheme();
-
+// import 
 const SidebarMenu = () => {
     const { isLoading, permissions } = usePermissions();
     return(
-    <Menu sx={{
-        ".css-y07vd-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root.RaMenuItemLink-active": {
-            color: "#fff",
-            backgroundColor: '#cf2338',
-            fontWeight: "bold",
-            ".css-cveggr-MuiListItemIcon-root" :{
-                color: "#fff",
-            }
-        },
-        ".css-y07vd-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root" :{
-            color:"#000",
+    <Menu 
+    sx={{
+        width: "950px",
+        margin: "10px",
+        paddingTop: "40px",
+        color: "#000",
+        ".MuiMenuItem-root" :{
+            height:"50px",
             backgroundColor: "#eff1f5",
-            fontWeight: "bold",
-            ".css-cveggr-MuiListItemIcon-root" :{
+            fontWeight: "900",
+            color: "#000",
+            ".RaMenuItemLink-icon" :{
                 color: "#000",
-            }
+            },
+            marginBottom: "3px",
         },
-        
-    }}>
-        <img src={logo} alt="logo" className="logo"/>
-        <Typography textAlign="center" variant="h3" component="h2" color="#cf2338" fontSize='1rem' fontWeight="bold" mb={3}>Online Asset Management</Typography>
-        <Menu.Item to="/home" primaryText="Home" leftIcon={<HomeIcon/>}/>
-            {permissions === 'Admin' ?<Menu.Item to="/users" primaryText="Manage User" leftIcon={<PeopleIcon/>}/>:null }
-            {permissions === 'Admin' ?<Menu.Item to="/assets" primaryText="Manage Asset" leftIcon={<LabelIcon/>}/>:null }
-            {permissions === 'Admin' ?<Menu.Item to="/assignments" primaryText="Manage Assignment" leftIcon={<AssignmentIcon/>}/>:null  }
-            {permissions === 'Admin' ?<Menu.Item to="/returning" primaryText="Request for Returning" leftIcon={<RedoIcon/>}/>:null  }
-            {permissions === 'Admin' ?<Menu.Item to="/report" primaryText="Report" leftIcon={<PieChartIcon/>}/>:null}
+        ".RaMenuItemLink-active": {
+            color: "#cf2338",
+            backgroundColor: '#cf2338',
+            "&.RaMenuItemLink-active" : {
+                color: "#fff",
+            },
+            "& .RaMenuItemLink-icon" :{
+                color: "#fff",
+            },
+            marginBottom: "3px",
+        }
+    }}
+    >
+        <CardMedia
+        component="img"
+        alt="logo"
+        height="auto"
+        sx={
+            {maxWidth:"100px",
+        }
+        }
+        image={logo}
+        />
+        <Typography variant="h3" component="h2" color="secondary" fontSize='1rem' fontWeight="bold" className="appTitleMenuBar" mb={3}>Online Asset Management</Typography>
+        <Menu.Item to="/home" primaryText="Home"/>
+            {permissions === 'Admin' ?<Menu.Item to="/users" primaryText="Manage User" />:null }
+            {permissions === 'Admin' ?<Menu.Item to="/assets" primaryText="Manage Asset" />:null }
+            {permissions === 'Admin' ?<Menu.Item to="/assignments" primaryText="Manage Assignment" />:null  }
+            {permissions === 'Admin' ?<Menu.Item to="/returning" primaryText="Request for Returning" />:null  }
+            {permissions === 'Admin' ?<Menu.Item to="/report" primaryText="Report" />:null}
     </Menu >
     )
 };

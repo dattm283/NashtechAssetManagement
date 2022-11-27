@@ -9,6 +9,7 @@ function App() {
         // <QueryClientProvider client={new QueryClient()}>
         <Admin />
         /* </QueryClientProvider> */
+        // title={<AppTitle />}
     );
 }
 

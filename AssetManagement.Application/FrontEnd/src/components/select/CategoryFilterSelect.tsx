@@ -4,6 +4,16 @@ import { useInput, useListContext } from 'react-admin';
 import React, { useEffect, useState } from 'react';
 import { Checkbox, FormControl, InputLabel, ListItemText } from '@mui/material';
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+   PaperProps: {
+      style: {
+         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+         width: 250,
+      },
+   },
+};
 
 export default (props) => {
    const {
@@ -58,15 +68,23 @@ export default (props) => {
          setCategoriesList(res);
 
 
-         var tmp = (<FormControl variant='standard' sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-multiple-name">Categories</InputLabel>
+         var tmp = (<FormControl variant='standard' sx={{ m: 1, width: 120 }}>
+            <InputLabel id="demo-multiple-name">Category</InputLabel>
             <Select
+               autoWidth={false}
                labelId="demo-multiple-name"
                {...field}
                multiple
                value={states}
-               renderValue={(selected) => selected.map(key => { return res.find((o) => o.id == key).name ? res.find((o) => o.id == key).name : "" }).join(', ')}
+               renderValue={(selected) => {
+                  if (selected.length === res.length) {
+                     return "Categories"
+                  } else {
+                     selected.map(key => { return res.find((o) => o.id == key).name ? res.find((o) => o.id == key).name : "" }).join(', ')
+                  }
+               }}
                onChange={(e) => handleChange(e, res)}
+               MenuProps={MenuProps}
             >
                <MenuItem value={"all"}>
                   <Checkbox sx={{

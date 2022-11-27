@@ -134,6 +134,22 @@ namespace AssetManagement.Application.Controllers.Tests
             Assert.Equal("Prefix is already existed. Please enter a different prefix", message);
         }
 
+        [Theory]
+        [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "AA")]
+        public async Task Create_BadRequest_CategoryNameOverMaxLength(string name, string prefix)
+        {
+            //ARRANGE
+            CreateCategoryRequest request = new() { Name = name, Prefix = prefix };
+            CategoryController controller = new(_mapper, _context);
+
+            //ACT
+            IActionResult result = await controller.CreateAsync(request);
+            string message = ((ObjectResult)result).Value.ToString();
+            //ASSERT
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("New category's name no longer than 100 characters", message);
+        }
+
         [Fact]
         public async Task Create_BadRequest_ExceptionAsync()
         {

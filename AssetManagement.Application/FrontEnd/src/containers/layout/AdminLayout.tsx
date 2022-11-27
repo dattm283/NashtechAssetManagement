@@ -22,7 +22,7 @@ import HomeList from '../../pages/home/HomeList';
 import config from "../../connectionConfigs/config.json";
 import { assetProvider } from '../../providers/assetProvider/assetProvider';
 import AssetList from '../../pages/assets/AssetList';
-import AssetEdit  from '../../pages/assets/AssetEdit';
+import AssetEdit from '../../pages/assets/AssetEdit';
 import AssetCreate from '../../pages/assets/AssetCreate';
 // import AssetManager from '../../pages/asset/AssetManager';
 
