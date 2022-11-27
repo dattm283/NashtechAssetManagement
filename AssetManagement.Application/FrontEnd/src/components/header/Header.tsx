@@ -1,30 +1,36 @@
 import * as React from 'react';
-import { AppBar } from 'react-admin';
+import { AppBar, UserMenu, useShowContext, Button } from 'react-admin';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Typography from '@mui/material/Typography';
 
+var userName : string = localStorage.getItem('userName') || '' ;
+const button = <Button color="inherit" endIcon={<ArrowDropDownIcon/>} label={userName} sx={{
+    textTransform: "none",
+    font: "20px Roboto,Helvetica,Arial,sans-serif",
+    fontWeight: "bold"
+}}/>
 const Header = (props) => (
     <AppBar
-        sx={{
-            "& .RaAppBar-title": {
-                flex: 1,
-                display: "flex",
-                justifyContent: "space-between",
-                // Cant add these props (Ctrl+Click to see more which props this component get)
-                // backgroundColor: "black",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
+        userMenu={<UserMenu icon={button}/>}
+        open={false}
+        sx= {{
+            color:"white",
+            padding: "5px 10px",
+            ".RaAppBar-menuButton" : {
+                display: "none"
             },
+            ".RaLoadingIndicator-root": {
+                display:"none"
+            },
+            ".RaLoadingIndicator-loadedIcon": {
+                display:"none"
+            },
+            ".RaAppBar-title": {
+                paddingLeft: "10px",
+                fontWeight: "bold"
+            }
         }}
-        {...props}
-    >
-        <Typography
-            variant="h6"
-            color="inherit"
-            className="Header"
-        />
-        <span />
-    </AppBar>
+    />
 );
 
 export default Header;

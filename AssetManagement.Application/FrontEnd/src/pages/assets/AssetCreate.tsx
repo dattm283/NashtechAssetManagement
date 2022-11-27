@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react'
-import { Form, TextInput, DateInput, minValue, useCreate, CreateBase, SimpleForm } from 'react-admin'
+import { Form, TextInput, DateInput, minValue, useCreate, CreateBase, SimpleForm, Title } from 'react-admin'
 import { Box, Button, Typography, Container, CssBaseline } from '@mui/material'
 import { createTheme, ThemeProvider, unstable_createMuiStrictModeTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
@@ -57,6 +57,7 @@ function NewCategoryCreate() {
 
     return (
         <ThemeProvider theme={theme}>
+            <Title title="Manage Asset > Create Asset" />
             <Container component="main">
                 <CssBaseline />
                 <Box

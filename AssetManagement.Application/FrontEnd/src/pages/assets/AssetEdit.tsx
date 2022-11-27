@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Edit, Form, TextInput, DateInput, minValue, RadioButtonGroupInput, SimpleForm } from 'react-admin'
+import { Edit, Form, TextInput, DateInput, minValue, RadioButtonGroupInput, SimpleForm, Title, EditBase } from 'react-admin'
 import { InputLabel, MenuItem, Select, Box, Button, Typography, Container, CssBaseline } from '@mui/material'
 import { createTheme, ThemeProvider, unstable_createMuiStrictModeTheme } from '@mui/material/styles';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -45,21 +45,23 @@ function EditAssetInformations() {
 
     return (
         <ThemeProvider theme={theme}>
+            <Title title="Manage Asset > Edit Asset" />
             <Container component="main">
-                <CssBaseline />
+                {/* <CssBaseline /> */}
                 <Box
                     sx={{
                         margin: "auto",
                         marginTop: 8,
                         display: 'flex',
                         flexDirection: 'column',
+                        width: "700px"
                         // alignItems: 'center',
                     }}
                 >
                     <Typography component="h3" variant="h5" color="#cf2338" pb="40px" fontWeight="bold">
-                        Create New Asset
+                        Edit Asset
                     </Typography>
-                    <Edit sx={{ ".RaEdit-card": { boxShadow: "none" }, ".RaEdit-main": { width: '750px' } }} mutationMode="pessimistic">
+                    <EditBase sx={{ ".RaEdit-card": { boxShadow: "none" }, ".RaEdit-main": { width: '750px' } }} mutationMode="pessimistic">
                         <SimpleForm toolbar={<AssetEditToolbar />} >
                             <Box
                                 sx={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
@@ -80,6 +82,53 @@ function EditAssetInformations() {
                                     source="name"
                                     style={{ width: "430px", margin: "0", padding: "0" }}
                                     helperText={false}
+                                    InputLabelProps={{ shrink: false }}
+                                />
+                            </Box>
+                                    <Box
+                                        style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            style={{
+                                                width: "220px",
+                                                margin: "0",
+                                                padding: "0",
+                                                alignSelf: "center"
+                                            }}
+                                        >Category *</Typography>
+                                        <CategorySelectBoxDisabled
+                                            source="category"
+                                            format={(formValue) => (Array.prototype.filter.bind(category)(item => item.id === formValue))["name"]}
+                                            parse=""
+                                            defaultValue={asset.categoryId}
+                                            disabled={true}
+                                        />
+                                    </Box>
+                            
+                            <Box
+                                style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
+                            >
+                                <Typography
+                                    variant="h6"
+                                    style={{
+                                        width: "220px",
+                                        margin: "0",
+                                        padding: "0",
+                                        alignSelf: "center",
+                                        marginTop: "3px"
+                                    }}
+                                >Specification *</Typography>
+                                <TextInput
+                                    label={false}
+                                    fullWidth
+                                    multiline
+                                    rows="3"
+                                    style={{ width: "430px" }}
+                                    name="specification"
+                                    source="specification"
+                                    helperText={false}
+                                    defaultValue={asset.specification}
                                     InputLabelProps={{ shrink: false }}
                                 />
                             </Box>
@@ -115,53 +164,6 @@ function EditAssetInformations() {
                                         width: "220px",
                                         margin: "0",
                                         padding: "0",
-                                        alignSelf: "center"
-                                    }}
-                                >Category *</Typography>
-                                <CategorySelectBoxDisabled
-                                    source="category"
-                                    format={(formValue) => (Array.prototype.filter.bind(category)(item => item.id === formValue))["name"]}
-                                    parse=""
-                                    defaultValue={asset.categoryId}
-                                    disabled={true}
-                                />
-                            </Box>
-
-                            <Box
-                                style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
-                            >
-                                <Typography
-                                    variant="h6"
-                                    style={{
-                                        width: "220px",
-                                        margin: "0",
-                                        padding: "0",
-                                        alignSelf: "center",
-                                        marginTop: "3px"
-                                    }}
-                                >Specification *</Typography>
-                                <TextInput
-                                    label={false}
-                                    fullWidth
-                                    multiline
-                                    rows="3"
-                                    style={{ width: "430px" }}
-                                    name="specification"
-                                    source="specification"
-                                    helperText={false}
-                                    defaultValue={asset.specification}
-                                    InputLabelProps={{ shrink: false }}
-                                />
-                            </Box>
-                            <Box
-                                style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
-                            >
-                                <Typography
-                                    variant="h6"
-                                    style={{
-                                        width: "220px",
-                                        margin: "0",
-                                        padding: "0",
                                         alignSelf: "start",
                                         paddingTop: "10px"
                                     }}
@@ -175,7 +177,7 @@ function EditAssetInformations() {
                                     optionValue="id" />
                             </Box>
                         </SimpleForm>
-                    </Edit>
+                    </EditBase  >
                 </Box>
             </Container>
         </ThemeProvider>
