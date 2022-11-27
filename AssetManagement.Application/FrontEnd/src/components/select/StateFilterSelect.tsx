@@ -3,6 +3,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useInput, useListContext } from 'react-admin';
 import React, { useEffect, useState } from 'react';
 import { Checkbox, FormControl, InputLabel, ListItemText } from '@mui/material';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -79,6 +80,7 @@ export default (props) => {
             onChange={handleChange}
             MenuProps={MenuProps}
             autoWidth={false}
+            IconComponent={() => <FilterAltIcon />}
          >
             <MenuItem value={"all"}>
                <Checkbox sx={{

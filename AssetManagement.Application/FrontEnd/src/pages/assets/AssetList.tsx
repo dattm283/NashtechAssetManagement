@@ -10,7 +10,8 @@ import {
   ListBase,
   FilterForm,
   CreateButton,
-  Button
+  Button,
+  SearchInput
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -20,6 +21,7 @@ import AssetShow from "./AssetShow";
 import { ButtonGroup, Stack } from "@mui/material";
 import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
 import { useNavigate } from "react-router-dom";
+import FilterSearchForm from "../../components/forms/FilterSearchForm";
 
 export default () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -60,7 +62,7 @@ export default () => {
       statesList={data}
       alwaysOn
     />,
-    <TextInput label="Search" source="searchString" alwaysOn />
+    <SearchInput source="searchString" alwaysOn />
   ];
 
 
@@ -73,8 +75,8 @@ export default () => {
         sort={{ field: "name", order: "DESC" }}
       >
         <h2 style={{ color: "#cf2338" }}>Assets List</h2>
-        <Stack direction="row" justifyContent="space-between" alignContent="center">
-          <FilterForm style={{ justifyContent: "space-evenly" }} filters={assetsFilter} />
+        <Stack direction="row" justifyContent="end" alignContent="center">
+          <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assetsFilter} /></div>
           <div style={{ display: "flex", alignItems: "end" }}>
             <Button
               size="large"
