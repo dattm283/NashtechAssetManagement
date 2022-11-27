@@ -50,6 +50,10 @@ namespace AssetManagement.Application.Controllers
 
                 try
                 {
+                    if (request.Name.Length > 100)
+                    {
+                        return BadRequest("New category's name no longer than 100 characters");
+                    }
                     request.Prefix = request.Prefix.ToUpper();
                     Category newCategory = _mapper.Map<Category>(request);
                     await _dbContext.Categories.AddAsync(newCategory);

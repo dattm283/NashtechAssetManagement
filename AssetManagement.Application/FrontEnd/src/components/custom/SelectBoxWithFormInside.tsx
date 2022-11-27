@@ -7,6 +7,7 @@ import SimpleForm from './SimpleForm'
 
 function SelectBoxWithFormInside({ source, format, parse }) {
     const [addingData, setAddingData] = useState({ status:false, data:Array })
+    const [errorMessage, setErrorMessage] = useState("")
     const notify = useNotify();
     
     const {
@@ -30,7 +31,7 @@ function SelectBoxWithFormInside({ source, format, parse }) {
         categoryService.createCategory(formData)
             .then(response => categoryService.getCategory())
             .then(responseData => setAddingData({ status:false, data:responseData.data }) )
-            .catch(error => notify(error.response.data))
+            .catch(error => setErrorMessage(error.response.data))
     }
     // Handle Close to close form for createing new Category
     const handleClose = (e) => {
@@ -72,7 +73,13 @@ function SelectBoxWithFormInside({ source, format, parse }) {
                 >
                     Add new category
                 </Typography>}
-                {addingData.status==true && <SimpleForm handleSubmit={handleSubmit} handleClose={handleClose} /> }
+                {addingData.status==true && 
+                <SimpleForm 
+                    handleSubmit={handleSubmit} 
+                    handleClose={handleClose} 
+                    errorMessage={errorMessage} 
+                    setErrorMessage={setErrorMessage}
+                /> }
             </Box>
         </Select>
     )
