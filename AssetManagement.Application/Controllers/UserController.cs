@@ -1,5 +1,7 @@
 ﻿using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.User.Request;
+using AssetManagement.Contracts.User.Response;
+using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -15,12 +17,14 @@ namespace AssetManagement.Application.Controllers
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;
+        private readonly AssetManagementDbContext _dbContext;
         private readonly UserManager<AppUser> _userManager;
 
-        public UserController(UserManager<AppUser> userManager, IMapper mapper)
+        public UserController(IMapper mapper, AssetManagementDbContext dbContext, UserManager<AppUser> userManager)
         {
-            _userManager = userManager;
             _mapper = mapper;
+            _dbContext = dbContext;
+            _userManager = userManager;
         }
 
         [HttpPost("user")]
@@ -99,6 +103,15 @@ namespace AssetManagement.Application.Controllers
             }
 
             return BadRequest(new ErrorResponseResult<bool>("Create user unsuccessfully!"));
+        }
+
+        [HttpGet("roles")]
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllRoles()
+        {
+            var roles = await _dbContext.Roles.ToListAsync();
+            var result = _mapper.Map<List<RoleResponse>>(roles);
+            return Ok(result);
         }
     }
 }

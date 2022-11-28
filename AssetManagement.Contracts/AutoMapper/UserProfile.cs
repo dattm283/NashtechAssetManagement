@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using AssetManagement.Contracts.User.Response;
 
 namespace AssetManagement.Contracts.AutoMapper
 {
@@ -26,6 +26,10 @@ namespace AssetManagement.Contracts.AutoMapper
             CreateMap<AssetManagement.Domain.Models.Asset, GetAssetByIdResponse>();
             CreateMap<AssetManagement.Domain.Models.Asset, CreateAssetRequest>();
             CreateMap<CreateAssetRequest, AssetManagement.Domain.Models.Asset>();
+            CreateMap<AppRole, RoleResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
+
         }
     }
 }

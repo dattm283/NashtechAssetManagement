@@ -64,7 +64,7 @@ function AuthProvider(authURL) {
         checkAuth: () => localStorage.getItem('auth')
             ? Promise.resolve()
             // react-admin passes the error message to the translation layer
-            : Promise.reject({ message: 'login.required' }),
+            : Promise.reject(null),
 
         // remove local credentials and notify the auth server that the user logged out
         logout: () => {

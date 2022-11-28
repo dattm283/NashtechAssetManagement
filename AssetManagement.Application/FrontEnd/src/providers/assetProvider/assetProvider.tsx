@@ -23,13 +23,20 @@ export const assetProvider: DataProvider = {
     getManyReference: function <RecordType extends RaRecord = any>(resource: string, params: GetManyReferenceParams): Promise<GetManyReferenceResult<RecordType>> {
         throw new Error("Function not implemented.");
     },
-    update: (resource, params) =>
-        axiosInstance.put(`/api/${resource}/${params.id}`, params.data).then(res => res),
+    update: (resource, params) => {
+        return axiosInstance.put(`/api/${resource}/${params.id}`, params.data).then(res => {
+            localStorage.setItem("item", JSON.stringify(res.data))
+            return res
+        })
+    },
     updateMany: function <RecordType extends RaRecord = any>(resource: string, params: UpdateManyParams<any>): Promise<UpdateManyResult<RecordType>> {
         throw new Error("Function not implemented.");
     },
     create: function <RecordType extends RaRecord = any>(resource: string, params: CreateParams<any>): Promise<CreateResult<RecordType>> {
-        return axiosInstance.post(`/api/${resource}`, params.data).then(res => { res.data.id = 9; return res });
+        return axiosInstance.post(`/api/${resource}`, params.data).then(res => { 
+            localStorage.setItem("item", JSON.stringify(res.data))
+            return res
+        });
     },
     delete: async (resource, params) => {
         const url = `${config.api.base}/api/${resource}/${params.id}`;
@@ -65,9 +72,16 @@ export const assetProvider: DataProvider = {
             order: order,
             stateFilter: tmp ? tmp : null,
             searchString: searchString,
-            categoryFilter: tmp1 ? tmp1 : null
+            categoryFilter: tmp1 ? tmp1 : null,
+            createdId: localStorage.getItem("item")!=null ? 
+                JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) : 
+                null
         };
+        console.log(query);
         const url = `/api/${resource}?${stringify(query)}`;
+        if (localStorage.getItem("item") != null && query.end!='99') {
+            localStorage.removeItem("item");
+        }
         return axiosInstance(url).then(res => {
             return Promise.resolve({ data: res.data.data, total: res.data.total });
         });

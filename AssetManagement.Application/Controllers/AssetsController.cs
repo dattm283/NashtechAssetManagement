@@ -67,7 +67,7 @@ namespace AssetManagement.Application.Controllers
 
             await _dbContext.Assets.AddAsync(asset);
             await _dbContext.SaveChangesAsync();
-            return Ok(new SuccessResponseResult<string>("Create Asset sucessfully"));
+            return Ok(new CreateAssetResponse { Id = asset.Id, AssetCode = asset.AssetCode, Name = asset.Name, CategoryName = asset.Category.Name, State = asset.State.ToString() });
         }
 
         [HttpPut("{id}")]
@@ -131,7 +131,7 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         //[Authorize]
-        public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get([FromQuery]int start, [FromQuery]int end, [FromQuery]string? searchString="", [FromQuery]string? categoryFilter="", [FromQuery]string? stateFilter="", [FromQuery]string? sort="name", [FromQuery]string? order="ASC")
+        public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get([FromQuery]int start, [FromQuery]int end, [FromQuery]string? searchString="", [FromQuery]string? categoryFilter="", [FromQuery]string? stateFilter="", [FromQuery]string? sort="name", [FromQuery]string? order="ASC", [FromQuery]string? createdId="")
         {
             var list = _dbContext.Assets
                 .Include(x=>x.Category)
@@ -203,6 +203,13 @@ namespace AssetManagement.Application.Controllers
             if (order == "DESC")
             {
                 list = list.Reverse();
+            }
+
+            if (!string.IsNullOrEmpty(createdId))
+            {
+                var newList = list.Where(item => item.Id == int.Parse(createdId));
+                list = list.Where(item => item.Id != int.Parse(createdId));
+                list = newList.Concat(list);
             }
 
             var sortedResult = StaticFunctions<Asset>.Paging(list, start, end);

@@ -5,5 +5,8 @@
     "asset": "/api/Assets",
     "category": "/api/Category",
     "assignement": "./api/assignement"
+  },
+  "encryption": {
+    "key": "ahihi"
   }
 }

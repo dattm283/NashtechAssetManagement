@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Form,
     TextInput,
@@ -8,6 +8,7 @@ import {
     CreateBase,
     SimpleForm,
     Title,
+    SelectInput,
 } from "react-admin";
 import { Box, Button, Typography, Container, CssBaseline } from "@mui/material";
 import {
@@ -19,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import SelectBoxWithFormInside from "../../components/custom/SelectBoxWithFormInside";
 import RadioButtonGroup from "../../components/custom/RadioButtonGroupInput";
 import AssetCreateToolbar from "../../components/toolbar/AssetCreateToolbar";
-import * as categoryService from "../../services/category";
+import * as UserService from "../../services/user";
 import { formStyle } from "../../styles/formStyle";
 
 var today = new Date();
@@ -28,8 +29,8 @@ var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
 var yyyy = String(today.getFullYear());
 var currentDay = yyyy + "-" + mm + "-" + dd;
 
-function NewCategoryCreate() {
-    const [category, setCategory] = useState([]);
+function NewUserCreate() {
+    const [roles, setRoles] = useState([]);
     const [isValid, setIsValid] = useState(true);
     const [create, {}] = useCreate();
     const navigate = useNavigate();
@@ -37,9 +38,9 @@ function NewCategoryCreate() {
     theme = unstable_createMuiStrictModeTheme(theme);
 
     useEffect(() => {
-        categoryService
-            .getCategory()
-            .then((responseData) => setCategory(responseData.data))
+        UserService
+            .getRoles()
+            .then((responseData) => setRoles(responseData))
             .catch((error) => console.log(error));
     }, []);
 
@@ -84,7 +85,7 @@ function NewCategoryCreate() {
                         Create New Asset
                     </Typography>
                     <CreateBase
-                        redirect="show">
+                        redirect="list">
                         <SimpleForm
                             validate={requiredInput}
                             toolbar={<AssetCreateToolbar disable={isValid} />}
@@ -94,13 +95,13 @@ function NewCategoryCreate() {
                                         variant="h6"
                                         sx={formStyle.typographyStyle}
                                     >
-                                        Name *
+                                        First Name
                                     </Typography>
                                     <TextInput
                                         fullWidth
                                         label=""
-                                        name="name"
-                                        source="name"
+                                        name="firstname"
+                                        source="firstname"
                                         InputLabelProps={{ shrink: false }}
                                         sx={formStyle.textInputStyle}
                                         helperText={false}
@@ -112,39 +113,16 @@ function NewCategoryCreate() {
                                         variant="h6"
                                         sx={formStyle.typographyStyle}
                                     >
-                                        Category *
+                                        Last Name *
                                     </Typography>
                                     {/* Custom Dropdown Selection (Category) */}
-                                    <SelectBoxWithFormInside
-                                        // category={category}
-                                        source="categoryId"
-                                        format={(formValue) =>
-                                            Array.prototype.filter.bind(
-                                                category
-                                            )((item) => item.id === formValue)[
-                                                "name"
-                                            ]
-                                        }
-                                        parse=""
-                                    />
-                                </Box>
-
-                                <Box sx={formStyle.boxStyle}>
-                                    <Typography
-                                        variant="h6"
-                                        sx={formStyle.typographyStyle}
-                                    >
-                                        Specification *
-                                    </Typography>
                                     <TextInput
                                         fullWidth
-                                        multiline
                                         label=""
-                                        rows="3"
+                                        name="lastname"
+                                        source="lastname"
                                         InputLabelProps={{ shrink: false }}
                                         sx={formStyle.textInputStyle}
-                                        name="specification"
-                                        source="specification"
                                         helperText={false}
                                     />
                                 </Box>
@@ -154,17 +132,42 @@ function NewCategoryCreate() {
                                         variant="h6"
                                         sx={formStyle.typographyStyle}
                                     >
-                                        Installed Date *
+                                        Gender *
+                                    </Typography>
+                                    <RadioButtonGroup
+                                        label=""
+                                        source="gender"
+                                        choices={[
+                                            {
+                                                gender_id: "0",
+                                                gender: "Male",
+                                            },
+                                            {
+                                                gender_id: "1",
+                                                gender: "Female",
+                                            },
+                                        ]}
+                                        row={true}
+                                        sx={formStyle.textInputStyle}
+                                        optionText="gender"
+                                        optionValue="gender_id"
+                                        helperText={false}
+                                    />
+                                </Box>
+
+                                <Box sx={formStyle.boxStyle}>
+                                <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        Date of Birth *
                                     </Typography>
                                     <DateInput
                                         fullWidth
                                         label=""
-                                        name="installedDate"
-                                        source="installedDate"
-                                        defaultValue={currentDay}
+                                        name="dob"
+                                        source="dob"
                                         InputLabelProps={{ shrink: false }}
-                                        inputProps={{ min: currentDay }}
-                                        validate={minValue(currentDay)}
                                         onBlur={(e) => e.stopPropagation()}
                                         sx={formStyle.textInputStyle}
                                         helperText={false}
@@ -176,26 +179,45 @@ function NewCategoryCreate() {
                                         variant="h6"
                                         sx={formStyle.typographyStyle}
                                     >
-                                        State *
+                                        Joined Date *
                                     </Typography>
-                                    <RadioButtonGroup
+                                    <DateInput
+                                        fullWidth
                                         label=""
-                                        source="state"
-                                        choices={[
-                                            {
-                                                state_id: "0",
-                                                state: "Available",
-                                            },
-                                            {
-                                                state_id: "1",
-                                                state: "Not available",
-                                            },
-                                        ]}
-                                        row={false}
+                                        name="joinedDate"
+                                        source="joinedDate"
+                                        InputLabelProps={{ shrink: false }}
+                                        onBlur={(e) => e.stopPropagation()}
                                         sx={formStyle.textInputStyle}
-                                        optionText="state"
-                                        optionValue="state_id"
                                         helperText={false}
+                                    />
+                                </Box>
+                                <Box sx={formStyle.boxStyle}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        Type *
+                                    </Typography>
+                                    {/* Custom Dropdown Selection (Category) */}
+                                    <SelectInput
+                                        // category={category}
+                                        label=""
+                                        InputLabelProps={{ shrink: false }}
+                                        source="name"
+                                        name="id"
+                                        choices={roles}
+                                        optionText="name"
+                                        optionValue="id"
+                                        sx={{ 
+                                            width:"430px", 
+                                            height:"40px",
+                                            padding:"0px",
+                                            boxSizing:"border-box",
+                                            "& .MuiDataGrid-root": {
+                                                border: "none"
+                                            },
+                                        }}
                                     />
                                 </Box>
                         </SimpleForm>
@@ -206,4 +228,4 @@ function NewCategoryCreate() {
     );
 }
 
-export default NewCategoryCreate;
+export default NewUserCreate;
