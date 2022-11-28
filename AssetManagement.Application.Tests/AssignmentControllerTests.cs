@@ -73,7 +73,8 @@ namespace AssetManagement.Application.Tests
                     Gender = Domain.Enums.AppUser.UserGender.Male,
                     Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
                     //RoleId = _roles[0].Id,
-                    IsLoginFirstTime = true
+                    IsLoginFirstTime = true,
+                    StaffCode = "SD01",
                 },
 
                 new AppUser()
@@ -87,7 +88,8 @@ namespace AssetManagement.Application.Tests
                     Gender = Domain.Enums.AppUser.UserGender.Male,
                     Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
                     //RoleId = _roles[1].Id,
-                    IsLoginFirstTime = true
+                    IsLoginFirstTime = true,
+                    StaffCode = "SD02",
                 }
             };
             //Add roles
@@ -115,6 +117,7 @@ namespace AssetManagement.Application.Tests
                 AssetId = 1,
                 AssignedTo = _users[0].Id,
                 AssignedBy = _users[1].Id,
+                Note="Co len",
             });
             _context.SaveChanges();
         }

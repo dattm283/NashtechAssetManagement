@@ -84,25 +84,25 @@ namespace AssetManagement.Application.Tests
             Assert.Equivalent(_mapper.Map<UserResponse>(_users[index]), ((OkObjectResult)result).Value);
         }
 
-        [Fact]
-        public void Authenticate_Success()
-        {
-            //ARRANGE
-            //Create login request (no need password)
-            LoginRequest request = new() { Username = "binhnv" };
-            //Set up UserManager, assume that login request is correct
-            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(_users[0]);
-            _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>())).ReturnsAsync(true);
-            //Create controller
-            AuthorityController controller = new AuthorityController(_userManager.Object, _config, _context, _mapper);
+        //[Fact]
+        //public void Authenticate_Success()
+        //{
+        //    //ARRANGE
+        //    //Create login request (no need password)
+        //    LoginRequest request = new() { Username = "binhnv" };
+        //    //Set up UserManager, assume that login request is correct
+        //    _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(_users[0]);
+        //    _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>())).ReturnsAsync(true);
+        //    //Create controller
+        //    AuthorityController controller = new AuthorityController(_userManager.Object, _config, _context, _mapper);
 
-            //ACT
-            IActionResult result = controller.Authenticate(request).Result;
+        //    //ACT
+        //    IActionResult result = controller.Authenticate(request).Result;
 
-            //ASSERT
-            Assert.NotNull(result);
-            Assert.IsType<OkObjectResult>(result);
-        }
+        //    //ASSERT
+        //    Assert.NotNull(result);
+        //    Assert.IsType<OkObjectResult>(result);
+        //}
 
         [Theory]
         [InlineData(null, "123")]
@@ -253,6 +253,7 @@ namespace AssetManagement.Application.Tests
             {
                 new AppUser()
                 {
+                    Id = new Guid(1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 7),
                     FirstName = "Binh",
                     LastName = "Nguyen Van",
                     UserName = "binhnv",
@@ -261,7 +262,8 @@ namespace AssetManagement.Application.Tests
                     Gender = Domain.Enums.AppUser.UserGender.Male,
                     Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
                     //RoleId = _roles[0].Id,
-                    IsLoginFirstTime = true
+                    IsLoginFirstTime = true,
+                    StaffCode = "SD01",
                 },
 
                 new AppUser()
@@ -274,14 +276,19 @@ namespace AssetManagement.Application.Tests
                     Gender = Domain.Enums.AppUser.UserGender.Male,
                     Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
                     //RoleId = _roles[0].Id,
-                    IsLoginFirstTime = true
+                    IsLoginFirstTime = true,
+                    StaffCode = "SD02",
                 }
             };
-
             //Add roles
             _context.AppRoles.AddRange(_roles);
             //Add users
             _context.AppUsers.AddRange(_users);
+            _context.UserRoles.Add(new IdentityUserRole<Guid>
+            {
+                RoleId = _roles.First().Id,
+                UserId = _users.First().Id,
+            });
             _context.SaveChanges();
         }
 
