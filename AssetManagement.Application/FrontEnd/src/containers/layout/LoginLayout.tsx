@@ -29,8 +29,8 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
 
     const handleFormSubmit = ({ userName, password }: any) => {
         login({ username: userName, password: password })
-            .then((data) => {
-                checkIsLoginFirstTime();
+            .then(data => {
+                checkIsLoginFirstTime(password);
             })
             .catch((error) => {
                 console.log(error);

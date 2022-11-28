@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@mui/material';
-import { Form, PasswordInput, SaveButton, TextInput, useNotify } from 'react-admin';
+import { DeleteButton, Form, PasswordInput, SaveButton, TextInput, useNotify } from 'react-admin';
 import authService from "../../../services/changePasswordFirstTime/auth";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -8,27 +8,37 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import * as CryptoJS from 'crypto-js';
+import config from "../../../connectionConfigs/config.json";
+import AuthProvider from '../../../providers/authenticationProvider/authProvider';
+
+const encryptKey = config.encryption.key;
 
 const ChangePasswordModal = ({
     loginFirstTime,
     setLoginFirstTime,
+    logout
 }) => {
     const notify = useNotify();
 
+    const handleLogout = () => {
+        setLoginFirstTime(false);
+        localStorage.removeItem("loginFirstTime");
+        logout();
+        window.location.href = ".";
+    }
+
+    const decrypt = (text) => {
+        console.log(encryptKey)
+        return CryptoJS.AES.decrypt(text, encryptKey).toString(CryptoJS.enc.Utf8);
+    }
+
     const requiredInput = (values) => {
         let errors = {
-            currentPassword: "",
             newPassword: "",
-            confirmPassword: "",
         };
-        if (!values.currentPassword) {
-            errors.currentPassword = "This is required";
-        } else if (!values.newPassword) {
+        if (!values.newPassword) {
             errors.newPassword = "This is required";
-        } else if (!values.confirmPassword) {
-            errors.confirmPassword = "This is required";
-        } else if (values.confirmPassword !== values.newPassword) {
-            errors.confirmPassword = "Confirm password not match";
         } else {
             return {};
         }
@@ -37,15 +47,15 @@ const ChangePasswordModal = ({
 
     const handleChangePassword = data => {
         const newPassword = data.newPassword;
-        const confirmPassword = data.confirmPassword;
-        const currentPassword = data.currentPassword;
+        const confirmPassword = data.newPassword;
+        const currentPassword = decrypt(localStorage.getItem("currentPassword"));
 
         console.log(newPassword, confirmPassword, currentPassword)
 
         const changePasswordRequest = {
-            newPassword: data.newPassword,
-            confirmPassword: data.confirmPassword,
-            currentPassword: data.currentPassword
+            newPassword,
+            confirmPassword,
+            currentPassword
         }
 
         authService.changePassword(changePasswordRequest)
@@ -60,7 +70,13 @@ const ChangePasswordModal = ({
 
     const style = {
         bgcolor: '#cf2338',
-        color: "#fff"
+        color: "#fff",
+    }
+
+    const buttonStyle = {
+        bgcolor: '#cf2338',
+        color: "#fff",
+        marginRight: 3
     }
 
     return (
@@ -82,16 +98,11 @@ const ChangePasswordModal = ({
                     <Form onSubmit={handleChangePassword} validate={requiredInput}>
                         <Grid container>
                             <Grid item xs={12}>
-                                <TextInput type="password" source="currentPassword" fullWidth />
+                                <PasswordInput source="newPassword" fullWidth />
                             </Grid>
-                            <Grid item xs={12}>
-                                <TextInput type="password" source="newPassword" fullWidth />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextInput type="password" source="confirmPassword" fullWidth />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <SaveButton label='Change Password' sx={style} type="submit" />
+                            <Grid alignItems="left" item xs={12}>
+                                <SaveButton label='Save' sx={buttonStyle} type="submit" icon={<></>}/>
+                                <Button type="button" onClick={handleLogout} sx={buttonStyle}>Logout</Button>
                             </Grid>
                         </Grid>
                     </Form>

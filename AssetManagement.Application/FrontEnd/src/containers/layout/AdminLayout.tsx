@@ -19,7 +19,7 @@ import AuthProvider from '../../providers/authenticationProvider/authProvider';
 import authService from '../../services/changePasswordFirstTime/auth';
 import ChangePasswordModal from "../../components/modal/changePasswordModal/ChangePasswordModal";
 import HomeList from '../../pages/home/HomeList';
-
+import * as CryptoJS from 'crypto-js';
 import config from "../../connectionConfigs/config.json";
 import { assetProvider } from '../../providers/assetProvider/assetProvider';
 import AssetList from '../../pages/assets/AssetList';
@@ -29,10 +29,17 @@ import AssetCreate from '../../pages/assets/AssetCreate';
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
+const encryptKey = config.encryption.key;
 
 const App = () => {
     const [loginFirstTime, setLoginFirstTime] = useState(false);
     const refresh = useRefresh();
+
+    const encrypt = (text) => {
+        return CryptoJS.AES
+            .encrypt(text, encryptKey)
+            .toString();
+    }
 
     const [permissions, setPermissions] = useState(localStorage.getItem("permissions") || '' )
     useEffect(() => {
@@ -40,11 +47,12 @@ const App = () => {
     })
 
     console.log("permissionsAdminlayout" , permissions)
-    const checkIsLoginFirstTime = () => {
+    const checkIsLoginFirstTime = (currentPassword) => {
         authService.getUserProfile()
         .then(data => {
             if (data.isLoginFirstTime) {
                 setLoginFirstTime(true);
+                localStorage.setItem("currentPassword", encrypt(currentPassword))
                 localStorage.setItem('loginFirstTime', "new");
             } else{
                 refresh();
@@ -93,6 +101,7 @@ const App = () => {
             <ChangePasswordModal
                 loginFirstTime={loginFirstTime}
                 setLoginFirstTime={setLoginFirstTime}
+                logout={authProvider.logout}
             />
         </>
     )
