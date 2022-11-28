@@ -78,10 +78,16 @@ namespace AssetManagement.Application.Tests
 
             //ACT
             var response = await controller.CreateAssetAsync(request);
-            string result = ConvertOkObject<SuccessResponseResult<string>>(response);
+            string result = ConvertOkObject<CreateAssetResponse>(response);
             Asset newAsset = _context.Assets.LastOrDefault();
             var expected = JsonConvert.SerializeObject(
-                new SuccessResponseResult<string>("Create Asset sucessfully"));
+                new CreateAssetResponse { 
+                    Id = newAsset.Id, 
+                    AssetCode = newAsset.AssetCode, 
+                    Name = newAsset.Name, 
+                    CategoryName = newAsset.Category.Name, 
+                    State = newAsset.State.ToString() 
+                });
 
             //ASSERT
             Assert.NotNull(response);
