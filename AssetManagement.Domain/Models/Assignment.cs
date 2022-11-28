@@ -26,7 +26,10 @@ namespace AssetManagement.Domain.Models
 
         [ForeignKey(nameof(AssignedByToAppUser))]
         public Guid? AssignedBy { get; set; }
-        
+
+        public bool IsDeleted { get; set; } = false;
+
+        public string Note { get; set; }
 
         public virtual AppUser AssignedToAppUser { get; set; }
         public virtual AppUser AssignedByToAppUser { get; set; }

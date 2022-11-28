@@ -72,7 +72,7 @@ namespace AssetManagement.Application.Tests
                     PasswordHash = "abc",
                     Gender = Domain.Enums.AppUser.UserGender.Male,
                     Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-                    RoleId = _roles[0].Id,
+                    //RoleId = _roles[0].Id,
                     IsLoginFirstTime = true
                 },
 
@@ -86,7 +86,7 @@ namespace AssetManagement.Application.Tests
                     PasswordHash = "xyz",
                     Gender = Domain.Enums.AppUser.UserGender.Male,
                     Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                    RoleId = _roles[1].Id,
+                    //RoleId = _roles[1].Id,
                     IsLoginFirstTime = true
                 }
             };

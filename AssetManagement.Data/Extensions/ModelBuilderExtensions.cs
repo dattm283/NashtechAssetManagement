@@ -17,8 +17,11 @@ namespace AssetManagement.Data.Extensions
             // any guid
             var adminRoleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC");
             var staffRoleId = new Guid("12147FE0-4571-4AD2-B8F7-D2C863EB78A5");
-            var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
-            var staffId = new Guid("70BD714F-9576-45BA-B5B7-F00649BE00DE");
+            var adminHcmId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
+            var adminHNId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00BF");
+            var staffAbleId1 = new Guid("70BD714F-9576-45BA-B5B7-F00649BE00DE");
+            var staffAbleId2 = new Guid("70BD814F-9576-45BA-B5B7-F00649BE00DE");
+            var staffUnableId = new Guid("73BD714F-9576-45BA-B5B7-F00649BE00DE");
 
             modelBuilder.Entity<AppRole>().HasData(new AppRole
             {
@@ -39,11 +42,31 @@ namespace AssetManagement.Data.Extensions
             var hasher = new PasswordHasher<AppUser>();
             modelBuilder.Entity<AppUser>().HasData(new AppUser
             {
-                Id = adminId,
-                UserName = "admin",
-                NormalizedUserName = "admin",
-                Email = "admin@gmail.com",
-                NormalizedEmail = "admin@gmail.com",
+                Id = adminHcmId,
+                UserName = "adminhcm",
+                NormalizedUserName = "adminhcm",
+                Email = "adminhcm@gmail.com",
+                NormalizedEmail = "adminhcm@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "12345678"),
+                SecurityStamp = string.Empty,
+                FirstName = "Toan",
+                LastName = "Bach",
+                Dob = new DateTime(2020, 01, 31),
+                IsLoginFirstTime = false,
+                CreatedDate = DateTime.Now,
+                Gender = Domain.Enums.AppUser.UserGender.Male,
+                Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
+                StaffCode = " SD0001"
+            });
+
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = adminHNId,
+                UserName = "adminhn",
+                NormalizedUserName = "adminhn",
+                Email = "adminhn@gmail.com",
+                NormalizedEmail = "adminhn@gmail.com",
                 EmailConfirmed = true,
                 PasswordHash = hasher.HashPassword(null, "12345678"),
                 SecurityStamp = string.Empty,
@@ -53,15 +76,15 @@ namespace AssetManagement.Data.Extensions
                 IsLoginFirstTime = true,
                 CreatedDate = DateTime.Now,
                 Gender = Domain.Enums.AppUser.UserGender.Male,
-                Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-                RoleId = adminRoleId
+                Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
+                StaffCode = " SD0002"
             });
 
             modelBuilder.Entity<AppUser>().HasData(new AppUser
             {
-                Id = staffId,
-                UserName = "staff",
-                NormalizedUserName = "staff",
+                Id = staffAbleId1,
+                UserName = "staff1",
+                NormalizedUserName = "staff1",
                 Email = "staff@gmail.com",
                 NormalizedEmail = "staff@gmail.com",
                 EmailConfirmed = true,
@@ -74,13 +97,72 @@ namespace AssetManagement.Data.Extensions
                 CreatedDate = DateTime.Now,
                 Gender = Domain.Enums.AppUser.UserGender.Female,
                 Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                RoleId = staffRoleId
+                StaffCode = " SD0003"
+            });
+
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = staffAbleId2,
+                UserName = "staff2",
+                NormalizedUserName = "staff2",
+                Email = "staff@gmail.com",
+                NormalizedEmail = "staff@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "12345678"),
+                SecurityStamp = string.Empty,
+                FirstName = "Toan",
+                LastName = "Bach",
+                Dob = new DateTime(2020, 01, 31),
+                IsLoginFirstTime = true,
+                CreatedDate = DateTime.Now,
+                Gender = Domain.Enums.AppUser.UserGender.Female,
+                Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
+                StaffCode = " SD0004"
+            });
+
+            modelBuilder.Entity<AppUser>().HasData(new AppUser
+            {
+                Id = staffUnableId,
+                UserName = "staffDis",
+                NormalizedUserName = "staffdis",
+                Email = "staffdis@gmail.com",
+                NormalizedEmail = "staffdis@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = hasher.HashPassword(null, "12345678"),
+                SecurityStamp = string.Empty,
+                FirstName = "Toan",
+                LastName = "Bach",
+                Dob = new DateTime(2020, 01, 31),
+                IsLoginFirstTime = true,
+                CreatedDate = DateTime.Now,
+                Gender = Domain.Enums.AppUser.UserGender.Female,
+                Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
+                StaffCode = " SD0005",
+                IsDeleted = true,
             });
 
             modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
             {
                 RoleId = adminRoleId,
-                UserId = adminId
+                UserId = adminHcmId
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = adminRoleId,
+                UserId = adminHNId,
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = staffRoleId,
+                UserId = staffUnableId
+            });
+
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = staffRoleId,
+                UserId = staffAbleId1
             });
 
             modelBuilder.Entity<Category>().HasData(new Category
@@ -99,6 +181,14 @@ namespace AssetManagement.Data.Extensions
                 IsDeleted = false,
             });
 
+            modelBuilder.Entity<Category>().HasData(new Category
+            {
+                Id = 3,
+                Name = "Personal Computer",
+                Prefix = "PC",
+                IsDeleted = false,
+            });
+
             for (int i = 1; i <= 10; i++)
             {
                 modelBuilder.Entity<Asset>().HasData(new Asset
@@ -114,16 +204,19 @@ namespace AssetManagement.Data.Extensions
                 });
             }
 
-            //modelBuilder.Entity<Assignment>().HasData(new Assignment
-            //{
-            //    Id = 1,
-            //    AssignedDate = DateTime.Now,
-            //    ReturnedDate = DateTime.Now,
-            //    State = Domain.Enums.Assignment.State.Accepted,
-            //    AssetId = 1,
-            //    AssignedTo = adminId,
-            //    AssignedBy = staffId
-            //});
+            for (int i = 1; i <= 10; i++)
+            {
+                modelBuilder.Entity<Assignment>().HasData(new Assignment
+                {
+                    Id = i,
+                    Note = $"Note for assignment {i}",
+                    AssignedDate = DateTime.Today,
+                    ReturnedDate = DateTime.Today.AddDays(i),
+                    State = i % 2 == 0 ? Domain.Enums.Assignment.State.Accepted : Domain.Enums.Assignment.State.WaitingForAcceptance,
+                    AssignedTo = staffAbleId1,
+                    AssignedBy = adminHcmId,
+                });
+            }
         }
     }
 }

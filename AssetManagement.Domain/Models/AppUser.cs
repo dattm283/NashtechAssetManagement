@@ -20,6 +20,8 @@ namespace AssetManagement.Domain.Models
 
         public DateTime Dob { get; set; }
 
+        public string StaffCode { get; set; }
+
         [MaxLength(50)]
         public AssetManagement.Domain.Enums.AppUser.UserGender Gender { get; set; }
 
@@ -32,9 +34,7 @@ namespace AssetManagement.Domain.Models
 
         public bool IsLoginFirstTime { get; set; }
 
-        [ForeignKey("AppRole")]
-        public Guid RoleId { get; set; }
-        public AppRole AppRole { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         [InverseProperty(nameof(Assignment.AssignedToAppUser))]
         public virtual ICollection<Assignment> AssignedToAssignments { get; set; }
