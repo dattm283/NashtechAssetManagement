@@ -8,6 +8,7 @@ import {
     ListGuesser,
     ShowGuesser,
     usePermissions,
+    useRefresh,
     useAuthProvider,
     DateTimeInput
 } from 'react-admin';
@@ -31,15 +32,23 @@ const authProvider = AuthProvider(config.api.base);
 
 const App = () => {
     const [loginFirstTime, setLoginFirstTime] = useState(false);
-    const permissions = localStorage.getItem("permissions");
+    const refresh = useRefresh();
 
+    const [permissions, setPermissions] = useState(localStorage.getItem("permissions") || '' )
+    useEffect(() => {
+        setPermissions(localStorage.getItem("permissions") || '')
+    })
+
+    console.log("permissionsAdminlayout" , permissions)
     const checkIsLoginFirstTime = () => {
         authService.getUserProfile()
-            .then(data => {
-                if (data.isLoginFirstTime) {
-                    setLoginFirstTime(true);
-                    localStorage.setItem('loginFirstTime', "new");
-                }
+        .then(data => {
+            if (data.isLoginFirstTime) {
+                setLoginFirstTime(true);
+                localStorage.setItem('loginFirstTime', "new");
+            } else{
+                refresh();
+            }
             })
             .catch(error => {
                 console.log(error)

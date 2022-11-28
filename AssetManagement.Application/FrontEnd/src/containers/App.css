@@ -36,3 +36,34 @@
     transform: rotate(360deg);
   }
 }
+
+.loginFormHeader {
+  margin: 10px;
+  --tw-gradient-to: #6a1f7a;
+  --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to,rgba(106,31,122,0));
+  --tw-gradient-from: #d6001c;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(to right,var(--tw-gradient-stops));
+  color: transparent;
+  font-weight: 700;
+}
+
+.loginFormBorder {
+  padding: 5%;
+  border: 8px solid;
+  border-image-slice: 1;
+  border-image-source: linear-gradient(270deg,#6a1f7a,#d6001c);
+}
+
+.loginHeaderBackground {
+  --tw-gradient-to: #6a1f7a;
+    --tw-gradient-stops: var(--tw-gradient-from),var(--tw-gradient-to,rgba(106,31,122,0));
+    --tw-gradient-from: #d6001c;
+    background-image: linear-gradient(to right,var(--tw-gradient-stops));
+}
+
+.loginButton {
+  font-size: 1rem;
+  font-weight: 700;
+}

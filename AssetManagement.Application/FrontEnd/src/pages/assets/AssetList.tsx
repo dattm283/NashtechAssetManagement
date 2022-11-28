@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Datagrid,
   List,
+  Title,
   TextField,
   TextInput,
   EditButton,
@@ -70,6 +71,7 @@ export default () => {
 
   return (
     <>
+      <Title title="Manage Asset" />
       <ListBase
         perPage={5}
         sort={{ field: "name", order: "DESC" }}

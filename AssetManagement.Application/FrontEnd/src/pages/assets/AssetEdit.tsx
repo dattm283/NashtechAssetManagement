@@ -1,23 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { Edit, Form, TextInput, DateInput, minValue, RadioButtonGroupInput, SimpleForm, Title, EditBase } from 'react-admin'
-import { InputLabel, MenuItem, Select, Box, Button, Typography, Container, CssBaseline } from '@mui/material'
-import { createTheme, ThemeProvider, unstable_createMuiStrictModeTheme } from '@mui/material/styles';
-import { useNavigate, useParams } from 'react-router-dom';
-import * as assetService from '../../services/assets'
-import * as categoryService from '../../services/category'
-import CategorySelectBoxDisabled from '../../components/custom/CategorySelectBoxDisabled'
-import RadioButtonGroup from '../../components/custom/RadioButtonGroupInput'
-import AssetEditToolbar from '../../components/toolbar/AssetEditToolbar'
-
-
-var today = new Date();
-var dd = String(today.getDate()).padStart(2, '0');
-var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-var yyyy = String(today.getFullYear());
-var currentDay = yyyy + '-' + mm + '-' + dd
+import React, { useState, useEffect } from "react";
+import { TextInput, DateInput, SimpleForm, Title, EditBase } from "react-admin";
+import { useParams } from "react-router-dom";
+import { Box, Typography, Container } from "@mui/material";
+import {
+    createTheme,
+    ThemeProvider,
+    unstable_createMuiStrictModeTheme,
+} from "@mui/material/styles";
+import * as assetService from "../../services/assets";
+import * as categoryService from "../../services/category";
+import CategorySelectBoxDisabled from "../../components/custom/CategorySelectBoxDisabled";
+import RadioButtonGroup from "../../components/custom/RadioButtonGroupInput";
+import AssetEditToolbar from "../../components/toolbar/AssetEditToolbar";
+import { formStyle } from "../../styles/formStyle";
 
 function EditAssetInformations() {
-    const [category, setCategory] = useState([])
+    const [category, setCategory] = useState([]);
     const [isValid, setIsValid] = useState(true);
     const { id } = useParams();
     const [asset, setAsset] = useState({
@@ -25,106 +23,121 @@ function EditAssetInformations() {
         specification: null,
         installedDate: null,
         state: -1,
-        categoryId: 0
+        categoryId: 0,
     });
-    const navigate = useNavigate();
     let theme = createTheme();
     theme = unstable_createMuiStrictModeTheme(theme);
-    // console.log(asset)
     useEffect(() => {
-        categoryService.getCategory()
-            .then(responseData => setCategory(responseData))
-            .catch(error => console.log(error))
-        assetService.getAssetById(id)
-            .then(responseData => {
-                setAsset(responseData)
+        categoryService
+            .getCategory()
+            .then((responseData) => setCategory(responseData))
+            .catch((error) => console.log(error));
+        assetService
+            .getAssetById(id)
+            .then((responseData) => {
+                setAsset(responseData);
             })
-            .catch(error => console.log(error))
-    }, [])
-    console.log("asset", asset);
+            .catch((error) => console.log(error));
+    }, []);
+
+    const requiredInput = (values) => {
+        const errors = {
+            name: "",
+            categoryId: "",
+            specification: "",
+            installedDate: "",
+            state: "",
+        };
+        if (!values.name) {
+            errors.name = "This is required";
+            setIsValid(true);
+        } else if (!values.categoryId) {
+            errors.categoryId = "This is required";
+            setIsValid(true);
+        } else if (!values.specification) {
+            errors.specification = "This is required";
+            setIsValid(true);
+        } else if (!values.state) {
+            errors.state = "This is required";
+            setIsValid(true);
+        } else {
+            setIsValid(false);
+            return {};
+        }
+        return errors;
+    };
 
     return (
         <ThemeProvider theme={theme}>
             <Title title="Manage Asset > Edit Asset" />
             <Container component="main">
                 {/* <CssBaseline /> */}
-                <Box
-                    sx={{
-                        margin: "auto",
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: "700px"
-                        // alignItems: 'center',
-                    }}
-                >
-                    <Typography component="h3" variant="h5" color="#cf2338" pb="40px" fontWeight="bold">
+                <Box sx={formStyle.boxTitleStyle}>
+                    <Typography
+                        component="h3"
+                        variant="h5"
+                        sx={formStyle.formTitle}
+                    >
                         Edit Asset
                     </Typography>
-                    <EditBase sx={{ ".RaEdit-card": { boxShadow: "none" }, ".RaEdit-main": { width: '750px' } }} mutationMode="pessimistic">
-                        <SimpleForm toolbar={<AssetEditToolbar />} >
-                            <Box
-                                sx={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
-                            >
+                    <EditBase
+                        sx={formStyle.editBaseStyle}
+                        mutationMode="pessimistic"
+                    >
+                        <SimpleForm
+                            validate={requiredInput}
+                            toolbar={<AssetEditToolbar />}
+                        >
+                            <Box sx={formStyle.boxStyle}>
                                 <Typography
                                     variant="h6"
-                                    style={{
-                                        width: "220px",
-                                        margin: "0",
-                                        padding: "0",
-                                        alignSelf: "center"
-                                    }}
-                                >Name *</Typography>
+                                    sx={formStyle.typographyStyle}
+                                >
+                                    Name *
+                                </Typography>
                                 <TextInput
                                     fullWidth
                                     label={false}
                                     name="name"
                                     source="name"
-                                    style={{ width: "430px", margin: "0", padding: "0" }}
+                                    sx={formStyle.textInputStyle}
                                     helperText={false}
                                     InputLabelProps={{ shrink: false }}
                                 />
                             </Box>
-                                    <Box
-                                        style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
-                                    >
-                                        <Typography
-                                            variant="h6"
-                                            style={{
-                                                width: "220px",
-                                                margin: "0",
-                                                padding: "0",
-                                                alignSelf: "center"
-                                            }}
-                                        >Category *</Typography>
-                                        <CategorySelectBoxDisabled
-                                            source="category"
-                                            format={(formValue) => (Array.prototype.filter.bind(category)(item => item.id === formValue))["name"]}
-                                            parse=""
-                                            defaultValue={asset.categoryId}
-                                            disabled={true}
-                                        />
-                                    </Box>
-                            
-                            <Box
-                                style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
-                            >
+                            <Box sx={formStyle.boxStyle}>
                                 <Typography
                                     variant="h6"
-                                    style={{
-                                        width: "220px",
-                                        margin: "0",
-                                        padding: "0",
-                                        alignSelf: "center",
-                                        marginTop: "3px"
-                                    }}
-                                >Specification *</Typography>
+                                    sx={formStyle.typographyStyle}
+                                >
+                                    Category *
+                                </Typography>
+                                <CategorySelectBoxDisabled
+                                    source="category"
+                                    format={(formValue) =>
+                                        Array.prototype.filter.bind(category)(
+                                            (item) => item.id === formValue
+                                        )["name"]
+                                    }
+                                    parse=""
+                                    defaultValue={asset.categoryId}
+                                    disabled={true}
+                                />
+                            </Box>
+
+                            <Box sx={formStyle.boxStyle}>
+                                <Typography
+                                    variant="h6"
+                                    sx={formStyle.typographyStyle}
+                                >
+                                    Specification *
+                                </Typography>
                                 <TextInput
                                     label={false}
                                     fullWidth
                                     multiline
                                     rows="3"
-                                    style={{ width: "430px" }}
+                                    sx={formStyle.textInputStyle}
                                     name="specification"
                                     source="specification"
                                     helperText={false}
@@ -132,18 +145,13 @@ function EditAssetInformations() {
                                     InputLabelProps={{ shrink: false }}
                                 />
                             </Box>
-                            <Box
-                                style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}>
+                            <Box sx={formStyle.boxStyle}>
                                 <Typography
                                     variant="h6"
-                                    style={{
-                                        width: "220px",
-                                        margin: "0",
-                                        padding: "0",
-                                        alignSelf: "center",
-
-                                    }}
-                                >Installed Date *</Typography>
+                                    sx={formStyle.typographyStyle}
+                                >
+                                    Installed Date *
+                                </Typography>
                                 <DateInput
                                     fullWidth
                                     label=""
@@ -151,37 +159,38 @@ function EditAssetInformations() {
                                     source="installedDate"
                                     InputLabelProps={{ shrink: false }}
                                     onBlur={(e) => e.stopPropagation()}
-                                    style={{ width: "430px" }}
+                                    sx={formStyle.textInputStyle}
                                     helperText={false}
                                 />
                             </Box>
-                            <Box
-                                style={{ display: "flex", flexDirection: "row", width: "650px", marginTop: "10px" }}
-                            >
+                            <Box sx={formStyle.boxStyle}>
                                 <Typography
                                     variant="h6"
-                                    style={{
-                                        width: "220px",
-                                        margin: "0",
-                                        padding: "0",
-                                        alignSelf: "start",
-                                        paddingTop: "10px"
-                                    }}
-                                >State *</Typography>
-                                <RadioButtonGroup label="" row={false} style={{ width: "430px" }} source="state" choices={[
-                                    { id: 0, name: "Available" },
-                                    { id: 1, name: "Not available" },
-                                    { id: 2, name: "WaitingForRecycling" },
-                                    { id: 3, name: "Recycled" }]}
+                                    sx={formStyle.typographyStyle}
+                                >
+                                    State *
+                                </Typography>
+                                <RadioButtonGroup
+                                    label=""
+                                    row={false}
+                                    sx={formStyle.textInputStyle}
+                                    source="state"
+                                    choices={[
+                                        { id: 0, name: "Available" },
+                                        { id: 1, name: "Not available" },
+                                        { id: 2, name: "WaitingForRecycling" },
+                                        { id: 3, name: "Recycled" },
+                                    ]}
                                     optionText="name"
-                                    optionValue="id" />
+                                    optionValue="id"
+                                />
                             </Box>
                         </SimpleForm>
-                    </EditBase  >
+                    </EditBase>
                 </Box>
             </Container>
         </ThemeProvider>
-    )
+    );
 }
 
 export default EditAssetInformations;

@@ -3,15 +3,15 @@ import { SaveButton, Toolbar, useRedirect, useNotify, ThemeProvider } from 'reac
 import {Button} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import {theme} from '../../theme';
+import { formToolbarStyle } from "../../styles/formToolbarStyle";
 
 const AssetCreateToolbar = ({ disable }) => {
     const notify = useNotify();
     const navigate = useNavigate();
     return (
         <ThemeProvider theme={theme}>
-        <Toolbar sx={{display:"flex", justifyContent:"end", mt:"20px", backgroundColor:"#fff"}} >
+        <Toolbar sx={formToolbarStyle.toolbarStyle} >
             <SaveButton
-                style={{ margin:"10px"}}
                 label="Save"
                 mutationOptions={{
                     onSuccess: () => {
@@ -28,7 +28,6 @@ const AssetCreateToolbar = ({ disable }) => {
             <Button
                 variant="outlined"
                 onClick={(e) => navigate("/assets")}
-                style={{ margin:"10px"}}
                 color="secondary"
             >Cancel</Button>
         </Toolbar>
