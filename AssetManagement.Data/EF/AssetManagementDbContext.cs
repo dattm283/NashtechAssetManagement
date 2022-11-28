@@ -21,7 +21,7 @@ namespace AssetManagement.Data.EF
             modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
             modelBuilder.Entity<Category>().ToTable("Categories").HasKey(x => x.Id);
             modelBuilder.Entity<AppUser>().HasIndex(x => x.UserName).IsUnique();
-
+            modelBuilder.Entity<AppUser>().HasIndex(x => x.RoleId).IsUnique(false);
             //modelBuilder.Entity<Asset>().ToTable("Assets", t=>t.ExcludeFromMigrations());
             //modelBuilder.Entity<Category>().ToTable("Categories", t=>t.ExcludeFromMigrations());
 

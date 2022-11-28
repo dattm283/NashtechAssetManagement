@@ -107,7 +107,6 @@ namespace AssetManagement.Application.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Name, username),
                 new Claim(ClaimTypes.Role, role)
