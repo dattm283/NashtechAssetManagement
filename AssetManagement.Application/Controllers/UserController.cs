@@ -31,22 +31,28 @@ namespace AssetManagement.Application.Controllers
         public async Task<ActionResult<ViewList_ListResponse<ViewListUser_UserResponse>>> GetAllUser(
             [FromQuery] int start,
             [FromQuery] int end,
-            [FromQuery] string? typeFilter = "",
+            [FromQuery] string? stateFilter = "",
             [FromQuery] string? searchString = "",
             [FromQuery] string? sort = "staffCode",
-            [FromQuery] string? order = "ASC")
+            [FromQuery] string? order = "ASC",
+            [FromQuery] string? userName = "")
         {
+            AppUser currentUser = await _dbContext.AppUsers.FirstAsync(x => x.UserName == userName);
             IQueryable<AppUser> users = _dbContext.AppUsers
-                                            .Where(x => x.IsDeleted == false)
+                                            .Where(x => x.IsDeleted==false && x.Location==currentUser.Location)
                                             .AsQueryable();
 
-            if (!string.IsNullOrEmpty(typeFilter))
+            if (!string.IsNullOrEmpty(stateFilter))
             {
-                List<string> listType = typeFilter.Split("&").ToList();
-                foreach (string type in listType)
+                var listType = stateFilter.Split("&").ToArray();
+                List<AppUser> tempData = new List<AppUser>();
+                for (int i=0; i<listType.Length-1; i++)
                 {
-                    users = _userManager.GetUsersInRoleAsync(type).Result.AsQueryable();
+                    string roleName = listType[i] == "0" ? "Admin" : "Staff";
+                    List<AppUser> tempUser = _userManager.GetUsersInRoleAsync(roleName).Result.ToList<AppUser>();
+                    tempData.AddRange(tempUser);
                 }
+                users = users.Where(x => tempData.Contains(x));
             }
 
             if (!string.IsNullOrEmpty(searchString))
@@ -93,11 +99,19 @@ namespace AssetManagement.Application.Controllers
 
             List<ViewListUser_UserResponse> mapResult = new List<ViewListUser_UserResponse>();
 
+            int tempCount = 0;
             foreach (AppUser user in sortedUsers)
             {
                 ViewListUser_UserResponse userData = _mapper.Map<ViewListUser_UserResponse>(user);
+                userData.Id = tempCount;
+                string userRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+                if (string.IsNullOrEmpty(userRole))
+                {
+                    continue;
+                }
                 userData.Type = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
                 mapResult.Insert(0, userData);
+                tempCount += 1;
             }
 
             return Ok(new ViewList_ListResponse<ViewListUser_UserResponse>

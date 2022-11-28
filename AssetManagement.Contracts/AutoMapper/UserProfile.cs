@@ -29,6 +29,7 @@ namespace AssetManagement.Contracts.AutoMapper
             CreateMap<CreateAssetRequest, AssetManagement.Domain.Models.Asset>();
 
             CreateMap<AppUser, ViewListUser_UserResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => 0))
                 .ForMember(dest => dest.JoinedDate, opt => opt.MapFrom(src => src.CreatedDate.Date))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + ' ' + src.LastName));
             CreateMap<AppUser, ViewDetailUser_UserResponse>()
