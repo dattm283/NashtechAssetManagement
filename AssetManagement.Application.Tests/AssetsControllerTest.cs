@@ -291,6 +291,41 @@ namespace AssetManagement.Application.Tests
         }
 
         [Fact]
+        public async Task GetList_RecentlyCreatedId()
+        {
+            // Arrange 
+            AssetsController assetController = new AssetsController(_context, _mapper);
+            var createdId = "3";
+            // Act 
+            var result = await assetController.Get(0, 2, "", "", "", "name", "ASC", createdId);
+
+            var query = _context.Assets
+                .Include(x => x.Category)
+                .Where(x => x.Id != int.Parse(createdId) && !x.IsDeleted)
+                .OrderBy(x => x.Name).AsQueryable();
+            var queryCreatedId = _context.Assets
+                .Include(x => x.Category)
+                .Where(x => x.Id == int.Parse(createdId) && !x.IsDeleted)
+                .OrderBy(x => x.Name).AsQueryable();
+            query = queryCreatedId.Concat(query);
+
+            var list = StaticFunctions<Asset>.Paging(query, 0, 2);
+
+            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+
+            var assetsList = resultValue.Data;
+
+            var isSorted = assetsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assetsList.Count(), expected.Count());
+        }
+
+        [Fact]
         public async Task GetList_ForDefaultSorted()
         {
             // Arrange 
