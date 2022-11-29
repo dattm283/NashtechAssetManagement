@@ -32,16 +32,17 @@ export default (props) => {
          target: { value },
       } = event;
       if (value.includes("all")) {
-         if (states.length == 4) {
+         if (states.length == 5) {
             setStates([]);
          } else {
             handleSelectAll();
          }
       } else {
-
+         console.log(value);
          setStates(
             // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
+            // typeof value === 'string' ? value.split(',') : value,
+            value as Array<string>
          );
       }
    };
@@ -49,10 +50,13 @@ export default (props) => {
    useEffect(() => {
       var tmp = filterValues.categories;
       setFilters({ states: states, categories: tmp }, displayedFilters);
+      console.log(states);
    }, [states])
 
    useEffect(() => {
-      setPerPage(5)
+      setPerPage(5);
+      setStates(filterValues.states ? filterValues.states : []);
+      var tmp = filterValues.categories;
    }, [])
 
    const handleSelectAll = () => {
@@ -70,13 +74,7 @@ export default (props) => {
             {...field}
             multiple
             value={states}
-            renderValue={(selected) => {
-               if (selected.length == 4) {
-                  return "States";
-               } else {
-                  selected.map(key => { return props.statesList[key].text ? props.statesList[key].text : "" }).join(', ');
-               }
-            }}
+            renderValue={(selected) => "States"}
             onChange={handleChange}
             MenuProps={MenuProps}
             autoWidth={false}
@@ -88,7 +86,7 @@ export default (props) => {
                   '&.Mui-checked': {
                      color: "#cf2338",
                   },
-               }} checked={states.length == 4} />
+               }} checked={states.length == 5} />
                <ListItemText primary="All" />
             </MenuItem>
             {props.statesList.map((state) => (
