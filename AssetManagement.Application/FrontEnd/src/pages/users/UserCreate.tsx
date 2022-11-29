@@ -11,7 +11,7 @@ import {
   Title,
   SelectInput,
 } from "react-admin";
-import { Box, Button, Typography, Container, CssBaseline } from "@mui/material";
+import { Box, Button, Typography, Container } from "@mui/material";
 import {
   createTheme,
   ThemeProvider,
@@ -47,19 +47,36 @@ function UserCreate() {
       setIsValid(true);
     }
 
+    if(values.firstname) {
+      if(values.firstname.length > 50) {
+        errors.firstname = "First name must be between 1 and 50 characters!";
+        setIsValid(true);
+      }
+    }
+
     if (!values.lastname) {
       errors.lastname = "This is required";
       setIsValid(true);
     }
 
-    if (!values.dob) {
-      errors.dob = "This is required";
-      setIsValid(true);
+    if(values.lastname) {
+      if(values.lastname.length > 50) {
+        errors.lastname = "Last name must be between 1 and 50 characters!";
+        setIsValid(true);
+      }
     }
 
     if (!values.dob) {
       errors.dob = "This is required";
       setIsValid(true);
+    }
+
+    let ageDob = getAge(values.dob);
+    if (values.dob) {
+      if (ageDob < 18) {
+        errors.dob = "User is under 18. Please select a different date";
+        setIsValid(true);
+      }
     }
 
     if (!values.joinedDate) {
@@ -67,12 +84,30 @@ function UserCreate() {
       setIsValid(true);
     }
 
+    if (values.joinedDate) {
+      if (!values.dob) {
+        errors.joinedDate = "Please Select Date of Birth";
+        setIsValid(true);
+      }
+
+      let condition = new Date(values.dob);
+      condition.setFullYear(condition.getFullYear() + 18);
+      let joinedDate = new Date(values.joinedDate);
+      if(joinedDate < condition) {
+        errors.joinedDate = "User under the age of 18 may not join company. Please select a different date";
+        setIsValid(true);
+      } else if(isWeekend(values.joinedDate)) {
+        errors.joinedDate = "Joined date is Saturday or Sunday. Please select a different date";
+        setIsValid(true);
+      }
+    }
+
     if (!values.role) {
       errors.role = "This is required";
       setIsValid(true);
     }
 
-    if (values.firstname && values.lastname && values.gender && values.role) {
+    if (errors.firstname == "" && errors.lastname == "" && errors.role == "" && errors.dob == "" && errors.joinedDate == "") {
       setIsValid(false);
       return {};
     }
@@ -80,12 +115,21 @@ function UserCreate() {
     return errors;
   };
 
-  const maxLength =
-    (max, message = "Too short") =>
-    (value) => {
-      debugger;
-      value && value.length > max ? message : undefined;
-    };
+  function getAge(DOB) {
+    var today = new Date();
+    var birthDate = new Date(DOB);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+
+  function isWeekend(joinedDate) {
+    let date = new Date(joinedDate);
+    return date.getDay() === 6 || date.getDay() === 0;
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -122,7 +166,6 @@ function UserCreate() {
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
                   Last Name *
                 </Typography>
-                {/* Custom Dropdown Selection (Category) */}
                 <TextInput
                   inputProps={{ maxLength: 50 }}
                   fullWidth
@@ -157,6 +200,7 @@ function UserCreate() {
                 </Typography>
                 <RadioButtonGroup
                   label=""
+                  defaultValue="1"
                   name="gender"
                   source="gender"
                   choices={[
@@ -197,7 +241,6 @@ function UserCreate() {
                   Type *
                 </Typography>
                 <SelectInput
-                  // category={category}
                   label=""
                   InputLabelProps={{ shrink: false }}
                   source="role"

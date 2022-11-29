@@ -16,17 +16,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddDbContext<AssetManagementDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("AssetManagement"), b => b.MigrationsAssembly("AssetManagement.Data")));
-
-builder.Services.AddIdentity<AppUser, AppRole>()
+builder.Services.AddDbContext<AssetManagementDbContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AssetManagement"), b => b.MigrationsAssembly("AssetManagement.Data")))
+               .AddIdentity<AppUser, AppRole>()
                .AddEntityFrameworkStores<AssetManagementDbContext>()
                .AddDefaultTokenProviders();
 
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(UserProfile)));
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AssignmentProfile)));
-
-builder.Services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
 
 //password policy configuration
 builder.Services.Configure<IdentityOptions>(options =>

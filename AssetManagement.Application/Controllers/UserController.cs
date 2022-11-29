@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using AssetManagement.Domain.Enums.AppUser;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -18,19 +20,19 @@ namespace AssetManagement.Application.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly AssetManagementDbContext _dbContext;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public UserController(IMapper mapper, AssetManagementDbContext dbContext, UserManager<AppUser> userManager)
+        public UserController(AssetManagementDbContext dbContext, UserManager<AppUser> userManager, IMapper mapper)
         {
-            _mapper = mapper;
             _dbContext = dbContext;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser(CreateUserRequest userRequest)
         {
             if (!ModelState.IsValid)
@@ -40,7 +42,7 @@ namespace AssetManagement.Application.Controllers
 
             //auto generate staff code
             var staffCode = "SD0001";
-            int total = await _userManager.Users.CountAsync();
+            int total = await _dbContext.Users.CountAsync();
             if (total >= 0)
             {
                 total++;
@@ -69,22 +71,19 @@ namespace AssetManagement.Application.Controllers
 
             string username = fullFirstName + fullLastName;
 
-            var duplicatename = await _userManager.Users.FirstOrDefaultAsync(p => p.UserName == username);
+            var duplicatename = await _userManager.FindByNameAsync(username);
 
             int count = 0;
             while (duplicatename != null)
             {
                 count++;
                 username = (username + count.ToString());
-                duplicatename = await _userManager.Users.FirstOrDefaultAsync(p => p.UserName == username);
+                duplicatename = await _userManager.FindByNameAsync(username);
             }
 
             //auto generate password
             string dateOfBirth = userRequest.Dob.ToString("ddMMyyyy");
             string password = $"{username}@{dateOfBirth}";
-
-            //get location from current admin
-            var admin = await _userManager.FindByNameAsync(User.Identity.Name);
 
             var user = new AppUser
             {
@@ -93,9 +92,9 @@ namespace AssetManagement.Application.Controllers
                 LastName = userRequest.LastName,
                 Dob = userRequest.Dob,
                 CreatedDate = userRequest.JoinedDate,
-                Gender = (AssetManagement.Domain.Enums.AppUser.UserGender)int.Parse(userRequest.Gender),
+                Gender = Enum.Parse<UserGender>(userRequest.Gender),
                 UserName = username,
-                Location = admin.Location,
+                Location = Enum.Parse<AppUserLocation>(User.FindFirst(ClaimTypes.Locality).Value.ToString()),
             };
 
             var result = await _userManager.CreateAsync(user, password);
@@ -103,7 +102,7 @@ namespace AssetManagement.Application.Controllers
 
             if (result.Succeeded && resultRole.Succeeded)
             {
-                return Ok(new CreateUserResponse { Id = user.Id });
+                return Ok(new CreateUserResponse { Id = user.Id, UserName = user.UserName, FirstName = user.FirstName, LastName = user.LastName, Dob = user.Dob, CreatedDate = user.CreatedDate });
             }
 
             return BadRequest(new ErrorResponseResult<bool>("Create user unsuccessfully!"));
@@ -111,15 +110,23 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         public async Task<ActionResult<ViewList_ListResponse<ViewListUser_UserResponse>>> GetAllUser(
-           [FromQuery] int start,
-           [FromQuery] int end,
-           [FromQuery] string? stateFilter = "",
-           [FromQuery] string? searchString = "",
-           [FromQuery] string? sort = "staffCode",
-           [FromQuery] string? order = "ASC",
-           [FromQuery] string? userName = "")
+            [FromQuery] int start,
+            [FromQuery] int end,
+            [FromQuery] string? stateFilter = "",
+            [FromQuery] string? searchString = "",
+            [FromQuery] string? sort = "staffCode",
+            [FromQuery] string? order = "ASC",
+            [FromQuery] string userName = "")
         {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Invalid Username or Log in again!");
+            }
             AppUser currentUser = await _dbContext.AppUsers.FirstAsync(x => x.UserName == userName);
+            if (currentUser == null)
+            {
+                return BadRequest("Invalid Username!");
+            }
             IQueryable<AppUser> users = _dbContext.AppUsers
                                             .Where(x => x.IsDeleted == false && x.Location == currentUser.Location)
                                             .AsQueryable();
