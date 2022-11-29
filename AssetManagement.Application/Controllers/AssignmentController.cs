@@ -4,6 +4,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -34,6 +35,25 @@ namespace AssetManagement.Application.Controllers
             }
 
             return Ok(assignmentResponse);
+        }
+
+        [HttpGet("assignment/{id}")]
+        public async Task<IActionResult> GetAssignmentDetail(int id)
+        {
+            var assignment = await _dbContext.Assignments
+                .Include(x => x.Asset)
+                .Include(x => x.AssignedToAppUser)
+                .Include(x => x.AssignedByToAppUser)
+                .Where(x => x.Id == id) 
+                .FirstOrDefaultAsync();
+            if (assignment != null)
+            {
+                return Ok(_mapper.Map<AssignmentDetailResponse>(assignment));
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
