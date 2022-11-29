@@ -2,26 +2,26 @@ import { SxProps, Theme } from "@mui/material";
 
 export const sidebarMenuStyle: Record<string, SxProps<Theme> | undefined> = {
     menuStyle: {
-        minWidth: "950px",
+        // minWidth: "950px",
         margin: "10px",
         paddingTop: "40px",
         color: "#000",
-        ".MuiMenuItem-root" :{
-            height:"50px",
+        ".MuiMenuItem-root": {
+            height: "50px",
             backgroundColor: "#eff1f5",
             fontWeight: "900",
             color: "#000",
-            ".RaMenuItemLink-icon" :{
+            ".RaMenuItemLink-icon": {
                 color: "#000",
             },
             marginBottom: "3px",
         },
-        ".MuiMenuItem-root:hover" :{
-            height:"50px",
+        ".MuiMenuItem-root:hover": {
+            height: "50px",
             backgroundColor: "#eff1f5",
             fontWeight: "900",
             color: "#cf2338",
-            ".RaMenuItemLink-icon" :{
+            ".RaMenuItemLink-icon": {
                 color: "#cf2338",
             },
             marginBottom: "3px",
@@ -30,10 +30,10 @@ export const sidebarMenuStyle: Record<string, SxProps<Theme> | undefined> = {
         ".RaMenuItemLink-active": {
             color: "#cf2338",
             backgroundColor: '#cf2338',
-            "&.RaMenuItemLink-active" : {
+            "&.RaMenuItemLink-active": {
                 color: "#fff",
             },
-            "& .RaMenuItemLink-icon" :{
+            "& .RaMenuItemLink-icon": {
                 color: "#fff",
             },
             marginBottom: "3px",
@@ -41,10 +41,10 @@ export const sidebarMenuStyle: Record<string, SxProps<Theme> | undefined> = {
         ".RaMenuItemLink-active:hover": {
             color: "#000",
             backgroundColor: '#000',
-            "&.RaMenuItemLink-active" : {
+            "&.RaMenuItemLink-active": {
                 color: "#fff",
             },
-            "& .RaMenuItemLink-icon" :{
+            "& .RaMenuItemLink-icon": {
                 color: "#fff",
             },
             marginBottom: "3px",
@@ -52,6 +52,6 @@ export const sidebarMenuStyle: Record<string, SxProps<Theme> | undefined> = {
         },
     },
     cardMediaStyle: {
-        maxWidth:"100px",
+        maxWidth: "100px",
     }
 }

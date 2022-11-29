@@ -4,7 +4,7 @@ import MenuBar from "../components/sidebar/SidebarMenu";
 import Header from '../components/header/Header';
 
 const App = (props) => (
-  <Layout {...props} menu={MenuBar} appBar={Header} toggleSidebar={false}/>
+  <Layout {...props} menu={MenuBar} appBar={Header} toggleSidebar={false} />
 );
 
 export default App;
