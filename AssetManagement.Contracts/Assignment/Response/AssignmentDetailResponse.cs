@@ -26,6 +26,8 @@ namespace AssetManagement.Contracts.Assignment.Response
 
         public AssetManagement.Domain.Enums.Assignment.State State { get; set; }
 
+        public string StateName { get; set; }
+
         public string Note { get; set; }
     }
 }

@@ -23,11 +23,13 @@ import StateFilterSelect from "../../components/select/StateFilterSelect";
 import { ButtonGroup, Stack } from "@mui/material";
 import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
 import { useNavigate } from "react-router-dom";
+import { assetProvider } from "../../providers/assetProvider/assetProvider";
 import FilterSearchForm from "../../components/forms/FilterSearchForm";
+import AssignmentShow from "./AssignmentShow";
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
-    const [record, setRecord] = useState();
+    const [assignment, setAssignment] = useState();
     // const { data } = useGetList("category", { pagination: { page: 1, perPage: 99 } })
     const dataProvider = useDataProvider();
     let data = dataProvider.getList("category", { pagination: { page: 1, perPage: 99 }, sort: { field: "name", order: "ASC" }, filter: {} }).then(res => res.data)
@@ -36,8 +38,14 @@ export default () => {
     const toggle = () => {
         setIsOpened(!isOpened);
     };
-    const postRowClick = (id, resource, record) => {
-        setRecord(record);
+    const postRowClick = (id, resource) => {
+        assetProvider.getOne("assignments", { id: id })
+            .then(response => {
+                setAssignment(response.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
         toggle();
         return "";
     };
@@ -122,7 +130,7 @@ export default () => {
                 </Datagrid>
                 <AssetsPagination />
             </ListBase>
-            {/* <AssetShow isOpened={isOpened} toggle={toggle} record={record} /> */}
+            <AssignmentShow isOpened={isOpened} toggle={toggle} assignment={assignment} />
         </>
     );
 };

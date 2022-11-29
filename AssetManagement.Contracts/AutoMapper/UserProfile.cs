@@ -27,6 +27,8 @@ namespace AssetManagement.Contracts.AutoMapper
             CreateMap<AssetManagement.Domain.Models.Asset, CreateAssetRequest>();
             CreateMap<CreateAssetRequest, AssetManagement.Domain.Models.Asset>();
             CreateMap<AssetManagement.Domain.Models.Assignment, AssignmentDetailResponse>()
+                .ForMember(dest => dest.StateName, opt => opt.MapFrom(src => 
+                    ((AssetManagement.Domain.Enums.Assignment.State)src.State).ToString()))
                 .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))
                 .ForMember(dest => dest.AssetName, opt => opt.MapFrom(src => src.Asset.Name))
                 .ForMember(dest => dest.Specification, opt => opt.MapFrom(src => src.Asset.Specification))

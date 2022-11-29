@@ -64,7 +64,7 @@ export const assetProvider: DataProvider = {
                 tmp1 += element + "&";
             }
         }
-        console.log(params);
+        // console.log(params);
         const query = {
             end: JSON.stringify((page) * perPage),
             start: JSON.stringify((page - 1) * perPage),
@@ -77,7 +77,7 @@ export const assetProvider: DataProvider = {
                 JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) : 
                 null
         };
-        console.log(query);
+        // console.log(query);
         const url = `/api/${resource}?${stringify(query)}`;
         if (localStorage.getItem("item") != null && query.end!='99') {
             localStorage.removeItem("item");

@@ -47,7 +47,7 @@ namespace AssetManagement.Application.Controllers
         }
 
 
-        [HttpGet("assignment/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetAssignmentDetail(int id)
         {
             var assignment = await _dbContext.Assignments
