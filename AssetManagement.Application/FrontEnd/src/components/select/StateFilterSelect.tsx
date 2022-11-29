@@ -6,15 +6,8 @@ import { Checkbox, FormControl, InputLabel, ListItemText } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 const ITEM_HEIGHT = 48;
+const ITEM_WIDTH = 250;
 const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-   PaperProps: {
-      style: {
-         maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-         width: "250px",
-      },
-   },
-};
 
 export default (props) => {
    const {
@@ -22,6 +15,15 @@ export default (props) => {
       fieldState: { isTouched, invalid, error },
       formState: { isSubmitted }
    } = useInput(props);
+
+   const MenuProps = {
+      PaperProps: {
+         style: {
+            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            width: props.sx.width!=null ? props.sx.width : ITEM_WIDTH,
+         },
+      },
+   };
 
    const { setFilters, displayedFilters, setPerPage, filterValues } = useListContext();
 
@@ -32,7 +34,7 @@ export default (props) => {
          target: { value },
       } = event;
       if (value.includes("all")) {
-         if (states.length == 5) {
+         if (states.length == props.statesList.length) {
             setStates([]);
          } else {
             handleSelectAll();
@@ -67,8 +69,8 @@ export default (props) => {
       setStates(arr);
    }
    return (
-      <FormControl variant='standard' sx={{ m: 1, width: 120 }}>
-         <InputLabel id="demo-multiple-name-label">State</InputLabel>
+      <FormControl variant='standard' sx={{ m: 1, width: props.sx.width!=null ? props.sx.width:ITEM_WIDTH }}>
+         <InputLabel id="demo-multiple-name-label" sx={{ pl:"-12px" }}>{props.label}</InputLabel>
          <Select
             labelId="demo-multiple-name-label"
             {...field}
@@ -86,7 +88,7 @@ export default (props) => {
                   '&.Mui-checked': {
                      color: "#cf2338",
                   },
-               }} checked={states.length == 5} />
+               }} checked={states.length == props.statesList.length} />
                <ListItemText primary="All" />
             </MenuItem>
             {props.statesList.map((state) => (
