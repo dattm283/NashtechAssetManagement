@@ -70,13 +70,13 @@ export default (props) => {
    }
    return (
       <FormControl variant='standard' sx={{ m: 1, width: props.sx.width!=null ? props.sx.width:ITEM_WIDTH }}>
-         <InputLabel id="demo-multiple-name-label" sx={{ pl:"-12px" }}>{props.label}</InputLabel>
+         <InputLabel id="demo-multiple-name-label" sx={{ pl:"-12px" }} shrink={false}>{props.label}</InputLabel>
          <Select
             labelId="demo-multiple-name-label"
             {...field}
             multiple
             value={states}
-            renderValue={(selected) => "States"}
+            renderValue={(selected) => ""}
             onChange={handleChange}
             MenuProps={MenuProps}
             autoWidth={false}

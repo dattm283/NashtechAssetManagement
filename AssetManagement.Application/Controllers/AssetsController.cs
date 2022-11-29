@@ -210,9 +210,11 @@ namespace AssetManagement.Application.Controllers
 
             if (!string.IsNullOrEmpty(createdId))
             {
-                var newList = list.Where(item => item.Id == int.Parse(createdId));
+                Asset newList = list.Where(item => item.Id == int.Parse(createdId)).AsNoTracking().FirstOrDefault();
                 list = list.Where(item => item.Id != int.Parse(createdId));
-                list = newList.Concat(list);
+                List<Asset> otherList = list.Where(item => item.Id != int.Parse(createdId)).AsNoTracking().ToList();
+                otherList.Insert(0, newList);
+                list = otherList.AsQueryable().AsNoTracking();
             }
 
             var sortedResult = StaticFunctions<Asset>.Paging(list, start, end);
