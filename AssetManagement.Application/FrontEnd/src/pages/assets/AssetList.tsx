@@ -53,6 +53,8 @@ export default () => {
         // ]} />,
         <StateFilterSelect
             source="states"
+            label="State"
+            sx={{ width:"250px" }}
             statesList={[
                 { value: 0, text: "Available" },
                 { value: 1, text: "Not Available" },
