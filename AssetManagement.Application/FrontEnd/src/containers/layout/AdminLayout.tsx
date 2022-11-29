@@ -25,6 +25,7 @@ import { assetProvider } from '../../providers/assetProvider/assetProvider';
 import AssetList from '../../pages/assets/AssetList';
 import AssetEdit from '../../pages/assets/AssetEdit';
 import AssetCreate from '../../pages/assets/AssetCreate';
+import AssignmentList from '../../pages/assignments/AssignmentList';
 // import AssetManager from '../../pages/asset/AssetManager';
 
 // You will fix this API-URL
@@ -95,6 +96,7 @@ const App = () => {
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} options={{ label: 'Manage Assignments' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="users" options={{ label: 'Manage User' }} list={ListGuesser} show={ShowGuesser} /> : null}
             </Admin>
 

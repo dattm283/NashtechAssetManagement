@@ -131,7 +131,15 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         //[Authorize]
-        public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get([FromQuery]int start, [FromQuery]int end, [FromQuery]string? searchString="", [FromQuery]string? categoryFilter="", [FromQuery]string? stateFilter="", [FromQuery]string? sort="name", [FromQuery]string? order="ASC", [FromQuery]string? createdId="")
+        public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get(
+            [FromQuery]int start, 
+            [FromQuery]int end, 
+            [FromQuery]string? searchString="", 
+            [FromQuery]string? categoryFilter="", 
+            [FromQuery]string? stateFilter="", 
+            [FromQuery]string? sort="name", 
+            [FromQuery]string? order="ASC", 
+            [FromQuery]string? createdId="")
         {
             var list = _dbContext.Assets
                 .Include(x=>x.Category)
