@@ -5,12 +5,7 @@ import {
     Admin,
     Resource,
     NotFound,
-    ListGuesser,
-    ShowGuesser,
-    usePermissions,
     useRefresh,
-    useAuthProvider,
-    DateTimeInput
 } from 'react-admin';
 import { theme } from '../../theme';
 import Layout from '../Layout';
@@ -25,7 +20,8 @@ import { assetProvider } from '../../providers/assetProvider/assetProvider';
 import AssetList from '../../pages/assets/AssetList';
 import AssetEdit from '../../pages/assets/AssetEdit';
 import AssetCreate from '../../pages/assets/AssetCreate';
-// import AssetManager from '../../pages/asset/AssetManager';
+import UserList from '../../pages/users/UserList';
+import UserCreate from '../../pages/users/UserCreate';
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
@@ -95,7 +91,7 @@ const App = () => {
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
-                {permissions == 'Admin' ? <Resource name="users" options={{ label: 'Manage User' }} list={ListGuesser} show={ShowGuesser} /> : null}
+                {permissions == 'Admin' ? <Resource name="user" list={UserList} create={UserCreate} options={{ label: 'Manage User' }} /> : null}
             </Admin>
 
             <ChangePasswordModal

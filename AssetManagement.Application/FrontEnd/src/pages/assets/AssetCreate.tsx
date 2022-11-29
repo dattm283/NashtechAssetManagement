@@ -18,7 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import SelectBoxWithFormInside from "../../components/custom/SelectBoxWithFormInside";
 import RadioButtonGroup from "../../components/custom/RadioButtonGroupInput";
-import AssetCreateToolbar from "../../components/toolbar/AssetCreateToolbar";
+import AssetCreateToolbar from "../../components/toolbar/CreateToolbar";
 import * as categoryService from "../../services/category";
 import { formStyle } from "../../styles/formStyle";
 
@@ -87,7 +87,7 @@ function NewCategoryCreate() {
                         redirect="show">
                         <SimpleForm
                             validate={requiredInput}
-                            toolbar={<AssetCreateToolbar disable={isValid} />}
+                            toolbar={<AssetCreateToolbar disable={isValid} url="/assets" />}
                         >
                                 <Box sx={formStyle.boxStyle}>
                                     <Typography

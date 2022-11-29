@@ -1,5 +1,7 @@
 ﻿using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.User.Request;
+﻿using AssetManagement.Contracts.Asset.Response;
+using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.User.Response;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
@@ -12,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AssetManagement.Application.Controllers
 {
-    [Route("api")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -27,9 +29,9 @@ namespace AssetManagement.Application.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("user")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateUser(UserRequest userRequest)
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateUser(CreateUserRequest userRequest)
         {
             if (!ModelState.IsValid)
             {
@@ -86,31 +88,133 @@ namespace AssetManagement.Application.Controllers
 
             var user = new AppUser
             {
+                StaffCode = staffCode,
                 FirstName = userRequest.FirstName,
                 LastName = userRequest.LastName,
                 Dob = userRequest.Dob,
-                CreatedDate = userRequest.CreatedDate,
-                Gender = userRequest.Gender,
-                RoleId = new Guid(userRequest.RoleId),
+                CreatedDate = userRequest.JoinedDate,
+                Gender = (AssetManagement.Domain.Enums.AppUser.UserGender)int.Parse(userRequest.Gender),
                 UserName = username,
                 Location = admin.Location,
             };
 
             var result = await _userManager.CreateAsync(user, password);
-            if (result.Succeeded)
+            var resultRole = await _userManager.AddToRoleAsync(user, userRequest.Role);
+
+            if (result.Succeeded && resultRole.Succeeded)
             {
-                return Ok(new SuccessResponseResult<string>("Create user success!"));
+                return Ok(new CreateUserResponse { Id = user.Id });
             }
 
             return BadRequest(new ErrorResponseResult<bool>("Create user unsuccessfully!"));
         }
 
-        [HttpGet("roles")]
-        //[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetAllRoles()
+        [HttpGet]
+        public async Task<ActionResult<ViewList_ListResponse<ViewListUser_UserResponse>>> GetAllUser(
+           [FromQuery] int start,
+           [FromQuery] int end,
+           [FromQuery] string? stateFilter = "",
+           [FromQuery] string? searchString = "",
+           [FromQuery] string? sort = "staffCode",
+           [FromQuery] string? order = "ASC",
+           [FromQuery] string? userName = "")
         {
-            var roles = await _dbContext.Roles.ToListAsync();
-            var result = _mapper.Map<List<RoleResponse>>(roles);
+            AppUser currentUser = await _dbContext.AppUsers.FirstAsync(x => x.UserName == userName);
+            IQueryable<AppUser> users = _dbContext.AppUsers
+                                            .Where(x => x.IsDeleted == false && x.Location == currentUser.Location)
+                                            .AsQueryable();
+
+            if (!string.IsNullOrEmpty(stateFilter))
+            {
+                var listType = stateFilter.Split("&").ToArray();
+                List<AppUser> tempData = new List<AppUser>();
+                for (int i = 0; i < listType.Length - 1; i++)
+                {
+                    string roleName = listType[i] == "0" ? "Admin" : "Staff";
+                    List<AppUser> tempUser = _userManager.GetUsersInRoleAsync(roleName).Result.ToList<AppUser>();
+                    tempData.AddRange(tempUser);
+                }
+                users = users.Where(x => tempData.Contains(x));
+            }
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(x => (x.FirstName + ' ' + x.LastName).Contains(searchString)
+                                        || x.StaffCode.Contains(searchString));
+            }
+
+            switch (sort)
+            {
+                case "staffCode":
+                    {
+                        users = users.OrderBy(x => x.StaffCode);
+                        break;
+                    }
+                case "fullName":
+                    {
+                        users = users.OrderBy(x => x.FirstName + ' ' + x.LastName);
+                        break;
+                    }
+                case "userName":
+                    {
+                        users = users.OrderBy(x => x.UserName);
+                        break;
+                    }
+                case "joinedDate":
+                    {
+                        users = users.OrderBy(x => x.CreatedDate);
+                        break;
+                    }
+                case "type":
+                    {
+                        users = users.OrderBy(x => _userManager.GetRolesAsync(x).Result.FirstOrDefault());
+                        break;
+                    }
+            }
+
+            if (order == "DESC")
+            {
+                users = users.Reverse();
+            }
+
+            List<AppUser> sortedUsers = StaticFunctions<AppUser>.Paging(users, start, end);
+
+            List<ViewListUser_UserResponse> mapResult = new List<ViewListUser_UserResponse>();
+
+            int tempCount = 0;
+            foreach (AppUser user in sortedUsers)
+            {
+                ViewListUser_UserResponse userData = _mapper.Map<ViewListUser_UserResponse>(user);
+                userData.Id = tempCount;
+                string userRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+                if (string.IsNullOrEmpty(userRole))
+                {
+                    continue;
+                }
+                userData.Type = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+                mapResult.Insert(0, userData);
+                tempCount += 1;
+            }
+
+            return Ok(new ViewList_ListResponse<ViewListUser_UserResponse>
+            {
+                Data = mapResult,
+                Total = mapResult.Count
+            });
+        }
+
+        [HttpGet("{staffCode}")]
+        public async Task<ActionResult<ViewDetailUser_UserResponse>> GetSingleUser([FromRoute] string staffCode)
+        {
+            AppUser user = _dbContext.AppUsers.Where(x => x.StaffCode.Trim() == staffCode.Trim()).FirstOrDefault();
+
+            if (user == null)
+            {
+                return BadRequest(new ErrorResponseResult<string>("Invalid StaffCode"));
+            }
+
+            ViewDetailUser_UserResponse result = _mapper.Map<ViewDetailUser_UserResponse>(user);
+            result.Type = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
             return Ok(result);
         }
     }

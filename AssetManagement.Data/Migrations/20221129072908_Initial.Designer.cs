@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AssetManagement.Data.Migrations
 {
     [DbContext(typeof(AssetManagementDbContext))]
-    [Migration("20221127200813_Initial")]
+    [Migration("20221129072908_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,6 +31,7 @@ namespace AssetManagement.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Description")
@@ -39,20 +40,27 @@ namespace AssetManagement.Data.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppRole");
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "f48978a5-4704-47f4-8eb4-5f6b24345966",
+                            ConcurrencyStamp = "bb69e31f-237f-4502-8db6-aeba009cd0fc",
                             Description = "Administrator role",
                             Name = "Admin",
                             NormalizedName = "admin"
@@ -60,7 +68,7 @@ namespace AssetManagement.Data.Migrations
                         new
                         {
                             Id = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"),
-                            ConcurrencyStamp = "9ebbb802-dfa8-4d96-a5b7-66f8c8db1529",
+                            ConcurrencyStamp = "ecf600aa-1ffb-4ed4-a318-2a3614d98a56",
                             Description = "Staff role",
                             Name = "Staff",
                             NormalizedName = "staff"
@@ -77,6 +85,7 @@ namespace AssetManagement.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -86,7 +95,8 @@ namespace AssetManagement.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -99,6 +109,9 @@ namespace AssetManagement.Data.Migrations
                     b.Property<int>("Gender")
                         .HasMaxLength(50)
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsLoginFirstTime")
                         .HasColumnType("bit");
@@ -122,10 +135,12 @@ namespace AssetManagement.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -136,79 +151,162 @@ namespace AssetManagement.Data.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StaffCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId")
-                        .IsUnique();
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
 
-                    b.HasIndex("UserName")
+                    b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasFilter("[UserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AppUser");
+                    b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "751572cb-786a-41ff-b034-2244125e852c",
-                            CreatedDate = new DateTime(2022, 11, 28, 3, 8, 13, 206, DateTimeKind.Local).AddTicks(4684),
+                            ConcurrencyStamp = "77061d73-3294-4097-9c63-77b0876534d2",
+                            CreatedDate = new DateTime(2022, 11, 29, 14, 29, 8, 679, DateTimeKind.Local).AddTicks(2205),
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "admin@gmail.com",
+                            Email = "adminhcm@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Toan",
                             Gender = 0,
-                            IsLoginFirstTime = true,
+                            IsDeleted = false,
+                            IsLoginFirstTime = false,
                             LastName = "Bach",
                             Location = 0,
                             LockoutEnabled = false,
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            NormalizedEmail = "admin@gmail.com",
-                            NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAELnjF8R4L1zm4r0vMehTaw1SG+jnXiCShS03EzNJmRd3svzSbPXFQN8DmVoAGHXD4g==",
+                            NormalizedEmail = "adminhcm@gmail.com",
+                            NormalizedUserName = "adminhcm",
+                            PasswordHash = "AQAAAAEAACcQAAAAECHytNYcFIsR//sfscR5OLY1kzln0zSwOFoxuXCrZ786AQXrl0TSOHuFR/VOQQXQqA==",
                             PhoneNumberConfirmed = false,
-                            RoleId = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
                             SecurityStamp = "",
+                            StaffCode = " SD0001",
                             TwoFactorEnabled = false,
-                            UserName = "admin"
+                            UserName = "adminhcm"
+                        },
+                        new
+                        {
+                            Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00bf"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f7299983-1e7e-4147-9428-f2c5abf0f6f9",
+                            CreatedDate = new DateTime(2022, 11, 29, 14, 29, 8, 685, DateTimeKind.Local).AddTicks(4185),
+                            Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "adminhn@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Toan",
+                            Gender = 0,
+                            IsDeleted = false,
+                            IsLoginFirstTime = true,
+                            LastName = "Bach",
+                            Location = 1,
+                            LockoutEnabled = false,
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NormalizedEmail = "adminhn@gmail.com",
+                            NormalizedUserName = "adminhn",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIEwNRgdYOLeT/+evslU/ll4lnIcNxcixli63RZnik51cktMxU88jS0Jmrhihj3O3A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            StaffCode = " SD0002",
+                            TwoFactorEnabled = false,
+                            UserName = "adminhn"
                         },
                         new
                         {
                             Id = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0c29f395-8334-470c-a295-cd3ba69273cb",
-                            CreatedDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(2849),
+                            ConcurrencyStamp = "066ebe40-2a94-4126-a66f-e3928f2aca9d",
+                            CreatedDate = new DateTime(2022, 11, 29, 14, 29, 8, 691, DateTimeKind.Local).AddTicks(5702),
                             Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "staff@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Toan",
                             Gender = 1,
+                            IsDeleted = false,
                             IsLoginFirstTime = true,
                             LastName = "Bach",
                             Location = 1,
                             LockoutEnabled = false,
                             ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             NormalizedEmail = "staff@gmail.com",
-                            NormalizedUserName = "staff",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDGrqiZewXVV0oyTafGu065y7HzLJ2yLM1P/gMMlSqcqkYlJ4PkwQ/GTuGQucJY5Zg==",
+                            NormalizedUserName = "staff1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEK2woAJ9Ut7H2JpMb3jMr+ezwam2DZJ25D40PpzaaNdBUHPxvuYNwBqB4sItLTJDkw==",
                             PhoneNumberConfirmed = false,
-                            RoleId = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5"),
                             SecurityStamp = "",
+                            StaffCode = " SD0003",
                             TwoFactorEnabled = false,
-                            UserName = "staff"
+                            UserName = "staff1"
+                        },
+                        new
+                        {
+                            Id = new Guid("70bd814f-9576-45ba-b5b7-f00649be00de"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "aec1d194-2023-41fe-979b-8fce9154ec12",
+                            CreatedDate = new DateTime(2022, 11, 29, 14, 29, 8, 697, DateTimeKind.Local).AddTicks(7258),
+                            Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "staff@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Toan",
+                            Gender = 1,
+                            IsDeleted = false,
+                            IsLoginFirstTime = true,
+                            LastName = "Bach",
+                            Location = 1,
+                            LockoutEnabled = false,
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NormalizedEmail = "staff@gmail.com",
+                            NormalizedUserName = "staff2",
+                            PasswordHash = "AQAAAAEAACcQAAAAEN2BkjsVyaBZNvLbo8rl48N2dz3NRCoEnrLy2bu4I7eFYU7saEopHhRJ2QMPUIvH0Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            StaffCode = " SD0004",
+                            TwoFactorEnabled = false,
+                            UserName = "staff2"
+                        },
+                        new
+                        {
+                            Id = new Guid("73bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "792ce414-7ddf-4776-8637-0ad164b83799",
+                            CreatedDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(8919),
+                            Dob = new DateTime(2020, 1, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "staffdis@gmail.com",
+                            EmailConfirmed = true,
+                            FirstName = "Toan",
+                            Gender = 1,
+                            IsDeleted = true,
+                            IsLoginFirstTime = true,
+                            LastName = "Bach",
+                            Location = 1,
+                            LockoutEnabled = false,
+                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            NormalizedEmail = "staffdis@gmail.com",
+                            NormalizedUserName = "staffdis",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJpPxmwjE+37+Km/msxNhMuhIB8u24sK5xjPiPvfWMEAVVqaH4g/Mx9SYEymdy2reA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            StaffCode = " SD0005",
+                            TwoFactorEnabled = false,
+                            UserName = "staffDis"
                         });
                 });
 
@@ -260,7 +358,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 1,
                             AssetCode = "LA100001",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3205),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9195),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 1",
@@ -272,7 +370,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 2,
                             AssetCode = "LA100002",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3220),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9209),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 2",
@@ -284,7 +382,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 3,
                             AssetCode = "LA100003",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3230),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9217),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 3",
@@ -296,7 +394,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 4,
                             AssetCode = "LA100004",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3239),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9336),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 4",
@@ -308,7 +406,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 5,
                             AssetCode = "LA100005",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3248),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9348),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 5",
@@ -320,7 +418,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 6,
                             AssetCode = "LA100006",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3267),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9358),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 6",
@@ -332,7 +430,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 7,
                             AssetCode = "LA100007",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3276),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9366),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 7",
@@ -344,7 +442,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 8,
                             AssetCode = "LA100008",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3365),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9374),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 8",
@@ -356,7 +454,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 9,
                             AssetCode = "LA100009",
                             CategoryId = 2,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3377),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9382),
                             IsDeleted = false,
                             Location = 0,
                             Name = "Laptop 9",
@@ -368,7 +466,7 @@ namespace AssetManagement.Data.Migrations
                             Id = 10,
                             AssetCode = "LA1000010",
                             CategoryId = 1,
-                            InstalledDate = new DateTime(2022, 11, 28, 3, 8, 13, 213, DateTimeKind.Local).AddTicks(3389),
+                            InstalledDate = new DateTime(2022, 11, 29, 14, 29, 8, 703, DateTimeKind.Local).AddTicks(9393),
                             IsDeleted = true,
                             Location = 0,
                             Name = "Laptop 10",
@@ -397,6 +495,13 @@ namespace AssetManagement.Data.Migrations
                     b.Property<Guid?>("AssignedTo")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("ReturnedDate")
                         .HasColumnType("datetime2");
 
@@ -412,6 +517,118 @@ namespace AssetManagement.Data.Migrations
                     b.HasIndex("AssignedTo");
 
                     b.ToTable("Assignments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 1",
+                            ReturnedDate = new DateTime(2022, 11, 30, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 2",
+                            ReturnedDate = new DateTime(2022, 12, 1, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 3",
+                            ReturnedDate = new DateTime(2022, 12, 2, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 4",
+                            ReturnedDate = new DateTime(2022, 12, 3, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 5",
+                            ReturnedDate = new DateTime(2022, 12, 4, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 6",
+                            ReturnedDate = new DateTime(2022, 12, 5, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 7",
+                            ReturnedDate = new DateTime(2022, 12, 6, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 8",
+                            ReturnedDate = new DateTime(2022, 12, 7, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 9",
+                            ReturnedDate = new DateTime(2022, 12, 8, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AssignedBy = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
+                            AssignedDate = new DateTime(2022, 11, 29, 0, 0, 0, 0, DateTimeKind.Local),
+                            AssignedTo = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            IsDeleted = false,
+                            Note = "Note for assignment 10",
+                            ReturnedDate = new DateTime(2022, 12, 9, 0, 0, 0, 0, DateTimeKind.Local),
+                            State = 0
+                        });
                 });
 
             modelBuilder.Entity("AssetManagement.Domain.Models.Category", b =>
@@ -435,7 +652,7 @@ namespace AssetManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -451,6 +668,13 @@ namespace AssetManagement.Data.Migrations
                             IsDeleted = false,
                             Name = "Monitor",
                             Prefix = "MO"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsDeleted = false,
+                            Name = "Personal Computer",
+                            Prefix = "PC"
                         });
                 });
 
@@ -473,7 +697,9 @@ namespace AssetManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppRoleClaims", (string)null);
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
@@ -495,27 +721,30 @@ namespace AssetManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppUserClaims", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId");
+                    b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.ToTable("AppUserLogins", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
@@ -528,45 +757,50 @@ namespace AssetManagement.Data.Migrations
 
                     b.HasKey("UserId", "RoleId");
 
-                    b.ToTable("AppUserRoles", (string)null);
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
 
                     b.HasData(
                         new
                         {
                             UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             RoleId = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc")
+                        },
+                        new
+                        {
+                            UserId = new Guid("69bd714f-9576-45ba-b5b7-f00649be00bf"),
+                            RoleId = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc")
+                        },
+                        new
+                        {
+                            UserId = new Guid("73bd714f-9576-45ba-b5b7-f00649be00de"),
+                            RoleId = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5")
+                        },
+                        new
+                        {
+                            UserId = new Guid("70bd714f-9576-45ba-b5b7-f00649be00de"),
+                            RoleId = new Guid("12147fe0-4571-4ad2-b8f7-d2c863eb78a5")
                         });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("UserId");
+                    b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AppUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("AssetManagement.Domain.Models.AppUser", b =>
-                {
-                    b.HasOne("AssetManagement.Domain.Models.AppRole", "AppRole")
-                        .WithOne("AppUser")
-                        .HasForeignKey("AssetManagement.Domain.Models.AppUser", "RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppRole");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("AssetManagement.Domain.Models.Asset", b =>
@@ -599,9 +833,54 @@ namespace AssetManagement.Data.Migrations
                     b.Navigation("AssignedToAppUser");
                 });
 
-            modelBuilder.Entity("AssetManagement.Domain.Models.AppRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
-                    b.Navigation("AppUser")
+                    b.HasOne("AssetManagement.Domain.Models.AppRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+                {
+                    b.HasOne("AssetManagement.Domain.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+                {
+                    b.HasOne("AssetManagement.Domain.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+                {
+                    b.HasOne("AssetManagement.Domain.Models.AppRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AssetManagement.Domain.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+                {
+                    b.HasOne("AssetManagement.Domain.Models.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

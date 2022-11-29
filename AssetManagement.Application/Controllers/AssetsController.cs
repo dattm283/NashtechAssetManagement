@@ -48,7 +48,7 @@ namespace AssetManagement.Application.Controllers
         {
             string token = Request.Headers.Authorization;
             string userName = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name)?.Value;
-            AppUser user = await _dbContext.AppUsers.FirstAsync(u => u.UserName == userName);
+            AppUser user = await _dbContext.AppUsers.FirstOrDefaultAsync(u => u.UserName == userName);
             if (user == null)
             {
                 return BadRequest(new ErrorResponseResult<string>("Invalid UserName"));
@@ -135,12 +135,10 @@ namespace AssetManagement.Application.Controllers
         {
             var list = _dbContext.Assets
                 .Include(x=>x.Category)
-                .Where(x=>!x.IsDeleted)
-                .AsQueryable();
+                .Where(x=>!x.IsDeleted);
             if (!string.IsNullOrEmpty(searchString))
             {
                 list = list.Where(x => x.Name.ToUpper().Contains(searchString.ToUpper()) || x.AssetCode.ToUpper().Contains(searchString.ToUpper()));
-                var tmp = list.ToList();
             }
             if(!string.IsNullOrEmpty(categoryFilter))
             {
@@ -151,11 +149,16 @@ namespace AssetManagement.Application.Controllers
                     var temp = 0;
                     if (int.TryParse(arrayChar[i], out temp))
                     {
-                        arrNumberChar.Add(int.Parse(arrayChar[i]));
+                        arrNumberChar.Add(temp);
                     }
                 }
-                list = list.Where(x => arrNumberChar.Contains(x.CategoryId.Value));
-                var tmp = list.ToList();
+                arrayChar.Select(x =>
+                {
+                    var tmp = -1;
+                    int.TryParse(x, out tmp);
+                    return tmp;
+                }).Where(a => a > -1);
+                list = list.Where(x => arrNumberChar.Contains(x.CategoryId.GetValueOrDefault()));
             }
             if(!string.IsNullOrEmpty(stateFilter))
             {

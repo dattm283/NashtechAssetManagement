@@ -47,6 +47,10 @@ namespace AssetManagement.Application.Controllers
             {
                 return BadRequest(new ErrorResponseResult<string>("Account does not exist."));
             }
+            else if(user.IsDeleted)
+            {
+                return BadRequest(new ErrorResponseResult<string>("Account has been banned."));
+            }
 
             var result = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!result)
@@ -54,9 +58,10 @@ namespace AssetManagement.Application.Controllers
                 return BadRequest(new ErrorResponseResult<string>("No match for username and/or password."));
             }
 
-            var role = await _dbContext.AppRoles.FindAsync(user.RoleId);
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+            //var role = await _dbContext.AppRoles.FindAsync(user.RoleId);
 
-            return Ok(new SuccessResponseResult<LoginResponse>(new LoginResponse { Token = CreateToken(user, request.Username, role.Name), Role = role.Name }));
+            return Ok(new SuccessResponseResult<LoginResponse>(new LoginResponse { Token = CreateToken(user, request.Username, role), Role = role }));
         }
 
         [HttpGet("auth/user-profile/")]

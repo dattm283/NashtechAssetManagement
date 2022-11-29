@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AssetManagement.Contracts.User.Request
 {
-    public class UserRequest
+    public class CreateUserRequest
     {
         [StringLength(50, ErrorMessage = "First name must be between 1 and 50 characters!")]
         [Required(ErrorMessage = "Please enter first name:")]
@@ -21,12 +21,12 @@ namespace AssetManagement.Contracts.User.Request
         public DateTime Dob { get; set; }
 
         [Required(ErrorMessage = "Please enter joined date:")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime JoinedDate { get; set; }
 
         [Required(ErrorMessage = "Please select gender:")]
-        public AssetManagement.Domain.Enums.AppUser.UserGender Gender { get; set; }
+        public string Gender { get; set; }
 
         [Required(ErrorMessage = "Please select role:")]
-        public string RoleId { get; set; }
+        public string Role { get; set; }
     }
 }

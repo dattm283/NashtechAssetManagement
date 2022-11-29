@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {theme} from '../../theme';
 import { formToolbarStyle } from "../../styles/formToolbarStyle";
 
-const AssetCreateToolbar = ({ disable }) => {
+const AssetCreateToolbar = ({ disable, url }) => {
     const notify = useNotify();
     const navigate = useNavigate();
     return (
@@ -16,7 +16,7 @@ const AssetCreateToolbar = ({ disable }) => {
                 mutationOptions={{
                     onSuccess: () => {
                         // notify('Element updated');
-                        navigate("/assets")
+                        navigate(url)
                     }}
                 }
                 type="button"
@@ -27,7 +27,7 @@ const AssetCreateToolbar = ({ disable }) => {
             />
             <Button
                 variant="outlined"
-                onClick={(e) => navigate("/assets")}
+                onClick={(e) => navigate(url)}
                 color="secondary"
             >Cancel</Button>
         </Toolbar>

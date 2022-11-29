@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace AssetManagement.Contracts.User.Response
 {
-    public class RoleResponse
+    public class CreateUserResponse
     {
         public Guid Id { get; set; }
-
-        public string Name { get; set; }
     }
 }
