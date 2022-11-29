@@ -5,12 +5,7 @@ import {
     Admin,
     Resource,
     NotFound,
-    ListGuesser,
-    ShowGuesser,
-    usePermissions,
     useRefresh,
-    useAuthProvider,
-    DateTimeInput
 } from 'react-admin';
 import { theme } from '../../theme';
 import Layout from '../Layout';
@@ -27,6 +22,7 @@ import AssetEdit from '../../pages/assets/AssetEdit';
 import AssetCreate from '../../pages/assets/AssetCreate';
 import AssignmentList from '../../pages/assignments/AssignmentList';
 // import AssetManager from '../../pages/asset/AssetManager';
+import UserList from '../../pages/users/UserList';
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
@@ -96,8 +92,8 @@ const App = () => {
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
-                {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} options={{ label: 'Manage Assignments' }} /> : null}
-                {permissions == 'Admin' ? <Resource name="users" options={{ label: 'Manage User' }} list={ListGuesser} show={ShowGuesser} /> : null}
+                {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} options={{ label: 'Manage Assignment' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="user" list={UserList} options={{ label: 'Manage User' }} /> : null}
             </Admin>
 
             <ChangePasswordModal

@@ -48,7 +48,6 @@ export default (props) => {
    };
 
    useEffect(() => {
-      console.log(states);
       var tmp = filterValues.states;
       setFilters({ categories: states, states: tmp }, displayedFilters);
    }, [states])
@@ -77,16 +76,11 @@ export default (props) => {
                {...field}
                multiple
                value={states}
-               renderValue={(selected) => {
-                  if (selected.length === res.length) {
-                     return "Categories"
-                  } else {
-                     selected.map(key => { return res.find((o) => o.id == key).name ? res.find((o) => o.id == key).name : "" }).join(', ')
-                  }
-               }}
+               renderValue={(selected) => "Categories"}
                onChange={(e) => handleChange(e, res)}
                MenuProps={MenuProps}
                IconComponent={() => <FilterAltIcon />}
+            // inputProps={InputLabel}
             >
                <MenuItem value={"all"}>
                   <Checkbox sx={{

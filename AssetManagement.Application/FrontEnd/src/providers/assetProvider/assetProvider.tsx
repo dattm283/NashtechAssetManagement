@@ -33,13 +33,13 @@ export const assetProvider: DataProvider = {
         throw new Error("Function not implemented.");
     },
     create: function <RecordType extends RaRecord = any>(resource: string, params: CreateParams<any>): Promise<CreateResult<RecordType>> {
-        return axiosInstance.post(`/api/${resource}`, params.data).then(res => { 
+        return axiosInstance.post(`/api/${resource}`, params.data).then(res => {
             localStorage.setItem("item", JSON.stringify(res.data))
             return res
         });
     },
     delete: async (resource, params) => {
-        const url = `${config.api.base}/api/${resource}/${params.id}`;
+        const url = `/api/${resource}/${params.id}`;
         var response = await axiosInstance.delete(url);
         return response.data;
     },
@@ -64,7 +64,7 @@ export const assetProvider: DataProvider = {
                 tmp1 += element + "&";
             }
         }
-        console.log(params);
+
         const query = {
             end: JSON.stringify((page) * perPage),
             start: JSON.stringify((page - 1) * perPage),
@@ -75,13 +75,15 @@ export const assetProvider: DataProvider = {
             categoryFilter: tmp1 ? tmp1 : null,
             createdId: localStorage.getItem("item")!=null ? 
                 JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) : 
-                null
+                null,
+            userName: localStorage.getItem("userName") ? localStorage.getItem("userName") : null
         };
-        console.log(query);
+
         const url = `/api/${resource}?${stringify(query)}`;
-        if (localStorage.getItem("item") != null && query.end!='99') {
+        if (localStorage.getItem("item") != null && query.end != '99') {
             localStorage.removeItem("item");
         }
+        
         return axiosInstance(url).then(res => {
             return Promise.resolve({ data: res.data.data, total: res.data.total });
         });

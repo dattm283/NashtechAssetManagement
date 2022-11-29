@@ -118,7 +118,7 @@ namespace AssetManagement.Application.Controllers
                 }
                 else
                 {
-                    throw new Exception("The asset does not exist");
+                    throw new Exception("The user does not exist");
                 }
             }
             catch (Exception ex)
