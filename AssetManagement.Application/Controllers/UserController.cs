@@ -35,9 +35,17 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? searchString = "",
             [FromQuery] string? sort = "staffCode",
             [FromQuery] string? order = "ASC",
-            [FromQuery] string? userName = "")
+            [FromQuery] string userName = "")
         {
+            if (string.IsNullOrEmpty(userName))
+            {
+                return BadRequest("Invalid Username or Log in again!");
+            }
             AppUser currentUser = await _dbContext.AppUsers.FirstAsync(x => x.UserName == userName);
+            if (currentUser == null)
+            {
+                return BadRequest("Invalid Username!");
+            }
             IQueryable<AppUser> users = _dbContext.AppUsers
                                             .Where(x => x.IsDeleted==false && x.Location==currentUser.Location)
                                             .AsQueryable();
