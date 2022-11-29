@@ -4,10 +4,12 @@ using AssetManagement.Contracts.User.Response;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -35,7 +37,7 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? searchString = "",
             [FromQuery] string? sort = "staffCode",
             [FromQuery] string? order = "ASC",
-            [FromQuery] string userName = "")
+            [FromQuery] string? userName = "")
         {
             if (string.IsNullOrEmpty(userName))
             {
@@ -107,11 +109,11 @@ namespace AssetManagement.Application.Controllers
 
             List<ViewListUser_UserResponse> mapResult = new List<ViewListUser_UserResponse>();
 
-            int tempCount = 0;
+            //int tempCount = 0;
             foreach (AppUser user in sortedUsers)
             {
                 ViewListUser_UserResponse userData = _mapper.Map<ViewListUser_UserResponse>(user);
-                userData.Id = tempCount;
+                //userData.Id = tempCount;
                 string userRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
                 if (string.IsNullOrEmpty(userRole))
                 {
@@ -119,7 +121,7 @@ namespace AssetManagement.Application.Controllers
                 }
                 userData.Type = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
                 mapResult.Insert(0, userData);
-                tempCount += 1;
+                //tempCount += 1;
             }
 
             return Ok(new ViewList_ListResponse<ViewListUser_UserResponse>
@@ -142,6 +144,29 @@ namespace AssetManagement.Application.Controllers
             ViewDetailUser_UserResponse result = _mapper.Map<ViewDetailUser_UserResponse>(user);
             result.Type = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
             return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var deletingUser = await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
+            var userName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
+            if (deletingUser != null)
+            {
+                if(deletingUser.UserName == userName)
+                {
+                    return BadRequest(new ErrorResponseResult<string>("You can't delete yourself"));
+                }
+                deletingUser.IsDeleted = true;
+                await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                return BadRequest(new ErrorResponseResult<string>("Can't find this user"));
+            }
+
+            return Ok(_mapper.Map<DeleteUserResponse>(deletingUser));
         }
     }
 }

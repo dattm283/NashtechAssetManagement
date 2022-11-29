@@ -33,13 +33,13 @@ export const assetProvider: DataProvider = {
         throw new Error("Function not implemented.");
     },
     create: function <RecordType extends RaRecord = any>(resource: string, params: CreateParams<any>): Promise<CreateResult<RecordType>> {
-        return axiosInstance.post(`/api/${resource}`, params.data).then(res => { 
+        return axiosInstance.post(`/api/${resource}`, params.data).then(res => {
             localStorage.setItem("item", JSON.stringify(res.data))
             return res
         });
     },
     delete: async (resource, params) => {
-        const url = `${config.api.base}/api/${resource}/${params.id}`;
+        const url = `/api/${resource}/${params.id}`;
         var response = await axiosInstance.delete(url);
         return response.data;
     },
@@ -80,7 +80,7 @@ export const assetProvider: DataProvider = {
         };
 
         const url = `/api/${resource}?${stringify(query)}`;
-        if (localStorage.getItem("item") != null && query.end!='99') {
+        if (localStorage.getItem("item") != null && query.end != '99') {
             localStorage.removeItem("item");
         }
         

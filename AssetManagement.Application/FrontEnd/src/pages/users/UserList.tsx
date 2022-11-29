@@ -20,7 +20,7 @@ import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDel
 import { assetProvider } from '../../providers/assetProvider/assetProvider'
 
 export default () => {
-    const [openDetail, setOpenDetail] = useState({ status:false, data:{} });
+    const [openDetail, setOpenDetail] = useState({ status: false, data: {} });
     const refresh = useRefresh();
 
     const usersFilter = [
@@ -86,12 +86,14 @@ export default () => {
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
                         <EditButton variant="text" size="small" label="" />
-                        <CustomDeleteWithConfirmButton
+                        <FunctionField source="userName" render={data =>
+                            data.userName != localStorage.getItem("userName") ? <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure, bro?"
                             confirmContent="Do you want to disable this user, bro?"
                             mutationOptions={{ onSuccess: (data) => refresh() }}
-                        />
+                            /> : <></>
+                        } />
                     </ButtonGroup>
 
                 </Datagrid>

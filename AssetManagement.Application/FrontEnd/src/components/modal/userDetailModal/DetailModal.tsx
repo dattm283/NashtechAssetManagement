@@ -20,16 +20,16 @@ const style = {
 };
 
 // Capitalize string
-function isDateAndRestyle(sentence) {
+function capitalizeFirstLetter(sentence) {
     if (sentence === null){
         return "Unknown"
     }
     if (typeof sentence === 'string'){
         var parsedDate = Date.parse(sentence);
         if (!isNaN(parsedDate)) {
-            var [yyyy, mm, dd] = sentence.split("T")[0].split("-")
-            return `${dd}/${mm}/${yyyy}`;
+            return sentence.split("T")[0];
         }
+        return sentence[0].toUpperCase() + sentence.slice(1);
     }
     return sentence
 }
@@ -99,20 +99,17 @@ function DetailModal({ openDetail, setOpenDetail, label }) {
                     }}
                 >
                     <Box flex="true" flexDirection="column" >
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>Staff Code</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>Full Name</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>User Name</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>Date of Birth</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>Gender</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>Joined Date</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>Type</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 0px"}}>Location</Typography>
+                        {Array.prototype.map.bind(Object.keys(openDetail.data))((item, index) => {
+                            return (
+                                <Typography key={index} variant="h6" sx={{ m:"10px 0px"}}>{capitalizeFirstLetter(item)}</Typography>
+                            )
+                        })}
                     </Box>
                     
                     <Box flex="true" flexDirection="column" >
                         {Array.prototype.map.bind(Object.values(openDetail.data))((item, index) => {
                             return (
-                                <Typography key={index} variant="h6" sx={{ m:"10px 50px"}}>{isDateAndRestyle(item)}</Typography>
+                                <Typography key={index} variant="h6" sx={{ m:"10px 50px"}}>{capitalizeFirstLetter(item)}</Typography>
                             )
                         })}
                     </Box>
