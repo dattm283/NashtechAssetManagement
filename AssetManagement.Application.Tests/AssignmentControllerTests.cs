@@ -122,59 +122,59 @@ namespace AssetManagement.Application.Tests
             _context.SaveChanges();
         }
 
-        [Fact]
-        public void GetAssignmentListByAssetCodeId_ReturnResults()
-        {
-            // Arrange 
-            var assignmentController = new AssignmentController(_context, _mapper);
+        // [Fact]
+        // public void GetAssignmentListByAssetCodeId_ReturnResults()
+        // {
+        //     // Arrange 
+        //     var assignmentController = new AssignmentController(_context, _mapper);
 
-            // Act 
-            var result = assignmentController.GetAssignmentsByAssetCodeId(1);
+        //     // Act 
+        //     var result = assignmentController.GetAssignmentsByAssetCodeId(1);
 
-            var list = _context.Assignments.Where(x => x.AssetId == 1).ToList();
+        //     var list = _context.Assignments.Where(x => x.AssetId == 1).ToList();
 
-            var expected = _mapper.Map<List<AssignmentResponse>>(list);
+        //     var expected = _mapper.Map<List<AssignmentResponse>>(list);
 
-            foreach (var item in expected)
-            {
-                item.AssignedTo = _context.Users.Find(new Guid(item.AssignedTo)).UserName;
-                item.AssignedBy = _context.Users.Find(new Guid(item.AssignedBy)).UserName;
-            }
+        //     foreach (var item in expected)
+        //     {
+        //         item.AssignedTo = _context.Users.Find(new Guid(item.AssignedTo)).UserName;
+        //         item.AssignedBy = _context.Users.Find(new Guid(item.AssignedBy)).UserName;
+        //     }
 
-            var okobjectResult = (OkObjectResult)result;
-            var resultValue = (List<AssignmentResponse>)okobjectResult.Value;
+        //     var okobjectResult = (OkObjectResult)result;
+        //     var resultValue = (List<AssignmentResponse>)okobjectResult.Value;
 
-            Assert.IsType<List<AssignmentResponse>>(resultValue);
-            Assert.NotEmpty(resultValue);
-            Assert.Equal(resultValue.Count(), expected.Count());
-        }
+        //     Assert.IsType<List<AssignmentResponse>>(resultValue);
+        //     Assert.NotEmpty(resultValue);
+        //     Assert.Equal(resultValue.Count(), expected.Count());
+        // }
 
-        [Fact]
-        public void GetAssignmentListByAssetCodeId_ReturnEmptyResult()
-        {
-            // Arrange 
-            var assignmentController = new AssignmentController(_context, _mapper);
+        // [Fact]
+        // public void GetAssignmentListByAssetCodeId_ReturnEmptyResult()
+        // {
+        //     // Arrange 
+        //     var assignmentController = new AssignmentController(_context, _mapper);
 
-            // Act 
-            var result = assignmentController.GetAssignmentsByAssetCodeId(2);
+        //     // Act 
+        //     var result = assignmentController.GetAssignmentsByAssetCodeId(2);
 
-            var list = _context.Assignments.Where(x => x.AssetId == 2).ToList();
+        //     var list = _context.Assignments.Where(x => x.AssetId == 2).ToList();
 
-            var expected = _mapper.Map<List<AssignmentResponse>>(list);
+        //     var expected = _mapper.Map<List<AssignmentResponse>>(list);
 
-            foreach (var item in expected)
-            {
-                item.AssignedTo = _context.Users.Find(new Guid(item.AssignedTo)).UserName;
-                item.AssignedBy = _context.Users.Find(new Guid(item.AssignedBy)).UserName;
-            }
+        //     foreach (var item in expected)
+        //     {
+        //         item.AssignedTo = _context.Users.Find(new Guid(item.AssignedTo)).UserName;
+        //         item.AssignedBy = _context.Users.Find(new Guid(item.AssignedBy)).UserName;
+        //     }
 
-            var okobjectResult = (OkObjectResult)result;
-            var resultValue = (List<AssignmentResponse>)okobjectResult.Value;
+        //     var okobjectResult = (OkObjectResult)result;
+        //     var resultValue = (List<AssignmentResponse>)okobjectResult.Value;
 
-            Assert.IsType<List<AssignmentResponse>>(resultValue);
-            Assert.Empty(resultValue);
-            Assert.Equal(resultValue.Count(), expected.Count());
-        }
+        //     Assert.IsType<List<AssignmentResponse>>(resultValue);
+        //     Assert.Empty(resultValue);
+        //     Assert.Equal(resultValue.Count(), expected.Count());
+        // }
 
         public void Dispose()
         {

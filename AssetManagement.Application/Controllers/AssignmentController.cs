@@ -1,22 +1,31 @@
-﻿using AssetManagement.Contracts.Assignment.Response;
+﻿// using AssetManagement.Contracts.Assignment.Request;
+using AssetManagement.Contracts.Assignment.Response;
+using AssetManagement.Contracts.Common;
 using AssetManagement.Data.EF;
+using AssetManagement.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using AssetManagement.Domain.Enums.Assignment;
 
 namespace AssetManagement.Application.Controllers
 {
-    [Route("api")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class AssignmentController : ControllerBase
+    public class AssignmentsController : ControllerBase
     {
+        private readonly UserManager<AppUser> _userManager;
         private readonly AssetManagementDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public AssignmentController(AssetManagementDbContext dbContext, IMapper mapper)
+        public AssignmentsController(UserManager<AppUser> userManager,
+            AssetManagementDbContext dbContext,
+            IMapper mapper)
         {
+            _userManager = userManager;
             _dbContext = dbContext;
             _mapper = mapper;
         }
@@ -37,6 +46,7 @@ namespace AssetManagement.Application.Controllers
             return Ok(assignmentResponse);
         }
 
+
         [HttpGet("assignment/{id}")]
         public async Task<IActionResult> GetAssignmentDetail(int id)
         {
@@ -44,7 +54,7 @@ namespace AssetManagement.Application.Controllers
                 .Include(x => x.Asset)
                 .Include(x => x.AssignedToAppUser)
                 .Include(x => x.AssignedByToAppUser)
-                .Where(x => x.Id == id) 
+                .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
             if (assignment != null)
             {
@@ -54,6 +64,119 @@ namespace AssetManagement.Application.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpGet]
+        //[Authorize]
+        public async Task<ActionResult<ViewList_ListResponse<ViewListAssignmentResponse>>> Get(
+            [FromQuery] int start,
+            [FromQuery] int end,
+            [FromQuery] string? searchString = "",
+            [FromQuery] string? assignedDateFilter = "",
+            [FromQuery] string? stateFilter = "",
+            [FromQuery] string? sort = "name",
+            [FromQuery] string? order = "ASC",
+            [FromQuery] string? createdId = "")
+        {
+            var list = _dbContext.Assignments
+                .Include(x => x.Asset)
+                .Include(x => x.AssignedToAppUser)
+                .Include(x => x.AssignedByToAppUser)
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State
+                });
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                list = list.Where(x => x.AssetName.ToUpper().Contains(searchString.ToUpper()) || x.AssetCode.ToUpper().Contains(searchString.ToUpper()));
+            }
+            // if(!string.IsNullOrEmpty(assignedDateFilter))
+            // {
+            //     var arrayChar = assignedDateFilter.Split("&");
+            //     var arrNumberChar = new List<int>();
+            //     for (int i = 0; i < arrayChar.Length; i++)
+            //     {
+            //         var temp = 0;
+            //         if (int.TryParse(arrayChar[i], out temp))
+            //         {
+            //             arrNumberChar.Add(temp);
+            //         }
+            //     }
+            //     list = list.Where(x=> arrNumberChar.Contains(x.AssignedDate.GetValueOrDefault()));
+            // }
+            if (!string.IsNullOrEmpty(stateFilter))
+            {
+                var arrayChar = stateFilter.Split("&");
+                var arrNumberChar = new List<int>();
+                for (int i = 0; i < arrayChar.Length; i++)
+                {
+                    var temp = 0;
+                    if (int.TryParse(arrayChar[i], out temp))
+                    {
+                        arrNumberChar.Add(int.Parse(arrayChar[i]));
+                    }
+                }
+                list = list.Where(x => arrNumberChar.Contains((int)x.State));
+            }
+            switch (sort)
+            {
+                case "assetCode":
+                    {
+                        list = list.OrderBy(x => x.AssetCode);
+                        break;
+                    }
+                case "assetName":
+                    {
+                        list = list.OrderBy(x => x.AssetName);
+                        break;
+                    }
+                case "assignedTo":
+                    {
+                        list = list.OrderBy(x => x.AssignedTo);
+                        break;
+                    }
+                case "assignedBy":
+                    {
+                        list = list.OrderBy(x => x.AssignedBy);
+                        break;
+                    }
+                case "state":
+                    {
+                        list = list.OrderBy(x => x.State);
+                        break;
+                    }
+                case "id":
+                    {
+                        list = list.OrderBy(x => x.Id);
+                        break;
+                    }
+            }
+
+            if (order == "DESC")
+            {
+                list = list.Reverse();
+            }
+
+            if (!string.IsNullOrEmpty(createdId))
+            {
+                var newList = list.Where(item => item.Id == int.Parse(createdId));
+                list = list.Where(item => item.Id != int.Parse(createdId));
+                list = newList.Concat(list);
+            }
+
+            var sortedResult = StaticFunctions<ViewListAssignmentResponse>.Paging(list, start, end);
+
+            // var mappedResult = _mapper.Map<List<ViewListAssignmentResponse>>(list);
+
+            return Ok(new ViewList_ListResponse<ViewListAssignmentResponse> { Data = sortedResult, Total = list.Count() });
+            // return Ok(sortedResult);
         }
     }
 }
