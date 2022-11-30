@@ -94,7 +94,6 @@ const App = () => {
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
-                {permissions == 'Admin' ? <Resource name="assetsChoice" list={SelectAssetModal} options={{ label: 'Manage Asset' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} edit={AssignmentEdit} options={{ label: 'Manage Assignments' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="user" list={UserList} options={{ label: 'Manage User' }} /> : null}
             </Admin>

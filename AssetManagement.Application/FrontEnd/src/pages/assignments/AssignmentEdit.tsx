@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase, Link } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, Link, useRecordContext } from "react-admin";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Container, Grid, TextField } from "@mui/material";
 import {
@@ -25,7 +25,9 @@ const AssignmentEdit = () => {
         top: 0,
         right: 0,
         bot: 0
-    })
+    });
+
+    const [selectedAsset, setSelectedAsset] = useState("");
     const { id } = useParams();
     let theme = createTheme();
     theme = unstable_createMuiStrictModeTheme(theme);
@@ -42,10 +44,18 @@ const AssignmentEdit = () => {
 
     useEffect(() => {
         var assetTextBox = document.getElementById("edit_assignment_asset_choice");
+        if (assetTextBox) {
+            let assetTextBoxValue = assetTextBox;
+            console.log(assetTextBoxValue);
+            assetTextBox.setAttribute("value", selectedAsset);
+        }
+    }, [selectedAsset])
+
+    useEffect(() => {
+        var assetTextBox = document.getElementById("edit_assignment_asset_choice");
 
         if (assetTextBox) {
             let assetTextBoxPos = assetTextBox.getBoundingClientRect()
-            console.log("Asset text box pos: ", assetTextBoxPos);
             setAssetChoicePos({
                 left: assetTextBoxPos.left,
                 top: assetTextBoxPos.top,
@@ -60,13 +70,13 @@ const AssignmentEdit = () => {
         assetProvider.getOne("assignments", { id: id })
             .then((response) => {
                 let updatingAssignment = response.data
-                console.log("AssignmentEdit_ updating assignment: ", updatingAssignment)
                 setAssignment({
                     assignedTo: updatingAssignment.assignedTo,
                     assetCode: updatingAssignment.assetCode,
                     assignedDate: updatingAssignment.assignedDate,
                     note: updatingAssignment.note,
                 });
+                setSelectedAsset(updatingAssignment.assetCode);
             })
             .catch((error) => console.log(error));
     }, []);
@@ -74,15 +84,11 @@ const AssignmentEdit = () => {
     const requiredInput = (values) => {
         const errors = {
             assignedTo: "",
-            assetCode: "",
             assignedDate: "",
             note: "",
         };
         if (!values.assignedTo) {
             errors.assignedTo = "This is required";
-            setIsInvalid(true);
-        } else if (!values.assetCode) {
-            errors.assetCode = "This is required";
             setIsInvalid(true);
         } else if (!values.assignedDate) {
             errors.assignedDate = "This is required";
@@ -125,22 +131,27 @@ const AssignmentEdit = () => {
                                 >
                                     Asset *
                                 </Typography>
-                                {/* <Link to="/assetsChoice"> */}
-                                    <TextInput
-                                        id="edit_assignment_asset_choice"
-                                        fullWidth
-                                        label={false}
-                                        name="assetCode"
-                                        source="assetCode"
-                                        disabled
-                                        onClick={() => { toggleAssetChoice() }}
-                                        sx={formStyle.textInputStyle}
-                                        helperText={false}
-                                        InputLabelProps={{ shrink: false }}
-                                    />
-                                {/* </Link> */}
+                                <TextInput
+                                    id="edit_assignment_asset_choice"
+                                    fullWidth
+                                    label={false}
+                                    name="assetCode"
+                                    source="assetCode"
+                                    disabled
+                                    onClick={() => { toggleAssetChoice() }}
+                                    sx={formStyle.textInputStyle}
+                                    helperText={false}
+                                    InputLabelProps={{ shrink: false }}
+                                    defaultValue={selectedAsset}
+                                    value={selectedAsset}
+                                />
 
-                                <SelectAssetModal isOpened={assetChoiceOpen} toggle={toggleAssetChoice} pos={assetChoicePos} />
+                                <SelectAssetModal
+                                    setSelectedAsset={setSelectedAsset}
+                                    selectedAsset={selectedAsset}
+                                    isOpened={assetChoiceOpen}
+                                    toggle={toggleAssetChoice}
+                                    pos={assetChoicePos} />
                             </Box>
                             <Box sx={formStyle.boxStyle}>
                                 <Typography
