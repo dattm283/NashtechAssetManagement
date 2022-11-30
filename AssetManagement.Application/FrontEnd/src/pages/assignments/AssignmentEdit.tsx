@@ -82,7 +82,6 @@ const AssignmentEdit = () => {
         const errors = {
             note: "",
         };
-        console.log("values: ", values);
         if (!values.note) {
             errors.note = "This is required";
             setIsInvalid(true);
@@ -115,9 +114,8 @@ const AssignmentEdit = () => {
                         mutationMode="pessimistic"
                     >
                         <SimpleForm
-                            validate={requiredInput}
+                            // validate={requiredInput}
                             toolbar={<AssignmentEditToolbar />}
-                            mode="onChange"
                         >
                             <Box sx={formStyle.boxStyle}>
                                 <Typography

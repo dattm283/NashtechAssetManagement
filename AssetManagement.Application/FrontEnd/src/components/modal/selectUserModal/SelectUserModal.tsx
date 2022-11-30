@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Box, Button, ButtonGroup, Dialog, DialogContent, DialogTitle, Grid, Radio, Stack } from "@mui/material";
 import styled from "styled-components";
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,6 +10,7 @@ import CategoryFilterSelect from '../../select/CategoryFilterSelect';
 import StateFilterSelect from '../../select/StateFilterSelect';
 import { useNavigate } from 'react-router-dom';
 import RadioChoice from '../../buttons/RadioChoice';
+import { useFormContext } from "react-hook-form";
 
 const StyledDialog = styled(Dialog)`
 .MuiBackdrop-root {
@@ -41,6 +41,12 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
     const handleChange = (staffCode) => {
         setSelectedUser(staffCode);
     };
+
+    const { setValue } = useFormContext();
+
+    useEffect(() => {
+        setValue("assignToAppUserStaffCode", selectedUser);
+    }, [selectedUser])
 
     const usersFilter = [
         <SearchInput

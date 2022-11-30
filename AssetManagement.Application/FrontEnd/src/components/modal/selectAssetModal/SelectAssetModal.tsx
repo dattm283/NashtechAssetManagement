@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Box, Button, ButtonGroup, Dialog, DialogContent, DialogTitle, Grid, Radio, Stack } from "@mui/material";
 import styled from "styled-components";
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,6 +10,7 @@ import CategoryFilterSelect from '../../select/CategoryFilterSelect';
 import StateFilterSelect from '../../select/StateFilterSelect';
 import { useNavigate } from 'react-router-dom';
 import RadioChoice from '../../buttons/RadioChoice';
+import { useFormContext } from "react-hook-form";
 
 const StyledDialog = styled(Dialog)`
 .MuiBackdrop-root {
@@ -38,9 +38,15 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
         return record.assetCode;
     };
 
+    const { setValue } = useFormContext();
+
     const handleChange = (assetCode) => {
         setSelectedAsset(assetCode);
     };
+
+    useEffect(() => {
+        setValue("assetCode", selectedAsset);
+    }, [selectedAsset])
 
     const assetsFilter = [
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
@@ -54,6 +60,8 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
     //     fontWeight: "bold",
     //     fontSize: "20px"
     // };
+
+
 
     return (
         <StyledDialog
