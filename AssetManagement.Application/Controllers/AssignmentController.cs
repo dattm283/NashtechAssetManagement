@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using AssetManagement.Domain.Enums.Assignment;
+using AssetManagement.Contracts.Assignment.Request;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -64,6 +65,36 @@ namespace AssetManagement.Application.Controllers
             {
                 return BadRequest();
             }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAssignment(int id, UpdateAssignmentRequest request)
+        {
+            Assignment updatingAssignment = await _dbContext.Assignments
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+
+            try
+            {
+                if (updatingAssignment != null)
+                {
+                    updatingAssignment.AssignedTo = request.AssignedTo;
+                    updatingAssignment.AssetId = request.AssetId;
+                    updatingAssignment.AssignedDate = request.AssignedDate;
+                    updatingAssignment.Note = request.Note;
+                    await _dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new Exception($"Cannot find an assignment with id: {id}");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponseResult<string>(ex.Message));
+            }
+
+            return Ok(_mapper.Map<UpdateAssignmentResponse>(updatingAssignment));
         }
 
         [HttpGet]

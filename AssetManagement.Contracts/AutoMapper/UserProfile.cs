@@ -34,6 +34,7 @@ namespace AssetManagement.Contracts.AutoMapper
                 .ForMember(dest => dest.Specification, opt => opt.MapFrom(src => src.Asset.Specification))
                 .ForMember(dest => dest.AssignToAppUser, opt => opt.MapFrom(src => src.AssignedToAppUser.UserName))
                 .ForMember(dest => dest.AssignByAppUser, opt => opt.MapFrom(src => src.AssignedByToAppUser.UserName));
+            CreateMap<AssetManagement.Domain.Models.Assignment, UpdateAssignmentResponse>();
         }
     }
 }
