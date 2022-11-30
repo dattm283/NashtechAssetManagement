@@ -81,7 +81,8 @@ namespace AssetManagement.Application.Tests
             string result = ConvertOkObject<CreateAssetResponse>(response);
             Asset newAsset = _context.Assets.LastOrDefault();
             var expected = JsonConvert.SerializeObject(
-                new CreateAssetResponse { 
+                new CreateAssetResponse 
+                { 
                     Id = newAsset.Id, 
                     AssetCode = newAsset.AssetCode, 
                     Name = newAsset.Name, 
@@ -303,7 +304,7 @@ namespace AssetManagement.Application.Tests
             AssetsController assetController = new AssetsController(_context, _mapper);
             var createdId = "3";
             // Act 
-            var result = await assetController.Get(0, 2, "", "", "", "name", "ASC", createdId);
+            var result = await assetController.Get(0, 3, "", "", "", "name", "ASC", createdId);
 
             var query = _context.Assets
                 .Include(x => x.Category)
@@ -312,10 +313,11 @@ namespace AssetManagement.Application.Tests
             var queryCreatedId = _context.Assets
                 .Include(x => x.Category)
                 .Where(x => x.Id == int.Parse(createdId) && !x.IsDeleted)
-                .OrderBy(x => x.Name).AsQueryable();
-            query = queryCreatedId.Concat(query);
+                .AsNoTracking().FirstOrDefault();
 
-            var list = StaticFunctions<Asset>.Paging(query, 0, 2);
+            var list = StaticFunctions<Asset>.Paging(query, 0, 3-1);
+
+            list.Insert(0, queryCreatedId);
 
             var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
 
