@@ -16,6 +16,8 @@ const AssetCreateToolbar = ({ disable }) => {
                 mutationOptions={{
                     onSuccess: () => {
                         // notify('Element updated');
+                        localStorage.setItem("RaStore.assets.listParams", 
+                        `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"name"}`)
                         navigate("/assets")
                     }}
                 }

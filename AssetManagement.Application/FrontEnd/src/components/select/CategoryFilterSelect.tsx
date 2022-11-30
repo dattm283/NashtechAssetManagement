@@ -69,7 +69,7 @@ export default (props) => {
 
 
          var tmp = (<FormControl variant='standard' sx={{ m: 1, width: 120 }}>
-            <InputLabel id="demo-multiple-name">Category</InputLabel>
+            <InputLabel id="demo-multiple-name" shrink={false}>Category</InputLabel>
             <Select
                autoWidth={false}
                labelId="demo-multiple-name"
