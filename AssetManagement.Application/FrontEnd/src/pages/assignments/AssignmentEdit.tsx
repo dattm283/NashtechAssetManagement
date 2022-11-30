@@ -15,6 +15,7 @@ import RadioButtonGroup from "../../components/custom/RadioButtonGroupInput";
 import AssignmentEditToolbar from "../../components/toolbar/AssignmentEditToolbar";
 import { formStyle } from "../../styles/formStyle";
 import SelectAssetModal from "../../components/modal/selectAssetModal/SelectAssetModal";
+import SelectUserModal from "../../components/modal/selectUserModal/SelectUserModal";
 
 const AssignmentEdit = () => {
     const [asset, setAsset] = useState("")
@@ -25,18 +26,22 @@ const AssignmentEdit = () => {
         top: 0,
     });
     const [selectedAsset, setSelectedAsset] = useState("");
+    const [userChoiceOpen, setUserChoiceOpen] = useState(false);
+    const [userChoicePos, setUserChoicePos] = useState({
+        left: 0,
+        top: 0,
+    })
+    const [selectedUser, setSelectedUser] = useState("");
     const { id } = useParams();
     let theme = createTheme();
     theme = unstable_createMuiStrictModeTheme(theme);
-    // const [assignment, setAssignment] = useState({
-    //     assignToAppUserStaffCode: null,
-    //     assetCode: null,
-    //     assignedDate: null,
-    //     note: "",
-    // });
 
     const toggleAssetChoice = () => {
         setAssetChoiceOpen(!assetChoiceOpen);
+    }
+
+    const toggleUserChoice = () => {
+        setUserChoiceOpen(!userChoiceOpen);
     }
 
     useEffect(() => {
@@ -49,12 +54,20 @@ const AssignmentEdit = () => {
 
     useEffect(() => {
         var assetTextBox = document.getElementById("edit_assignment_asset_choice");
+        var userTextBox = document.getElementById("edit_assignment_user_choice");
 
         if (assetTextBox) {
             let assetTextBoxPos = assetTextBox.getBoundingClientRect()
             setAssetChoicePos({
                 left: assetTextBoxPos.left,
                 top: assetTextBoxPos.top,
+            })
+        }
+        if (userTextBox) {
+            let userTextBoxPos = userTextBox.getBoundingClientRect();
+            setUserChoicePos({
+                left: userTextBoxPos.left,
+                top: userTextBoxPos.top
             })
         }
     }, [])
@@ -64,13 +77,8 @@ const AssignmentEdit = () => {
             .then((response) => {
                 let updatingAssignment = response.data
                 console.log(updatingAssignment)
-                // setAssignment({
-                //     assignToAppUserStaffCode: updatingAssignment.assignToAppUserStaffCode,
-                //     assetCode: updatingAssignment.assetCode,
-                //     assignedDate: updatingAssignment.assignedDate,
-                //     note: updatingAssignment.note,
-                // });
                 setSelectedAsset(updatingAssignment.assetCode);
+                setSelectedUser(updatingAssignment.assignToAppUserStaffCode);
             })
             .catch((error) => console.log(error));
     }, []);
@@ -122,24 +130,24 @@ const AssignmentEdit = () => {
                                     User *
                                 </Typography>
                                 <TextInput
-                                    id="edit_assignment_asset_choice"
+                                    id="edit_assignment_user_choice"
                                     fullWidth
                                     label={false}
                                     name="assignToAppUserStaffCode"
                                     source="assignToAppUserStaffCode"
                                     disabled
-                                    onClick={() => { toggleAssetChoice() }}
+                                    onClick={() => { toggleUserChoice() }}
                                     sx={formStyle.textInputStyle}
                                     helperText={false}
                                     InputLabelProps={{ shrink: false }}
                                 />
 
-                                <SelectAssetModal
-                                    setSelectedAsset={setSelectedAsset}
-                                    selectedAsset={selectedAsset}
-                                    isOpened={assetChoiceOpen}
-                                    toggle={toggleAssetChoice}
-                                    pos={assetChoicePos} />
+                                <SelectUserModal
+                                    setSelectedUser={setSelectedUser}
+                                    selectedUser={selectedUser}
+                                    isOpened={userChoiceOpen}
+                                    toggle={toggleUserChoice}
+                                    pos={userChoicePos} />
                             </Box>
                             <Box sx={formStyle.boxStyle}>
                                 <Typography

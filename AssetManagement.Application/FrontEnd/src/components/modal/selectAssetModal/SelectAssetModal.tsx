@@ -32,9 +32,10 @@ const StyledDialogContent = styled(DialogContent)`
 `;
 
 const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAsset }) => {
-    const postRowClick = (record) => {
+    const postRowClick = (id, resource, record) => {
         setSelectedAsset(record.assetCode);
-        return "";
+        toggle();
+        return record.assetCode;
     };
 
     const handleChange = (assetCode) => {
@@ -88,7 +89,7 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
                         </Grid>
 
                         <Datagrid
-                            rowClick={postRowClick}
+                            rowClick={(postRowClick)}
                             empty={
                                 <p>
                                     <h2>No Data found</h2>

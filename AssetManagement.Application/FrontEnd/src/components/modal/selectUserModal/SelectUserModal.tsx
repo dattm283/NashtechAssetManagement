@@ -82,6 +82,7 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
                     <ListBase
                         perPage={5}
                         sort={{ field: "staffCode", order: "DESC" }}
+                        resource="user"
                     >
                         <Grid container>
                             <Grid item xs={6}>
