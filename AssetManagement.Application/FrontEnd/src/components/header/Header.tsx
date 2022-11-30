@@ -2,27 +2,29 @@ import React, { useState, useEffect } from "react";
 import { AppBar, UserMenu, useShowContext, Button, Logout } from "react-admin";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { headerStyle } from "../../styles/headerStyle";
-import { Link } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import KeyIcon from '@mui/icons-material/Key';
+import KeyIcon from "@mui/icons-material/Key";
+import UserChangePasswordModal from "../modal/changePasswordModal/UserChangePasswordModal";
+import { Dialog, Modal } from "@mui/material";
 
 const Header = () => {
   const [userName, setUserName] = useState(
     localStorage.getItem("userName") || ""
   );
+  const [state, setState] = useState(false);
+
   useEffect(() => {
     setUserName(localStorage.getItem("userName") || "");
   });
 
-  const ChangePassswordMenu = React.forwardRef((props, ref) => {
+  const ChangePassswordMenu = () => {
     return (
       <MenuItem
-        component={Link}
-        // It's important to pass the props to allow MUI to manage the keyboard navigation
-        {...props}
-        to="/change-password"
+        onClick={() => {
+          setState(true);
+        }}
       >
         <ListItemIcon>
           <KeyIcon />
@@ -30,7 +32,7 @@ const Header = () => {
         <ListItemText>Change password</ListItemText>
       </MenuItem>
     );
-  });
+  };
 
   const button = (
     <Button
@@ -49,11 +51,20 @@ const Header = () => {
   );
 
   return (
-    <AppBar
-      userMenu={<MyUserMenu icon={button} />}
-      open={true}
-      sx={headerStyle.appBarStyle}
-    />
+    <>
+      <AppBar
+        userMenu={<MyUserMenu icon={button} />}
+        open={true}
+        sx={headerStyle.appBarStyle}
+      />
+      <Dialog
+        open={state}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <UserChangePasswordModal stateChanger={setState} />
+      </Dialog>
+    </>
   );
 };
 
