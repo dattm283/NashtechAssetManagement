@@ -29,20 +29,31 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword([FromBody] UserChangePasswordRequest request)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return BadRequest(new ErrorResponseResult<string>("Invalid password"));
             }
 
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
+
+            if (!(await _userManager.CheckPasswordAsync(user, request.CurrentPassword)))
+            {
+                return BadRequest(new ErrorResponseResult<string>("Password is incorrect"));
+            }
+
+            if(request.CurrentPassword == request.NewPassword)
+            {
+                return BadRequest(new ErrorResponseResult<string>("New password must be different"));
+            }
 
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(new ErrorResponseResult<string>(result.Errors.ToString()));
             }
 
             user.IsLoginFirstTime = false;

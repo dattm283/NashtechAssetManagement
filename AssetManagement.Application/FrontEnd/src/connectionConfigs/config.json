@@ -4,7 +4,8 @@
     "auth": "./api/auth",
     "asset": "/api/Assets",
     "category": "/api/Category",
-    "assignement": "./api/assignement"
+    "assignement": "./api/assignement",
+    "user":"./api/User"
   },
   "encryption": {
     "key": "ahihi"
