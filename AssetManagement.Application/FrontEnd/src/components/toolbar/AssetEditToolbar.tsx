@@ -21,10 +21,13 @@ const AssetEditToolbar = () => {
                     label="Save"
                     mutationOptions={{
                         onSuccess: () => {
+                            localStorage.setItem("RaStore.assets.listParams", 
+                        `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"name"}`)
+                            navigate("/assets")
                             notify("Element updated");
                         },
                     }}
-                    // type="button"
+                    type="button"
                     variant="contained"
                     icon={<></>}
                     color="secondary"
