@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AssetManagement.Contracts.Assignment.Response;
+using AssetManagement.Contracts.User.Response;
+using AssetManagement.Domain.Enums.AppUser;
 
 namespace AssetManagement.Contracts.AutoMapper
 {
@@ -35,6 +37,19 @@ namespace AssetManagement.Contracts.AutoMapper
                 .ForMember(dest => dest.AssignToAppUser, opt => opt.MapFrom(src => src.AssignedToAppUser.UserName))
                 .ForMember(dest => dest.AssignByAppUser, opt => opt.MapFrom(src => src.AssignedByToAppUser.UserName));
             CreateMap<AssetManagement.Domain.Models.Assignment, UpdateAssignmentResponse>();
+
+            CreateMap<AppUser, ViewListUser_UserResponse>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.JoinedDate, opt => opt.MapFrom(src => src.CreatedDate.Date))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + ' ' + src.LastName));
+            CreateMap<AppUser, ViewDetailUser_UserResponse>()
+                .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => (UserGender)src.Gender))
+                .ForMember(dest => dest.Location, opt => opt.MapFrom(src => (AppUserLocation)src.Location))
+                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.Dob))
+                .ForMember(dest => dest.JoinedDate, opt => opt.MapFrom(src => src.CreatedDate.Date))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + ' ' + src.LastName));
+
+            CreateMap<AppUser, DeleteUserResponse>();
         }
     }
 }
