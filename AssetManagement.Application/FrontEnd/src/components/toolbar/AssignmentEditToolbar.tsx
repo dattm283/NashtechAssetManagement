@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {theme} from '../../theme';
 import { formToolbarStyle } from "../../styles/formToolbarStyle";
 
-const AssignmentEditToolbar = ({ disable }) => {
+const AssignmentEditToolbar = () => {
     const notify = useNotify();
     const navigate = useNavigate();
     return (
@@ -23,7 +23,7 @@ const AssignmentEditToolbar = ({ disable }) => {
                 variant="contained"
                 icon={<></>}
                 color="secondary"
-                disabled={disable}
+                disabled={false}
             />
             <Button
                 variant="outlined"

@@ -32,7 +32,7 @@ const StyledDialogContent = styled(DialogContent)`
 `;
 
 const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser }) => {
-    const postRowClick = (record) => {
+    const postRowClick = (id, resource, record) => {
         setSelectedUser(record.staffCode);
         toggle();
         return "";
@@ -50,6 +50,8 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
             alwaysOn
         />
     ];
+
+    const getStaffCode = record => record.staffCode;
 
     // const style = {
     //     color: "#cf2338",
@@ -98,7 +100,11 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
                             empty={<h2>No User found</h2>}
                             bulkActionButtons={false}
                         >
-                            <RadioChoice handleChange={handleChange} selectedValue={selectedUser} />
+                            <RadioChoice
+                                handleChange={handleChange}
+                                selectedValue={selectedUser}
+                                propsGetter={getStaffCode}
+                            />
                             <TextField label="Staff Code" source="staffCode" />
                             <TextField label="Full Name" source="fullName" />
                             <FunctionField source="Type" render={data => data.type == "Admin" ? "Admin" : "Staff"} />

@@ -46,6 +46,8 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
+    const getAssetCode = record => record.assetCode;
+
     // const style = {
     //     color: "#cf2338",
     //     paddingLeft: "50px",
@@ -97,7 +99,11 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
                             }
                             bulkActionButtons={false}
                         >
-                            <RadioChoice handleChange={handleChange} selectedValue={selectedAsset} />
+                            <RadioChoice
+                                handleChange={handleChange}
+                                selectedValue={selectedAsset}
+                                propsGetter={getAssetCode}
+                            />
                             <TextField source="assetCode" />
                             <TextField label="Asset Name" source="name" />
                             <TextField label="Category" source="categoryName" />

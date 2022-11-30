@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase, Link, useRecordContext } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh } from "react-admin";
 import { useParams } from "react-router-dom";
-import { Box, Typography, Container, Grid, TextField } from "@mui/material";
+import { Box, Typography, Container } from "@mui/material";
 import {
     createTheme,
     ThemeProvider,
     unstable_createMuiStrictModeTheme,
 } from "@mui/material/styles";
-import * as assetService from "../../services/assets";
 import { assetProvider } from "../../providers/assetProvider/assetProvider";
-import * as categoryService from "../../services/category";
-import CategorySelectBoxDisabled from "../../components/custom/CategorySelectBoxDisabled";
-import RadioButtonGroup from "../../components/custom/RadioButtonGroupInput";
 import AssignmentEditToolbar from "../../components/toolbar/AssignmentEditToolbar";
 import { formStyle } from "../../styles/formStyle";
 import SelectAssetModal from "../../components/modal/selectAssetModal/SelectAssetModal";
@@ -19,7 +15,7 @@ import SelectUserModal from "../../components/modal/selectUserModal/SelectUserMo
 
 const AssignmentEdit = () => {
     const [asset, setAsset] = useState("")
-    const [isInvalid, setIsInvalid] = useState(true);
+    const [isInvalid, setIsInvalid] = useState(false);
     const [assetChoiceOpen, setAssetChoiceOpen] = useState(false);
     const [assetChoicePos, setAssetChoicePos] = useState({
         left: 0,
@@ -76,7 +72,6 @@ const AssignmentEdit = () => {
         assetProvider.getOne("assignments", { id: id })
             .then((response) => {
                 let updatingAssignment = response.data
-                console.log(updatingAssignment)
                 setSelectedAsset(updatingAssignment.assetCode);
                 setSelectedUser(updatingAssignment.assignToAppUserStaffCode);
             })
@@ -85,19 +80,20 @@ const AssignmentEdit = () => {
 
     const requiredInput = (values) => {
         const errors = {
-            assignedDate: "",
             note: "",
         };
-        if (!values.assignedDate) {
-            errors.assignedDate = "This is required";
-            setIsInvalid(true);
-        } else if (!values.note) {
+        console.log("values: ", values);
+        if (!values.note) {
             errors.note = "This is required";
             setIsInvalid(true);
         } else {
             setIsInvalid(false);
-            return {};
+            return {
+                note: "",
+            }
         }
+        console.log(errors)
+        console.log(isInvalid)
         return errors;
     };
 
@@ -120,7 +116,8 @@ const AssignmentEdit = () => {
                     >
                         <SimpleForm
                             validate={requiredInput}
-                            toolbar={<AssignmentEditToolbar disable={isInvalid} />}
+                            toolbar={<AssignmentEditToolbar />}
+                            mode="onChange"
                         >
                             <Box sx={formStyle.boxStyle}>
                                 <Typography
