@@ -86,7 +86,7 @@ function EditAssetInformations() {
                     >
                         <SimpleForm
                             validate={requiredInput}
-                            toolbar={<AssetEditToolbar />}
+                            toolbar={<AssetEditToolbar disable={isValid} />}
                         >
                             <Box sx={formStyle.boxStyle}>
                                 <Typography
@@ -154,7 +154,7 @@ function EditAssetInformations() {
                                 </Typography>
                                 <DateInput
                                     fullWidth
-                                    label=""
+                                    label={false}
                                     name="installedDate"
                                     source="installedDate"
                                     InputLabelProps={{ shrink: false }}

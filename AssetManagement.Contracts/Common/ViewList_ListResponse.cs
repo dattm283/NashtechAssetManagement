@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AssetManagement.Contracts.Asset.Response
+namespace AssetManagement.Contracts.Common
 {
     public class ViewList_ListResponse<T> where T: class
     {

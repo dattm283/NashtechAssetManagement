@@ -11,7 +11,7 @@ import {
     CreateButton,
     SearchInput
 } from "react-admin";
-import { ButtonGroup, Stack } from "@mui/material";
+import { ButtonGroup, Stack, Container } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
@@ -43,7 +43,7 @@ export default () => {
     ];
 
     return (
-        <>
+        <Container component="main" sx={{padding:"20px 10px"}}>
             <Title title="Manage User" />
             <ListBase
                 perPage={5}
@@ -105,6 +105,6 @@ export default () => {
                 setOpenDetail={setOpenDetail} 
                 label="Detailed User Information"
             />
-        </>
+        </Container>
     );
 };

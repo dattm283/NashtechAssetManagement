@@ -57,7 +57,7 @@ namespace AssetManagement.Data.Extensions
                 CreatedDate = DateTime.Now,
                 Gender = Domain.Enums.AppUser.UserGender.Male,
                 Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-                StaffCode = " SD0001"
+                StaffCode = "SD0001"
             });
 
             modelBuilder.Entity<AppUser>().HasData(new AppUser
@@ -77,7 +77,7 @@ namespace AssetManagement.Data.Extensions
                 CreatedDate = DateTime.Now,
                 Gender = Domain.Enums.AppUser.UserGender.Male,
                 Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                StaffCode = " SD0002"
+                StaffCode = "SD0002"
             });
 
             modelBuilder.Entity<AppUser>().HasData(new AppUser
@@ -97,7 +97,7 @@ namespace AssetManagement.Data.Extensions
                 CreatedDate = DateTime.Now,
                 Gender = Domain.Enums.AppUser.UserGender.Female,
                 Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                StaffCode = " SD0003"
+                StaffCode = "SD0003"
             });
 
             modelBuilder.Entity<AppUser>().HasData(new AppUser
@@ -117,7 +117,7 @@ namespace AssetManagement.Data.Extensions
                 CreatedDate = DateTime.Now,
                 Gender = Domain.Enums.AppUser.UserGender.Female,
                 Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                StaffCode = " SD0004"
+                StaffCode = "SD0004"
             });
 
             modelBuilder.Entity<AppUser>().HasData(new AppUser
@@ -137,7 +137,7 @@ namespace AssetManagement.Data.Extensions
                 CreatedDate = DateTime.Now,
                 Gender = Domain.Enums.AppUser.UserGender.Female,
                 Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                StaffCode = " SD0005",
+                StaffCode = "SD0005",
                 IsDeleted = true,
             });
 

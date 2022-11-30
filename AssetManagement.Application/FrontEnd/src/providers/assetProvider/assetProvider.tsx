@@ -48,7 +48,7 @@ export const assetProvider: DataProvider = {
     },
     getList: function <RecordType extends RaRecord = any>(resource: string, params: GetListParams): Promise<GetListResult<RecordType>> {
         const { page, perPage } = params.pagination;
-        const { states, searchString, categories } = params.filter;
+        const { states, searchString, categories, assignedDateFilter, noNumber } = params.filter;
         const { field, order } = params.sort;
         let tmp = "";
         for (const key in states) {
@@ -70,8 +70,10 @@ export const assetProvider: DataProvider = {
             start: JSON.stringify((page - 1) * perPage),
             sort: field,
             order: order,
+            noNumber: noNumber,
             stateFilter: tmp ? tmp : null,
             searchString: searchString,
+            assignedDateFilter: assignedDateFilter,
             categoryFilter: tmp1 ? tmp1 : null,
             createdId: localStorage.getItem("item")!=null ? 
                 JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) : 
