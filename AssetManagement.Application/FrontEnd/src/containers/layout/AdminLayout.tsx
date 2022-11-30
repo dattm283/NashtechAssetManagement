@@ -24,6 +24,7 @@ import AssignmentList from '../../pages/assignments/AssignmentList';
 import AssignmentEdit from '../../pages/assignments/AssignmentEdit';
 // import AssetManager from '../../pages/asset/AssetManager';
 import UserList from '../../pages/users/UserList';
+import SelectAssetModal from '../../components/modal/selectAssetModal/SelectAssetModal';
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
@@ -93,6 +94,7 @@ const App = () => {
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="assetsChoice" list={SelectAssetModal} options={{ label: 'Manage Asset' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} edit={AssignmentEdit} options={{ label: 'Manage Assignments' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="user" list={UserList} options={{ label: 'Manage User' }} /> : null}
             </Admin>

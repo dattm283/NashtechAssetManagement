@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, Link } from "react-admin";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Container, Grid, TextField } from "@mui/material";
 import {
@@ -19,7 +19,7 @@ import SelectAssetModal from "../../components/modal/selectAssetModal/SelectAsse
 const AssignmentEdit = () => {
     const [asset, setAsset] = useState("")
     const [isInvalid, setIsInvalid] = useState(true);
-    const [assetChoiceOpen, setAssetChoiceOpen] = useState(true);
+    const [assetChoiceOpen, setAssetChoiceOpen] = useState(false);
     const [assetChoicePos, setAssetChoicePos] = useState({
         left: 0,
         top: 0,
@@ -125,19 +125,22 @@ const AssignmentEdit = () => {
                                 >
                                     Asset *
                                 </Typography>
-                                <TextInput
-                                    id="edit_assignment_asset_choice"
-                                    fullWidth
-                                    label={false}
-                                    name="assetCode"
-                                    source="assetCode"
-                                    disabled
-                                    onClick={() => { toggleAssetChoice() }}
-                                    sx={formStyle.textInputStyle}
-                                    helperText={false}
-                                    InputLabelProps={{ shrink: false }}
-                                />
-                                <SelectAssetModal pos={assetChoicePos} isOpened={assetChoiceOpen} toggle={toggleAssetChoice} />
+                                {/* <Link to="/assetsChoice"> */}
+                                    <TextInput
+                                        id="edit_assignment_asset_choice"
+                                        fullWidth
+                                        label={false}
+                                        name="assetCode"
+                                        source="assetCode"
+                                        disabled
+                                        onClick={() => { toggleAssetChoice() }}
+                                        sx={formStyle.textInputStyle}
+                                        helperText={false}
+                                        InputLabelProps={{ shrink: false }}
+                                    />
+                                {/* </Link> */}
+
+                                <SelectAssetModal isOpened={assetChoiceOpen} toggle={toggleAssetChoice} pos={assetChoicePos} />
                             </Box>
                             <Box sx={formStyle.boxStyle}>
                                 <Typography
