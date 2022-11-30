@@ -45,19 +45,15 @@ export default () => {
     const refresh = useRefresh();
 
     const assetsFilter = [
-        // <SelectArrayInput source="states" choices={[
-        //     { id: '0', name: 'Available' },
-        //     { id: '1', name: 'Not available' },
-        //     { id: '2', name: 'Waiting for recycling' },
-        //     { id: '3', name: 'Recyled' },
-        // ]} />,
         <StateFilterSelect
             source="states"
+            label="State"
+            sx={{ width:"250px" }}
             statesList={[
-                { value: 0, text: "Available" },
-                { value: 1, text: "Not Available" },
-                { value: 2, text: "Waiting for recycling" },
-                { value: 3, text: "Recycled" },
+                { value: "0", text: "Available" },
+                { value: "1", text: "Not Available" },
+                { value: "2", text: "Waiting for recycling" },
+                { value: "3", text: "Recycled" },
             ]}
             alwaysOn
         />,
@@ -72,28 +68,29 @@ export default () => {
 
 
 
-    return (
-        <>
-            <Title title="Manage Asset" />
-            <ListBase
-                perPage={5}
-                sort={{ field: "name", order: "DESC" }}
-            >
-                <h2 style={{ color: "#cf2338" }}>Asset List</h2>
-                <Stack direction="row" justifyContent="end" alignContent="center">
-                    <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assetsFilter} /></div>
-                    <div style={{ display: "flex", alignItems: "end" }}>
-                        <CreateButton
-                            size="large"
-                            variant="contained"
-                            color="secondary"
-                            label="Create new asset"
-                            sx={{
-                                width: "250px",
-                            }}
-                        />
-                    </div>
-                </Stack>
+  return (
+      <>
+      <Title title="Manage Asset"/>
+      <ListBase
+        perPage={5}
+        sort={{ field: "name", order: "DESC" }}
+        filterDefaultValues={{ states: ["0", "1", "4"] }}
+      >
+        <h2 style={{ color: "#cf2338" }}>Asset List</h2>
+        <Stack direction="row" justifyContent="end" alignContent="center">
+          <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assetsFilter} /></div>
+          <div style={{ display: "flex", alignItems: "end" }}>
+            <CreateButton
+              size="large"
+              variant="contained"
+              color="secondary"
+              label="Create new asset"
+              sx={{
+                width: "250px",
+              }}
+            />
+          </div>
+        </Stack>
 
                 <Datagrid
                     rowClick={postRowClick}
