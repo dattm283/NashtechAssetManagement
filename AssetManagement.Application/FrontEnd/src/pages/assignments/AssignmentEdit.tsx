@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit } from "react-admin";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Container } from "@mui/material";
 import {
@@ -98,120 +98,123 @@ const AssignmentEdit = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <Title title="Manage Asset > Edit Asset" />
-            <Container component="main">
-                {/* <CssBaseline /> */}
-                <Box sx={formStyle.boxTitleStyle}>
-                    <Typography
-                        component="h3"
-                        variant="h5"
-                        sx={formStyle.formTitle}
-                    >
-                        Edit Assignment
-                    </Typography>
-                    <EditBase
-                        sx={formStyle.editBaseStyle}
-                        mutationMode="pessimistic"
-                    >
-                        <SimpleForm
-                            // validate={requiredInput}
-                            toolbar={<AssignmentEditToolbar />}
+            <Edit>
+                <Title title="Manage Asset > Edit Asset" />
+                <Container component="main">
+                    {/* <CssBaseline /> */}
+                    <Box sx={formStyle.boxTitleStyle}>
+                        <Typography
+                            component="h3"
+                            variant="h5"
+                            sx={formStyle.formTitle}
                         >
-                            <Box sx={formStyle.boxStyle}>
-                                <Typography
-                                    variant="h6"
-                                    sx={formStyle.typographyStyle}
-                                >
-                                    User *
-                                </Typography>
-                                <TextInput
-                                    id="edit_assignment_user_choice"
-                                    fullWidth
-                                    label={false}
-                                    name="assignToAppUserStaffCode"
-                                    source="assignToAppUserStaffCode"
-                                    disabled
-                                    onClick={() => { toggleUserChoice() }}
-                                    sx={formStyle.textInputStyle}
-                                    helperText={false}
-                                    InputLabelProps={{ shrink: false }}
-                                />
+                            Edit Assignment
+                        </Typography>
+                        <EditBase
+                            sx={formStyle.editBaseStyle}
+                            mutationMode="pessimistic"
+                        >
+                            <SimpleForm
+                                validate={requiredInput}
+                                mode="onChange"
+                                toolbar={<AssignmentEditToolbar isEnable={!isInvalid} />}
+                            >
+                                <Box sx={formStyle.boxStyle}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        User *
+                                    </Typography>
+                                    <TextInput
+                                        id="edit_assignment_user_choice"
+                                        fullWidth
+                                        label={false}
+                                        name="assignToAppUserStaffCode"
+                                        source="assignToAppUserStaffCode"
+                                        disabled
+                                        onClick={() => { toggleUserChoice() }}
+                                        sx={formStyle.textInputStyle}
+                                        helperText={false}
+                                        InputLabelProps={{ shrink: false }}
+                                    />
 
-                                <SelectUserModal
-                                    setSelectedUser={setSelectedUser}
-                                    selectedUser={selectedUser}
-                                    isOpened={userChoiceOpen}
-                                    toggle={toggleUserChoice}
-                                    pos={userChoicePos} />
-                            </Box>
-                            <Box sx={formStyle.boxStyle}>
-                                <Typography
-                                    variant="h6"
-                                    sx={formStyle.typographyStyle}
-                                >
-                                    Asset *
-                                </Typography>
-                                <TextInput
-                                    id="edit_assignment_asset_choice"
-                                    fullWidth
-                                    label={false}
-                                    name="assetCode"
-                                    source="assetCode"
-                                    disabled
-                                    onClick={() => { toggleAssetChoice() }}
-                                    sx={formStyle.textInputStyle}
-                                    helperText={false}
-                                    InputLabelProps={{ shrink: false }}
-                                    defaultValue={selectedAsset}
-                                    value={selectedAsset}
-                                />
+                                    <SelectUserModal
+                                        setSelectedUser={setSelectedUser}
+                                        selectedUser={selectedUser}
+                                        isOpened={userChoiceOpen}
+                                        toggle={toggleUserChoice}
+                                        pos={userChoicePos} />
+                                </Box>
+                                <Box sx={formStyle.boxStyle}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        Asset *
+                                    </Typography>
+                                    <TextInput
+                                        id="edit_assignment_asset_choice"
+                                        fullWidth
+                                        label={false}
+                                        name="assetCode"
+                                        source="assetCode"
+                                        disabled
+                                        onClick={() => { toggleAssetChoice() }}
+                                        sx={formStyle.textInputStyle}
+                                        helperText={false}
+                                        InputLabelProps={{ shrink: false }}
+                                        defaultValue={selectedAsset}
+                                        value={selectedAsset}
+                                    />
 
-                                <SelectAssetModal
-                                    setSelectedAsset={setSelectedAsset}
-                                    selectedAsset={selectedAsset}
-                                    isOpened={assetChoiceOpen}
-                                    toggle={toggleAssetChoice}
-                                    pos={assetChoicePos} />
-                            </Box>
-                            <Box sx={formStyle.boxStyle}>
-                                <Typography
-                                    variant="h6"
-                                    sx={formStyle.typographyStyle}
-                                >
-                                    Assigned Date *
-                                </Typography>
-                                <DateInput
-                                    fullWidth
-                                    label=""
-                                    name="assignedDate"
-                                    source="assignedDate"
-                                    InputLabelProps={{ shrink: false }}
-                                    onBlur={(e) => e.stopPropagation()}
-                                    sx={formStyle.textInputStyle}
-                                    helperText={false}
-                                />
-                            </Box>
-                            <Box sx={formStyle.boxStyle}>
-                                <Typography
-                                    variant="h6"
-                                    sx={formStyle.typographyStyle}
-                                >
-                                    Note *
-                                </Typography>
-                                <TextInput
-                                    fullWidth
-                                    label={false}
-                                    name="note"
-                                    source="note"
-                                    sx={formStyle.textInputStyle}
-                                    helperText={false}
-                                    InputLabelProps={{ shrink: false }}
-                                />
-                            </Box>
-                        </SimpleForm>
-                    </EditBase>
-                </Box>
-            </Container>
+                                    <SelectAssetModal
+                                        setSelectedAsset={setSelectedAsset}
+                                        selectedAsset={selectedAsset}
+                                        isOpened={assetChoiceOpen}
+                                        toggle={toggleAssetChoice}
+                                        pos={assetChoicePos} />
+                                </Box>
+                                <Box sx={formStyle.boxStyle}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        Assigned Date *
+                                    </Typography>
+                                    <DateInput
+                                        fullWidth
+                                        label=""
+                                        name="assignedDate"
+                                        source="assignedDate"
+                                        InputLabelProps={{ shrink: false }}
+                                        onBlur={(e) => e.stopPropagation()}
+                                        sx={formStyle.textInputStyle}
+                                        helperText={false}
+                                    />
+                                </Box>
+                                <Box sx={formStyle.boxStyle}>
+                                    <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        Note *
+                                    </Typography>
+                                    <TextInput
+                                        fullWidth
+                                        label={false}
+                                        name="note"
+                                        source="note"
+                                        sx={formStyle.textInputStyle}
+                                        helperText={false}
+                                        InputLabelProps={{ shrink: false }}
+                                    />
+                                </Box>
+                            </SimpleForm>
+                        </EditBase>
+                    </Box>
+                </Container>
+            </Edit>
         </ThemeProvider>
     );
 }

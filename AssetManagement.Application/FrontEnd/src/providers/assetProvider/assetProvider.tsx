@@ -24,6 +24,7 @@ export const assetProvider: DataProvider = {
         throw new Error("Function not implemented.");
     },
     update: (resource, params) => {
+        console.log(params.data);
         return axiosInstance.put(`/api/${resource}/${params.id}`, params.data).then(res => {
             localStorage.setItem("item", JSON.stringify(res.data))
             return res
