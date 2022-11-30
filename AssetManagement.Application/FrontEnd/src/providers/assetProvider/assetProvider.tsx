@@ -75,8 +75,7 @@ export const assetProvider: DataProvider = {
             categoryFilter: tmp1 ? tmp1 : null,
             createdId: localStorage.getItem("item")!=null ? 
                 JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) : 
-                null,
-            userName: localStorage.getItem("userName") ? localStorage.getItem("userName") : null
+                null
         };
 
         const url = `/api/${resource}?${stringify(query)}`;
