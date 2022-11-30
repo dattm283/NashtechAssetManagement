@@ -20,6 +20,8 @@ namespace AssetManagement.Contracts.Assignment.Response
 
         public string AssignToAppUser { get; set; }
 
+        public string AssignToAppUserStaffCode { get; set; }
+
         public Guid? AssignedBy { get; set; }
 
         public string AssignByAppUser { get; set; }

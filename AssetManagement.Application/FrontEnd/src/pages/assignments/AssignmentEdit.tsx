@@ -23,20 +23,17 @@ const AssignmentEdit = () => {
     const [assetChoicePos, setAssetChoicePos] = useState({
         left: 0,
         top: 0,
-        right: 0,
-        bot: 0
     });
-
     const [selectedAsset, setSelectedAsset] = useState("");
     const { id } = useParams();
     let theme = createTheme();
     theme = unstable_createMuiStrictModeTheme(theme);
-    const [assignment, setAssignment] = useState({
-        assignedTo: null,
-        assetCode: null,
-        assignedDate: null,
-        note: "",
-    });
+    // const [assignment, setAssignment] = useState({
+    //     assignToAppUserStaffCode: null,
+    //     assetCode: null,
+    //     assignedDate: null,
+    //     note: "",
+    // });
 
     const toggleAssetChoice = () => {
         setAssetChoiceOpen(!assetChoiceOpen);
@@ -46,7 +43,6 @@ const AssignmentEdit = () => {
         var assetTextBox = document.getElementById("edit_assignment_asset_choice");
         if (assetTextBox) {
             let assetTextBoxValue = assetTextBox;
-            console.log(assetTextBoxValue);
             assetTextBox.setAttribute("value", selectedAsset);
         }
     }, [selectedAsset])
@@ -59,23 +55,21 @@ const AssignmentEdit = () => {
             setAssetChoicePos({
                 left: assetTextBoxPos.left,
                 top: assetTextBoxPos.top,
-                right: assetTextBoxPos.right,
-                bot: assetTextBoxPos.bottom
             })
         }
-
     }, [])
 
     useEffect(() => {
         assetProvider.getOne("assignments", { id: id })
             .then((response) => {
                 let updatingAssignment = response.data
-                setAssignment({
-                    assignedTo: updatingAssignment.assignedTo,
-                    assetCode: updatingAssignment.assetCode,
-                    assignedDate: updatingAssignment.assignedDate,
-                    note: updatingAssignment.note,
-                });
+                console.log(updatingAssignment)
+                // setAssignment({
+                //     assignToAppUserStaffCode: updatingAssignment.assignToAppUserStaffCode,
+                //     assetCode: updatingAssignment.assetCode,
+                //     assignedDate: updatingAssignment.assignedDate,
+                //     note: updatingAssignment.note,
+                // });
                 setSelectedAsset(updatingAssignment.assetCode);
             })
             .catch((error) => console.log(error));
@@ -83,14 +77,10 @@ const AssignmentEdit = () => {
 
     const requiredInput = (values) => {
         const errors = {
-            assignedTo: "",
             assignedDate: "",
             note: "",
         };
-        if (!values.assignedTo) {
-            errors.assignedTo = "This is required";
-            setIsInvalid(true);
-        } else if (!values.assignedDate) {
+        if (!values.assignedDate) {
             errors.assignedDate = "This is required";
             setIsInvalid(true);
         } else if (!values.note) {
@@ -124,6 +114,33 @@ const AssignmentEdit = () => {
                             validate={requiredInput}
                             toolbar={<AssignmentEditToolbar disable={isInvalid} />}
                         >
+                            <Box sx={formStyle.boxStyle}>
+                                <Typography
+                                    variant="h6"
+                                    sx={formStyle.typographyStyle}
+                                >
+                                    User *
+                                </Typography>
+                                <TextInput
+                                    id="edit_assignment_asset_choice"
+                                    fullWidth
+                                    label={false}
+                                    name="assignToAppUserStaffCode"
+                                    source="assignToAppUserStaffCode"
+                                    disabled
+                                    onClick={() => { toggleAssetChoice() }}
+                                    sx={formStyle.textInputStyle}
+                                    helperText={false}
+                                    InputLabelProps={{ shrink: false }}
+                                />
+
+                                <SelectAssetModal
+                                    setSelectedAsset={setSelectedAsset}
+                                    selectedAsset={selectedAsset}
+                                    isOpened={assetChoiceOpen}
+                                    toggle={toggleAssetChoice}
+                                    pos={assetChoicePos} />
+                            </Box>
                             <Box sx={formStyle.boxStyle}>
                                 <Typography
                                     variant="h6"

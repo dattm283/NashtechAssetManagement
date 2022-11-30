@@ -31,18 +31,24 @@ const StyledDialogContent = styled(DialogContent)`
 }
 `;
 
-const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAsset }) => {
+const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser }) => {
     const postRowClick = (record) => {
-        setSelectedAsset(record.assetCode);
+        setSelectedUser(record.staffCode);
+        toggle();
         return "";
     };
 
-    const handleChange = (assetCode) => {
-        setSelectedAsset(assetCode);
+    const handleChange = (staffCode) => {
+        setSelectedUser(staffCode);
     };
 
-    const assetsFilter = [
-        <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
+    const usersFilter = [
+        <SearchInput
+            sx={{ marginRight: "-300px" }}
+            InputLabelProps={{ shrink: false }}
+            source="searchString"
+            alwaysOn
+        />
     ];
 
     // const style = {
@@ -75,39 +81,33 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
                 <StyledDialogContent>
                     <ListBase
                         perPage={5}
-                        sort={{ field: "name", order: "DESC" }}
-                        resource="assets"
+                        sort={{ field: "staffCode", order: "DESC" }}
                     >
                         <Grid container>
                             <Grid item xs={6}>
-                                <h2 style={{ color: "#cf2338" }}>Select Asset</h2>
+                                <h2 style={{ color: "#cf2338" }}>Select User</h2>
                             </Grid>
                             <Grid item xs={6}>
-                                <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assetsFilter} /></div>
+                                <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={usersFilter} /></div>
                             </Grid>
                         </Grid>
 
                         <Datagrid
                             rowClick={postRowClick}
-                            empty={
-                                <p>
-                                    <h2>No Data found</h2>
-                                </p>
-                            }
+                            empty={<h2>No User found</h2>}
                             bulkActionButtons={false}
                         >
-                            <RadioChoice handleChange={handleChange} selectedValue={selectedAsset} />
-                            <TextField source="assetCode" />
-                            <TextField label="Asset Name" source="name" />
-                            <TextField label="Category" source="categoryName" />
+                            <RadioChoice handleChange={handleChange} selectedValue={selectedUser} />
+                            <TextField label="Staff Code" source="staffCode" />
+                            <TextField label="Full Name" source="fullName" />
+                            <FunctionField source="Type" render={data => data.type == "Admin" ? "Admin" : "Staff"} />
                         </Datagrid>
                         <AssetsPagination />
                     </ListBase>
                 </StyledDialogContent>
             </Grid>
         </StyledDialog>
-
     );
 }
 
-export default SelectAssetModal;
+export default SelectUserModal;
