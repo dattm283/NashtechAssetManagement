@@ -13,7 +13,8 @@ import {
     FilterForm,
     CreateButton,
     Button,
-    SearchInput
+    SearchInput,
+    useRecordContext
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -61,7 +62,7 @@ export default () => {
         // ]} />,
         <StateFilterSelect
             source="states"
-            sx={{ width:"250px" }}
+            sx={{ width: "250px" }}
             statesList={[
                 { value: 0, text: "Available" },
                 { value: 1, text: "Not Available" },
@@ -77,8 +78,6 @@ export default () => {
         />,
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
-
-
 
 
     return (
@@ -118,9 +117,21 @@ export default () => {
                     <TextField label="Assigned to" source="assignedTo" />
                     <TextField label="Assigned by" source="assignedBy" />
                     <TextField label="Assigned Date" source="assignedDate" />
-                    <FunctionField source="state" render={(record) => record.state == "NotAvailable" ? "Not available" : record.state} />
+                    <FunctionField source="state" render={(record) => record.state === 0 ? "Accepted" : "Waiting For Acceptance"} />
                     <ButtonGroup sx={{ border: null }}>
-                        <EditButton variant="text" size="small" label="" />
+                        <FunctionField render={(record) => {
+                            console.log(record);
+                            if (record.state === 1) {
+                                return (
+                                    <EditButton variant="text" size="small" label="" />
+                                )
+                            }
+                            else {
+                                return (
+                                    <EditButton disabled variant="text" size="small" label="" />
+                                )
+                            }
+                        }} />
                         <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure?"
