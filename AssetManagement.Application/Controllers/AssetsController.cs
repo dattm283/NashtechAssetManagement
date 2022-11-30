@@ -210,11 +210,16 @@ namespace AssetManagement.Application.Controllers
 
             if (!string.IsNullOrEmpty(createdId))
             {
-                Asset newList = list.Where(item => item.Id == int.Parse(createdId)).AsNoTracking().FirstOrDefault();
+                Asset recentlyCreatedItem = list.Where(item => item.Id == int.Parse(createdId)).AsNoTracking().FirstOrDefault();
                 list = list.Where(item => item.Id != int.Parse(createdId));
-                List<Asset> otherList = list.Where(item => item.Id != int.Parse(createdId)).AsNoTracking().ToList();
-                otherList.Insert(0, newList);
-                list = otherList.AsQueryable().AsNoTracking();
+
+                var sortedResultWithCreatedIdParam = StaticFunctions<Asset>.Paging(list, start, end-1);
+
+                sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
+
+                var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssets_AssetResponse>>(sortedResultWithCreatedIdParam);
+
+                return Ok(new ViewList_ListResponse<ViewListAssets_AssetResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() });
             }
 
             var sortedResult = StaticFunctions<Asset>.Paging(list, start, end);
