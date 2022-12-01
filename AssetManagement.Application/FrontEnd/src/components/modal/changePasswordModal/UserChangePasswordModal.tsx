@@ -7,6 +7,7 @@ import {
   Button,
   DialogContentText,
   FormHelperText,
+  styled,
 } from "@mui/material";
 import {
   Form,
@@ -16,6 +17,8 @@ import {
   useNotify,
 } from "react-admin";
 import userService from "../../../services/users";
+import { red } from "@mui/material/colors";
+import { ImportantDevices } from "@mui/icons-material";
 
 const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
   const [modalState, setModalState] = useState(false);
@@ -91,7 +94,11 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
           {"Change Password"}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText component={"div"} id="alert-dialog-description">
+          <DialogContentText
+            component={"div"}
+            id="alert-dialog-description"
+            sx={{ width: "410px" }}
+          >
             <br />
             <Form
               onSubmit={handleChangePassword}
@@ -111,8 +118,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                   <label style={{ marginRight: "30px" }}>New password:</label>
                   <PasswordInput label={false} source="newPassword" />
                 </Grid>
-                <Grid item justifyContent="flex-end" marginLeft="auto">
-                  {/* <UserChangePasswordButton data={changePasswordRequest}/> */}
+                <Grid item justifyContent="flex-end" marginLeft="59%">
                   <SaveButton
                     label="Save"
                     sx={buttonSaveStyle}
