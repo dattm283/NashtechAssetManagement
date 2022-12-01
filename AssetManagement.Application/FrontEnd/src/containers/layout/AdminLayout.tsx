@@ -22,6 +22,7 @@ import AssetEdit from '../../pages/assets/AssetEdit';
 import AssetCreate from '../../pages/assets/AssetCreate';
 import UserList from '../../pages/users/UserList';
 import UserCreate from '../../pages/users/UserCreate';
+import AssignmentList from '../../pages/assignments/AssignmentList';
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
@@ -50,7 +51,7 @@ const App = () => {
                 setLoginFirstTime(true);
                 localStorage.setItem("currentPassword", encrypt(currentPassword))
                 localStorage.setItem('loginFirstTime', "new");
-            } else{
+            } else {
                 refresh();
             }
             })
@@ -91,6 +92,7 @@ const App = () => {
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} options={{ label: 'Manage Assignment' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="user" list={UserList} create={UserCreate} options={{ label: 'Manage User' }} /> : null}
             </Admin>
 

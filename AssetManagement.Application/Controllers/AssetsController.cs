@@ -131,16 +131,24 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         //[Authorize]
-        public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get([FromQuery]int start, [FromQuery]int end, [FromQuery]string? searchString="", [FromQuery]string? categoryFilter="", [FromQuery]string? stateFilter="", [FromQuery]string? sort="name", [FromQuery]string? order="ASC", [FromQuery]string? createdId="")
+        public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get(
+            [FromQuery] int start,
+            [FromQuery] int end,
+            [FromQuery] string? searchString = "",
+            [FromQuery] string? categoryFilter = "",
+            [FromQuery] string? stateFilter = "",
+            [FromQuery] string? sort = "name",
+            [FromQuery] string? order = "ASC",
+            [FromQuery] string? createdId = "")
         {
             var list = _dbContext.Assets
-                .Include(x=>x.Category)
-                .Where(x=>!x.IsDeleted);
+                .Include(x => x.Category)
+                .Where(x => !x.IsDeleted);
             if (!string.IsNullOrEmpty(searchString))
             {
                 list = list.Where(x => x.Name.ToUpper().Contains(searchString.ToUpper()) || x.AssetCode.ToUpper().Contains(searchString.ToUpper()));
             }
-            if(!string.IsNullOrEmpty(categoryFilter))
+            if (!string.IsNullOrEmpty(categoryFilter))
             {
                 var arrayChar = categoryFilter.Split("&");
                 var arrNumberChar = new List<int>();
@@ -160,7 +168,7 @@ namespace AssetManagement.Application.Controllers
                 }).Where(a => a > -1);
                 list = list.Where(x => arrNumberChar.Contains(x.CategoryId.GetValueOrDefault()));
             }
-            if(!string.IsNullOrEmpty(stateFilter))
+            if (!string.IsNullOrEmpty(stateFilter))
             {
                 var arrayChar = stateFilter.Split("&");
                 var arrNumberChar = new List<int>();
@@ -172,7 +180,7 @@ namespace AssetManagement.Application.Controllers
                         arrNumberChar.Add(int.Parse(arrayChar[i]));
                     }
                 }
-                list = list.Where(x=> arrNumberChar.Contains((int)x.State));
+                list = list.Where(x => arrNumberChar.Contains((int)x.State));
             }
             switch (sort)
             {
@@ -210,9 +218,16 @@ namespace AssetManagement.Application.Controllers
 
             if (!string.IsNullOrEmpty(createdId))
             {
-                var newList = list.Where(item => item.Id == int.Parse(createdId));
+                Asset recentlyCreatedItem = list.Where(item => item.Id == int.Parse(createdId)).AsNoTracking().FirstOrDefault();
                 list = list.Where(item => item.Id != int.Parse(createdId));
-                list = newList.Concat(list);
+
+                var sortedResultWithCreatedIdParam = StaticFunctions<Asset>.Paging(list, start, end-1);
+
+                sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
+
+                var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssets_AssetResponse>>(sortedResultWithCreatedIdParam);
+
+                return Ok(new ViewList_ListResponse<ViewListAssets_AssetResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() });
             }
 
             var sortedResult = StaticFunctions<Asset>.Paging(list, start, end);

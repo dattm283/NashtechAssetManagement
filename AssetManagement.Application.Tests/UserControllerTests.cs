@@ -16,22 +16,12 @@ using Moq;
 using System.Linq;
 using AssetManagement.Domain.Enums.AppUser;
 using AssetManagement.Contracts.Common;
-using AssetManagement.Contracts.Asset.Request;
 using Microsoft.AspNetCore.Http;
 using System.Security.Principal;
-using AssetManagement.Contracts.User.Request;
-using Microsoft.Extensions.Options;
-using Microsoft.CodeAnalysis.Options;
+using AutoMapper.Internal;
 using Microsoft.Extensions.Logging;
-using static AssetManagement.Application.Tests.UserControllerTests;
-using System.Collections.Generic;
-using static AssetManagement.Application.Tests.TestHelper.ConverterFromIActionResult;
-using System.Linq.Expressions;
-using System.Reflection.Metadata;
-using Microsoft.Extensions.DependencyInjection;
-using AssetManagement.Application.Tests.TestHelper;
-using FluentAssertions.Common;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using AssetManagement.Contracts.User.Request;
 using System.Security.Claims;
 
 namespace AssetManagement.Application.Tests
@@ -82,6 +72,15 @@ namespace AssetManagement.Application.Tests
             UserController userController = new UserController(_context, _userManager.Object, _mapper);
             List<AppUser> listUsers = _context.AppUsers.ToList();
             AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
             List<AppUser> addminRole = await _context.AppUsers
                .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
                .ToListAsync();
@@ -109,7 +108,7 @@ namespace AssetManagement.Application.Tests
                 .OrderBy(x => x.StaffCode)
                 .ToListAsync();
 
-            var result = await userController.GetAllUser(0, 2, "", "", "staffCode", "ASC", currentUser.UserName);
+            var result = await userController.GetAllUser(0, 2, "", "", "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
             ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
                 okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
@@ -127,39 +126,6 @@ namespace AssetManagement.Application.Tests
         }
 
         [Fact]
-        public async Task GetList_ForDefault_BadRequest_InvalidUserName()
-        {
-            // Arrange 
-            UserController userController = new UserController(_context, _userManager.Object, _mapper);
-            List<AppUser> listUsers = _context.AppUsers.ToList();
-            AppUser currentUser = listUsers.ElementAt(0);
-            List<AppUser> addminRole = await _context.AppUsers
-               .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
-               .ToListAsync();
-            List<AppUser> staffRole = await _context.AppUsers
-               .Where(x => !x.IsDeleted && x.UserName.Contains("staff"))
-               .ToListAsync();
-            foreach (AppUser user in listUsers)
-            {
-                if (addminRole.Contains(user))
-                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Admin" });
-                else
-                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Staff" });
-            }
-            _userManager.Setup(_ => _.GetUsersInRoleAsync("Admin").Result).Returns(addminRole);
-            _userManager.Setup(_ => _.GetUsersInRoleAsync("Staff").Result).Returns(staffRole);
-
-            // Act 
-
-            var result = await userController.GetAllUser(0, 2, "", "", "staffCode", "ASC", "");
-            var badrequestResult = result.Result as BadRequestObjectResult;
-            string actualResult = badrequestResult?.Value as string;
-
-            // Assert
-            Assert.NotNull(actualResult);
-        }
-
-        [Fact]
         public async Task GetList_SearchString_Ok()
         {
             // Arrange 
@@ -168,6 +134,15 @@ namespace AssetManagement.Application.Tests
             UserController userController = new UserController(_context, _userManager.Object, _mapper);
             List<AppUser> listUsers = _context.AppUsers.ToList();
             AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
             List<AppUser> addminRole = await _context.AppUsers
                .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
                .ToListAsync();
@@ -196,7 +171,7 @@ namespace AssetManagement.Application.Tests
                 .OrderBy(x => x.StaffCode)
                 .ToListAsync();
 
-            var result = await userController.GetAllUser(0, 2, "", searchString, "staffCode", "ASC", currentUser.UserName);
+            var result = await userController.GetAllUser(0, 2, "", searchString, "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
             ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
                 okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
@@ -218,12 +193,21 @@ namespace AssetManagement.Application.Tests
         {
             // Arrange 
             #region Arrange
-            string filterState = "0&1&";
+            string filterState = "Admin&Staff&";
             var listType = filterState.Split("&").ToArray();
 
             UserController userController = new UserController(_context, _userManager.Object, _mapper);
             List<AppUser> listUsers = _context.AppUsers.ToList();
             AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
             List<AppUser> addminRole = await _context.AppUsers
                .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
                .ToListAsync();
@@ -246,7 +230,7 @@ namespace AssetManagement.Application.Tests
             List<AppUser> tempData = new List<AppUser>();
             for (int i = 0; i < listType.Length - 1; i++)
             {
-                List<AppUser> tempUser = (listType[i] == "0") ? addminRole : staffRole;
+                List<AppUser> tempUser = (listType[i] == "Admin") ? addminRole : staffRole;
                 tempData.AddRange(tempUser);
             }
             List<AppUser> expectedResult = await _context.AppUsers
@@ -257,7 +241,7 @@ namespace AssetManagement.Application.Tests
                 .OrderBy(x => x.StaffCode)
                 .ToListAsync();
 
-            var result = await userController.GetAllUser(0, 2, filterState, "", "staffCode", "ASC", currentUser.UserName);
+            var result = await userController.GetAllUser(0, 2, filterState, "", "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
             ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
                 okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
@@ -275,7 +259,7 @@ namespace AssetManagement.Application.Tests
         }
 
         [Fact]
-        public async Task GetList_Sort_Ok()
+        public async Task GetList_SortByUserName_Ok()
         {
             // Arrange 
             #region Arrange
@@ -284,6 +268,15 @@ namespace AssetManagement.Application.Tests
             UserController userController = new UserController(_context, _userManager.Object, _mapper);
             List<AppUser> listUsers = _context.AppUsers.ToList();
             AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
             List<AppUser> addminRole = await _context.AppUsers
                .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
                .ToListAsync();
@@ -310,7 +303,198 @@ namespace AssetManagement.Application.Tests
                 .OrderBy(x => x.UserName)
                 .ToListAsync();
 
-            var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC", currentUser.UserName);
+            var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
+            var okobjectResult = result.Result as OkObjectResult;
+            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            #endregion
+
+            // Assert
+            #region Assert
+            Assert.NotNull(actualResult);
+            Assert.Equal(actualResult.Total, expectedResult.Count);
+            for (int i = 0; i < expectedResult.Count; i++)
+            {
+                Assert.Equal(actualResult.Data.ElementAt(i).UserName, expectedResult.ElementAt(i).UserName);
+            }
+            #endregion
+        }
+
+        [Fact]
+        public async Task GetList_SortByFullName_Ok()
+        {
+            // Arrange 
+            #region Arrange
+            string sort = "fullName";
+
+            UserController userController = new UserController(_context, _userManager.Object, _mapper);
+            List<AppUser> listUsers = _context.AppUsers.ToList();
+            AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
+            List<AppUser> addminRole = await _context.AppUsers
+               .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
+               .ToListAsync();
+            List<AppUser> staffRole = await _context.AppUsers
+               .Where(x => !x.IsDeleted && x.UserName.Contains("staff"))
+               .ToListAsync();
+            foreach (AppUser user in listUsers)
+            {
+                if (addminRole.Contains(user))
+                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Admin" });
+                else
+                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Staff" });
+            }
+            _userManager.Setup(_ => _.GetUsersInRoleAsync("Admin").Result).Returns(addminRole);
+            _userManager.Setup(_ => _.GetUsersInRoleAsync("Staff").Result).Returns(staffRole);
+            #endregion
+
+            // Act 
+            #region Act
+            List<AppUser> expectedResult = await _context.AppUsers
+                .Where(x =>
+                    !x.IsDeleted &&
+                    x.Location == currentUser.Location)
+                .OrderBy(x => x.FirstName + ' ' + x.LastName)
+                .ToListAsync();
+
+            var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
+            var okobjectResult = result.Result as OkObjectResult;
+            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            #endregion
+
+            // Assert
+            #region Assert
+            Assert.NotNull(actualResult);
+            Assert.Equal(actualResult.Total, expectedResult.Count);
+            for (int i = 0; i < expectedResult.Count; i++)
+            {
+                Assert.Equal(actualResult.Data.ElementAt(i).UserName, expectedResult.ElementAt(i).UserName);
+            }
+            #endregion
+        }
+
+        [Fact]
+        public async Task GetList_SortByJoinedDate_Ok()
+        {
+            // Arrange 
+            #region Arrange
+            string sort = "joinedDate";
+
+            UserController userController = new UserController(_context, _userManager.Object, _mapper);
+            List<AppUser> listUsers = _context.AppUsers.ToList();
+            AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
+            List<AppUser> addminRole = await _context.AppUsers
+               .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
+               .ToListAsync();
+            List<AppUser> staffRole = await _context.AppUsers
+               .Where(x => !x.IsDeleted && x.UserName.Contains("staff"))
+               .ToListAsync();
+            foreach (AppUser user in listUsers)
+            {
+                if (addminRole.Contains(user))
+                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Admin" });
+                else
+                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Staff" });
+            }
+            _userManager.Setup(_ => _.GetUsersInRoleAsync("Admin").Result).Returns(addminRole);
+            _userManager.Setup(_ => _.GetUsersInRoleAsync("Staff").Result).Returns(staffRole);
+            #endregion
+
+            // Act 
+            #region Act
+            List<AppUser> expectedResult = await _context.AppUsers
+                .Where(x =>
+                    !x.IsDeleted &&
+                    x.Location == currentUser.Location)
+                .OrderBy(x => x.CreatedDate)
+                .ToListAsync();
+
+            var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
+            var okobjectResult = result.Result as OkObjectResult;
+            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            #endregion
+
+            // Assert
+            #region Assert
+            Assert.NotNull(actualResult);
+            Assert.Equal(actualResult.Total, expectedResult.Count);
+            for (int i = 0; i < expectedResult.Count; i++)
+            {
+                Assert.Equal(actualResult.Data.ElementAt(i).UserName, expectedResult.ElementAt(i).UserName);
+            }
+            #endregion
+        }
+
+        [Fact]
+        public async Task GetList_SortByType_Ok()
+        {
+            // Arrange 
+            #region Arrange
+            string sort = "type";
+
+            UserController userController = new UserController(_context, _userManager.Object, _mapper);
+            List<AppUser> listUsers = _context.AppUsers.ToList();
+            AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
+            List<AppUser> addminRole = await _context.AppUsers
+               .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
+               .ToListAsync();
+            List<AppUser> staffRole = await _context.AppUsers
+               .Where(x => !x.IsDeleted && x.UserName.Contains("staff"))
+               .ToListAsync();
+            foreach (AppUser user in listUsers)
+            {
+                if (addminRole.Contains(user))
+                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Admin" });
+                else
+                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Staff" });
+            }
+            _userManager.Setup(_ => _.GetUsersInRoleAsync("Admin").Result).Returns(addminRole);
+            _userManager.Setup(_ => _.GetUsersInRoleAsync("Staff").Result).Returns(staffRole);
+            #endregion
+
+            // Act 
+            #region Act
+            IQueryable<AppUser> adminAccount = _context.AppUsers
+                .Where(x =>
+                    !x.IsDeleted &&
+                    x.Location == currentUser.Location &&
+                    addminRole.Contains(x));
+            IQueryable<AppUser> staffAccount = _context.AppUsers
+                .Where(x =>
+                    !x.IsDeleted &&
+                    x.Location == currentUser.Location &&
+                    staffRole.Contains(x));
+            List<AppUser> expectedResult = await adminAccount.Concat(staffAccount).ToListAsync();
+
+            var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
             var okobjectResult = result.Result as OkObjectResult;
             ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
                 okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
@@ -338,6 +522,15 @@ namespace AssetManagement.Application.Tests
             UserController userController = new UserController(_context, _userManager.Object, _mapper);
             List<AppUser> listUsers = _context.AppUsers.ToList();
             AppUser currentUser = listUsers.ElementAt(0);
+            //Create context for controller with fake login
+            userController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
             List<AppUser> addminRole = await _context.AppUsers
                .Where(x => !x.IsDeleted && x.UserName.Contains("admin"))
                .ToListAsync();
@@ -369,7 +562,7 @@ namespace AssetManagement.Application.Tests
                 .ToListAsync();
 
 
-            var result = await userController.GetAllUser(start, end, "", "", "staffCode", "ASC", currentUser.UserName);
+            var result = await userController.GetAllUser(start, end, "", "", "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
             ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
                 okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
@@ -418,16 +611,17 @@ namespace AssetManagement.Application.Tests
             #region Act
             var result = await userController.GetSingleUser(staffCode);
             var okobjectResult = result.Result as OkObjectResult;
-            ViewDetailUser_UserResponse actualResult =
-                okobjectResult.Value as ViewDetailUser_UserResponse;
+            SuccessResponseResult<ViewDetailUser_UserResponse> actualResult =
+                okobjectResult.Value as SuccessResponseResult<ViewDetailUser_UserResponse>;
+            ViewDetailUser_UserResponse resultData = actualResult?.Result;
             #endregion
 
             // Assert
             #region Assert
-            Assert.NotNull(actualResult);
-            Assert.Equal(actualResult.StaffCode, staffCode);
-            Assert.Equal(actualResult.UserName, expectedUser.UserName);
-            Assert.Equal(actualResult.Location, expectedUser.Location.ToString());
+            Assert.NotNull(resultData);
+            Assert.Equal(resultData.StaffCode, staffCode);
+            Assert.Equal(resultData.UserName, expectedUser.UserName);
+            Assert.Equal(resultData.Location, expectedUser.Location.ToString());
             #endregion
         }
 

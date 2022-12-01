@@ -33,13 +33,13 @@ export const assetProvider: DataProvider = {
         throw new Error("Function not implemented.");
     },
     create: function <RecordType extends RaRecord = any>(resource: string, params: CreateParams<any>): Promise<CreateResult<RecordType>> {
-        return axiosInstance.post(`/api/${resource}`, params.data).then(res => { 
+        return axiosInstance.post(`/api/${resource}`, params.data).then(res => {
             localStorage.setItem("item", JSON.stringify(res.data))
             return res
         });
     },
     delete: async (resource, params) => {
-        const url = `${config.api.base}/api/${resource}/${params.id}`;
+        const url = `/api/${resource}/${params.id}`;
         var response = await axiosInstance.delete(url);
         return response.data;
     },
@@ -48,7 +48,7 @@ export const assetProvider: DataProvider = {
     },
     getList: function <RecordType extends RaRecord = any>(resource: string, params: GetListParams): Promise<GetListResult<RecordType>> {
         const { page, perPage } = params.pagination;
-        const { states, searchString, categories } = params.filter;
+        const { states, searchString, categories, assignedDateFilter, noNumber } = params.filter;
         const { field, order } = params.sort;
         let tmp = "";
         for (const key in states) {
@@ -70,8 +70,10 @@ export const assetProvider: DataProvider = {
             start: JSON.stringify((page - 1) * perPage),
             sort: field,
             order: order,
+            noNumber: noNumber,
             stateFilter: tmp ? tmp : null,
             searchString: searchString,
+            assignedDateFilter: assignedDateFilter,
             categoryFilter: tmp1 ? tmp1 : null,
             createdId: localStorage.getItem("item")!=null ? 
                 JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) : 
@@ -80,7 +82,7 @@ export const assetProvider: DataProvider = {
         };
 
         const url = `/api/${resource}?${stringify(query)}`;
-        if (localStorage.getItem("item") != null && query.end!='99') {
+        if (localStorage.getItem("item") != null && query.end != '99') {
             localStorage.removeItem("item");
         }
         

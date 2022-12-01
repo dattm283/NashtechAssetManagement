@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import {
     Datagrid,
-    List,
     Title,
     TextField,
-    TextInput,
+    DateField,
     EditButton,
     useDataProvider,
     FunctionField,
@@ -12,33 +11,19 @@ import {
     ListBase,
     FilterForm,
     CreateButton,
-    Button,
-    SearchInput,
+    SearchInput
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
-import AssetShow from "./AssetShow";
 import { ButtonGroup, Stack, Container } from "@mui/material";
-import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
-import { useNavigate } from "react-router-dom";
-import FilterSearchForm from "../../components/forms/FilterSearchForm";
+import {DateAssignedFilterSelect} from "../../components/select/DateAssignedFilterSelect";
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
     const [record, setRecord] = useState();
-    // const { data } = useGetList("category", { pagination: { page: 1, perPage: 99 } })
-    const dataProvider = useDataProvider();
-    let data = dataProvider
-        .getList("category", {
-            pagination: { page: 1, perPage: 99 },
-            sort: { field: "name", order: "ASC" },
-            filter: {},
-        })
-        .then((res) => res.data);
 
-    const navigate = useNavigate();
     const toggle = () => {
         setIsOpened(!isOpened);
     };
@@ -50,47 +35,31 @@ export default () => {
 
     const refresh = useRefresh();
 
-    const assetsFilter = [
+    const assignmentsFilter = [
         <StateFilterSelect
             source="states"
-            label="State"
+            label="Type"
             sx={{ width:"250px" }}
             statesList={[
-                { value: "0", text: "Available" },
-                { value: "1", text: "Not Available" },
-                { value: "2", text: "Waiting for recycling" },
-                { value: "3", text: "Recycled" },
+                { value: 0, text: "Accepted" },
+                { value: 1, text: "Waiting for acceptance" },
             ]}
             alwaysOn
         />,
-        <CategoryFilterSelect source="categories" statesList={data} alwaysOn />,
-        <SearchInput
-            InputLabelProps={{ shrink: false }}
-            source="searchString"
-            alwaysOn
-        />,
+        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn/>,
+        <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
     return (
         <Container component="main" sx={{padding:"20px 10px"}}>
-            <Title title="Manage Asset" />
+            <Title title="Manage Assignment"/>
             <ListBase
                 perPage={5}
-                sort={{ field: "name", order: "DESC" }}
-                filterDefaultValues={{ states: ["0", "1", "4"] }}
+                sort={{ field: "noNumber", order: "DESC" }}
             >
-                <h2 style={{ color: "#cf2338" }}>Asset List</h2>
-                <Stack
-                    direction="row"
-                    justifyContent="end"
-                    alignContent="center"
-                >
-                    <div style={{ flexGrow: 1 }}>
-                        <FilterForm
-                            style={{ justifyContent: "space-between" }}
-                            filters={assetsFilter}
-                        />
-                    </div>
+                <h2 style={{ color: "#cf2338"}}>Assignment List</h2>
+                <Stack direction="row" justifyContent="end" alignContent="center">
+                    <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assignmentsFilter} /></div>
                     <div style={{ display: "flex", alignItems: "end" }}>
                         <CreateButton
                             size="large"
@@ -113,17 +82,13 @@ export default () => {
                     }
                     bulkActionButtons={false}
                 >
-                    <TextField source="assetCode" />
-                    <TextField label="Asset Name" source="name" />
-                    <TextField label="Category" source="categoryName" />
-                    <FunctionField
-                        source="state"
-                        render={(record) =>
-                            record.state == "NotAvailable"
-                                ? "Not available"
-                                : record.state
-                        }
-                    />
+                    <TextField label="No" source="noNumber" />
+                    <TextField label="Asset Code" source="assetCode" />
+                    <TextField label="Asset Name" source="assetName" />
+                    <TextField label="Assigned to" source="assignedTo" />
+                    <TextField label="Assigned by" source="assignedBy" />
+                    <DateField label="Assigned Date" source="assignedDate" />
+                    <FunctionField source="state" render={(record) => record.state == "0" ? "Accepted" : "Waiting for acceptance"} />
                     <ButtonGroup sx={{ border: null }}>
                         <EditButton variant="text" size="small" label="" />
                         <CustomDeleteWithConfirmButton
@@ -136,7 +101,7 @@ export default () => {
                 </Datagrid>
                 <AssetsPagination />
             </ListBase>
-            {isOpened && <AssetShow isOpened={isOpened} toggle={toggle} record={record} /> }
+            {/* <AssetShow isOpened={isOpened} toggle={toggle} record={record} /> */}
         </Container>
     );
 };

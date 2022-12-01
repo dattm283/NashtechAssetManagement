@@ -11,7 +11,7 @@ import {
     CreateButton,
     SearchInput
 } from "react-admin";
-import { ButtonGroup, Stack } from "@mui/material";
+import { ButtonGroup, Stack, Container } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
@@ -20,7 +20,7 @@ import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDel
 import { assetProvider } from '../../providers/assetProvider/assetProvider'
 
 export default () => {
-    const [openDetail, setOpenDetail] = useState({ status:false, data:{} });
+    const [openDetail, setOpenDetail] = useState({ status: false, data: {} });
     const refresh = useRefresh();
 
     const usersFilter = [
@@ -29,8 +29,8 @@ export default () => {
             label="Type"
             sx={{ width:"140px" }}
             statesList={[
-                { value: 0, text: "Admin" },
-                { value: 1, text: "Staff" },
+                { value: "Admin", text: "Admin" },
+                { value: "Staff", text: "Staff" },
             ]}
             alwaysOn
         />,
@@ -43,7 +43,7 @@ export default () => {
     ];
 
     return (
-        <>
+        <Container component="main" sx={{padding:"20px 10px"}}>
             <Title title="Manage User" />
             <ListBase
                 perPage={5}
@@ -70,7 +70,7 @@ export default () => {
                 <Datagrid
                     rowClick={(id, resource, record) => {
                         assetProvider.getOne('user', { id:record.staffCode }).then(res => {
-                            setOpenDetail({ status:true, data:res.data })
+                            setOpenDetail({ status:true, data:res.data.result })
                         })
                         return "";
                     }}
@@ -81,17 +81,19 @@ export default () => {
                     <TextField label="Full Name" source="fullName" />
                     <TextField label="Username" source="userName" />
                     <FunctionField label="Joined Date" source="joinedDate" render={ data => data.joinedDate.split('T')[0] } />
-                    <FunctionField source="Type" render={ data => data.type == "Admin" ? "Admin" : "Staff"} />
+                    <FunctionField label="Type" source="type" render={ data => data.type == "Admin" ? "Admin" : "Staff"} />
 
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
                         <EditButton variant="text" size="small" label="" />
-                        <CustomDeleteWithConfirmButton
+                        <FunctionField source="userName" render={data =>
+                            data.userName != localStorage.getItem("userName") ? <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure, bro?"
                             confirmContent="Do you want to disable this user, bro?"
                             mutationOptions={{ onSuccess: (data) => refresh() }}
-                        />
+                            /> : <></>
+                        } />
                     </ButtonGroup>
 
                 </Datagrid>
@@ -103,6 +105,6 @@ export default () => {
                 setOpenDetail={setOpenDetail} 
                 label="Detailed User Information"
             />
-        </>
+        </Container>
     );
 };

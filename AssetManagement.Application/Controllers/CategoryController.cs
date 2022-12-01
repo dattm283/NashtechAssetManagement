@@ -1,6 +1,7 @@
 ﻿using AssetManagement.Contracts.Asset.Response;
 using AssetManagement.Contracts.Category.Request;
 using AssetManagement.Contracts.Category.Response;
+using AssetManagement.Contracts.Common;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
 using AutoMapper;

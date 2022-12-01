@@ -14,7 +14,7 @@ export default () => {
       setPage(value);
    };
    return (
-      <div style={{ marginLeft: "auto", marginTop: "12px" }}>
+      <div style={{ float: "right", marginTop: "12px" }}>
          <Pagination
             color={"secondary"}
             shape='rounded'

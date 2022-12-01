@@ -15,7 +15,6 @@ const AssetCreateToolbar = ({ disable, url }) => {
                 label="Save"
                 mutationOptions={{
                     onSuccess: () => {
-                        // notify('Element updated');
                         navigate(url)
                     }}
                 }
