@@ -20,6 +20,7 @@ using Xunit;
 using Newtonsoft.Json;
 using static AssetManagement.Application.Tests.TestHelper.ConverterFromIActionResult;
 using FluentAssertions;
+using AssetManagement.Contracts.Assignment.Request;
 
 namespace AssetManagement.Application.Tests
 {
@@ -82,88 +83,88 @@ namespace AssetManagement.Application.Tests
         }
         #endregion
 
-        private void SeedData()
-        {
-            _context.Database.EnsureDeleted();
-            //Create roles data
-            List<AppRole> _roles = new()
-            {
-                new AppRole()
-                {
-                    Id = new Guid("12147FE0-4571-4AD2-B8F7-D2C863EB78A5"),
-                    Name = "Admin",
-                    Description = "Admin role"
-                },
+        //private void SeedData()
+        //{
+        //    _context.Database.EnsureDeleted();
+        //    //Create roles data
+        //    List<AppRole> _roles = new()
+        //    {
+        //        new AppRole()
+        //        {
+        //            Id = new Guid("12147FE0-4571-4AD2-B8F7-D2C863EB78A5"),
+        //            Name = "Admin",
+        //            Description = "Admin role"
+        //        },
 
-                new AppRole()
-                {
-                    Id = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC"),
-                    Name = "Staff",
-                    Description = "Staff role"
-                }
-            };
-            //Create users data
-            List<AppUser> _users = new()
-            {
-                new AppUser()
-                {
-                    Id = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE"),
-                    FirstName = "Binh",
-                    LastName = "Nguyen Van",
-                    UserName = "binhnv",
-                    Email = "bnv@gmail.com",
-                    PasswordHash = "abc",
-                    Gender = Domain.Enums.AppUser.UserGender.Male,
-                    Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-                    //RoleId = _roles[0].Id,
-                    IsLoginFirstTime = true,
-                    StaffCode = "SD01",
-                },
+        //        new AppRole()
+        //        {
+        //            Id = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC"),
+        //            Name = "Staff",
+        //            Description = "Staff role"
+        //        }
+        //    };
+        //    //Create users data
+        //    List<AppUser> _users = new()
+        //    {
+        //        new AppUser()
+        //        {
+        //            Id = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE"),
+        //            FirstName = "Binh",
+        //            LastName = "Nguyen Van",
+        //            UserName = "binhnv",
+        //            Email = "bnv@gmail.com",
+        //            PasswordHash = "abc",
+        //            Gender = Domain.Enums.AppUser.UserGender.Male,
+        //            Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
+        //            //RoleId = _roles[0].Id,
+        //            IsLoginFirstTime = true,
+        //            StaffCode = "SD01",
+        //        },
 
-                new AppUser()
-                {
-                    Id = new Guid("70BD714F-9576-45BA-B5B7-F00649BE00DE"),
-                    FirstName = "An",
-                    LastName = "Nguyen Van",
-                    UserName = "annv",
-                    Email = "anv@gmail.com",
-                    PasswordHash = "xyz",
-                    Gender = Domain.Enums.AppUser.UserGender.Male,
-                    Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                    //RoleId = _roles[1].Id,
-                    IsLoginFirstTime = true,
-                    StaffCode = "SD02",
-                }
-            };
-            //Add roles
-            _context.AppRoles.AddRange(_roles);
-            //Add users
-            _context.AppUsers.AddRange(_users);
-            _context.Assets.Add(new Asset
-            {
-                Id = 1,
-                Name = $"Laptop 1",
-                AssetCode = $"LT000001",
-                Specification = $"This is laptop #1",
-                InstalledDate = DateTime.Now.AddDays(-1),
-                Category = null,
-                Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-                State = State.Available,
-                IsDeleted = false
-            });
-            _context.Assignments.Add(new Assignment
-            {
-                Id = 1,
-                AssignedDate = DateTime.Now,
-                ReturnedDate = DateTime.Now,
-                State = Domain.Enums.Assignment.State.Accepted,
-                AssetId = 1,
-                AssignedTo = _users[0].Id,
-                AssignedBy = _users[1].Id,
-                Note = "Co len",
-            });
-            _context.SaveChanges();
-        }
+        //        new AppUser()
+        //        {
+        //            Id = new Guid("70BD714F-9576-45BA-B5B7-F00649BE00DE"),
+        //            FirstName = "An",
+        //            LastName = "Nguyen Van",
+        //            UserName = "annv",
+        //            Email = "anv@gmail.com",
+        //            PasswordHash = "xyz",
+        //            Gender = Domain.Enums.AppUser.UserGender.Male,
+        //            Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
+        //            //RoleId = _roles[1].Id,
+        //            IsLoginFirstTime = true,
+        //            StaffCode = "SD02",
+        //        }
+        //    };
+        //    //Add roles
+        //    _context.AppRoles.AddRange(_roles);
+        //    //Add users
+        //    _context.AppUsers.AddRange(_users);
+        //    _context.Assets.Add(new Asset
+        //    {
+        //        Id = 1,
+        //        Name = $"Laptop 1",
+        //        AssetCode = $"LT000001",
+        //        Specification = $"This is laptop #1",
+        //        InstalledDate = DateTime.Now.AddDays(-1),
+        //        Category = null,
+        //        Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
+        //        State = State.Available,
+        //        IsDeleted = false
+        //    });
+        //    _context.Assignments.Add(new Assignment
+        //    {
+        //        Id = 1,
+        //        AssignedDate = DateTime.Now,
+        //        ReturnedDate = DateTime.Now,
+        //        State = Domain.Enums.Assignment.State.Accepted,
+        //        AssetId = 1,
+        //        AssignedTo = _users[0].Id,
+        //        AssignedBy = _users[1].Id,
+        //        Note = "Co len",
+        //    });
+        //    _context.SaveChanges();
+        //}
 
         // [Fact]
         // public void GetAssignmentListByAssetCodeId_ReturnResults()
@@ -707,6 +708,146 @@ namespace AssetManagement.Application.Tests
         #endregion
 
         #region UpdateAssignment
+        [Fact]
+        public async Task UpdateAssignment_Success_ReturnUpdatedAssignment()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+
+            // Act 
+            var updatingAssignment = await _context.Assignments
+                .Include(a => a.Asset)
+                .Include(a => a.AssignedToAppUser)
+                .Where(a => a.Id == 9)
+                .FirstOrDefaultAsync();
+            DateTime updatedDate = DateTime.Now;
+
+            var updateRequest = new UpdateAssignmentRequest
+            {
+                AssignToAppUserStaffCode = "SD0002",
+                AssetCode = "LA100009",
+                AssignedDate = updatedDate,
+                Note = "haha"
+            };
+
+            var updatedAssignment = _mapper.Map<UpdateAssignmentResponse>(updatingAssignment);
+            updatedAssignment.AssetId = 9;
+            updatedAssignment.AssignedTo = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00BF");
+            updatedAssignment.AssignedDate = updatedDate;
+            updatedAssignment.Note = "haha";
+
+            var response = await assignmentController.UpdateAssignment(9, updateRequest);
+            string result = ConvertOkObject<UpdateAssignmentResponse>(response);
+            string expected = JsonConvert.SerializeObject(updatedAssignment);
+
+            //Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public async Task UpdateAssignment_AssignmentNotFound_ReturnBadRequest()
+        {
+            // Arrange
+            var assignmentController = new AssignmentsController(_context, _mapper);
+
+            // Act
+            var result = await assignmentController.UpdateAssignment(0, new UpdateAssignmentRequest
+            {
+                AssignToAppUserStaffCode = "SD0002",
+                AssetCode = "LA100009",
+                AssignedDate = DateTime.Now,
+                Note = "haha"
+            });
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public async Task UpdateAssignment_AssetNotFound_ReturnBadRequest()
+        {
+            // Arrange
+            var assignmentController = new AssignmentsController(_context, _mapper);
+
+            // Act
+            var result = await assignmentController.UpdateAssignment(9, new UpdateAssignmentRequest
+            {
+                AssignToAppUserStaffCode = "SD0002",
+                AssetCode = "asdf",
+                AssignedDate = DateTime.Now,
+                Note = "haha"
+            });
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public async Task UpdateAssignment_UserNotFound_ReturnBadRequest()
+        {
+            // Arrange
+            var assignmentController = new AssignmentsController(_context, _mapper);
+
+            // Act
+            var result = await assignmentController.UpdateAssignment(9, new UpdateAssignmentRequest
+            {
+                AssignToAppUserStaffCode = "sdfa",
+                AssetCode = "LA100009",
+                AssignedDate = DateTime.Now,
+                Note = "haha"
+            });
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public async Task UpdateAssignment_AcceptedAssignment_ReturnBadRequest()
+        {
+            // Arrange
+            var assignmentController = new AssignmentsController(_context, _mapper);
+
+            // Act
+            var result = await assignmentController.UpdateAssignment(2, new UpdateAssignmentRequest
+            {
+                AssignToAppUserStaffCode = "SD0002",
+                AssetCode = "LA100009",
+                AssignedDate = DateTime.Now,
+                Note = "haha"
+            });
+
+            // Assert
+            result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+
+        [Fact]
+        //public async Task UpdateAssignment_NoChange_ReturnAssignment()
+        //{
+        //    // Arrange
+        //    var assignmentController = new AssignmentsController(_context, _mapper);
+        //    var updatingAssignment = await _context.Assignments
+        //        .Include(a => a.Asset)
+        //        .Include(a => a.AssignedToAppUser)
+        //        .Where(a => a.Id == 9)
+        //        .FirstOrDefaultAsync();
+        //    var updatedAssignment = _mapper.Map<UpdateAssignmentResponse>(updatingAssignment);
+
+        //    // Act
+        //    var response = await assignmentController.UpdateAssignment(9, new UpdateAssignmentRequest
+        //    {
+        //        AssignToAppUserStaffCode = updatingAssignment.AssignedToAppUser.StaffCode,
+        //        AssetCode = updatingAssignment.Asset.AssetCode,
+        //        AssignedDate = updatingAssignment.AssignedDate,
+        //        Note = updatingAssignment.Note
+        //    });
+        //    string expected = JsonConvert.SerializeObject(updatedAssignment);
+        //    string result = ConvertOkObject<UpdateAssignmentResponse>(response);
+
+        //    // Assert
+        //    Assert.Equal(expected, result);
+        //}
+
         #endregion
 
         public void Dispose()
