@@ -15,10 +15,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Newtonsoft.Json;
+using static AssetManagement.Application.Tests.TestHelper.ConverterFromIActionResult;
+using FluentAssertions;
 
 namespace AssetManagement.Application.Tests
 {
-    public class AssignmentControllerTests: IDisposable
+    public class AssignmentControllerTests : IDisposable
     {
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
@@ -31,19 +34,56 @@ namespace AssetManagement.Application.Tests
             _options = new DbContextOptionsBuilder<AssetManagementDbContext>()
                 .UseInMemoryDatabase(databaseName: "AssetTestDb1").Options;
 
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new AssignmentProfile())).CreateMapper();
+            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
 
             // Create InMemory dbcontext with options
             _context = new AssetManagementDbContext(_options);
+            //SeedData();
             _context.Database.EnsureDeleted();
-            SeedData();
+            _context.Database.EnsureCreated();
         }
+
+        #region GetAssignmentDetail
+        [Fact]
+        public async Task GetAssignmentDetail_Success_ReturnAssignmentDetail()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(null, _context, _mapper);
+
+            // Act 
+            var assignment = _mapper.Map<AssignmentDetailResponse>(await _context.Assignments
+                .Include(x => x.Asset)
+                .Include(x => x.AssignedToAppUser)
+                .Include(x => x.AssignedByToAppUser)
+                .Where(a => a.Id == 1)
+                .FirstOrDefaultAsync());
+            string expected = JsonConvert.SerializeObject(assignment);
+            var response = await assignmentController.GetAssignmentDetail(1);
+            string result = ConvertOkObject<AssignmentDetailResponse>(response);
+
+            // Assert
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public async Task GetAssignmentDetail_AssignmentNotExist_ReturnBadRequest()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(null, _context, _mapper);
+
+            // Act 
+            var result = await assignmentController.GetAssignmentDetail(0);
+
+            // Assert
+            result.Should().BeOfType<BadRequestResult>();
+        }
+        #endregion
 
         private void SeedData()
         {
             _context.Database.EnsureDeleted();
             //Create roles data
-            List<AppRole> _roles = new ()
+            List<AppRole> _roles = new()
             {
                 new AppRole()
                 {
@@ -64,7 +104,7 @@ namespace AssetManagement.Application.Tests
             {
                 new AppUser()
                 {
-                    Id= new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE"),
+                    Id = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE"),
                     FirstName = "Binh",
                     LastName = "Nguyen Van",
                     UserName = "binhnv",
@@ -117,7 +157,7 @@ namespace AssetManagement.Application.Tests
                 AssetId = 1,
                 AssignedTo = _users[0].Id,
                 AssignedBy = _users[1].Id,
-                Note="Co len",
+                Note = "Co len",
             });
             _context.SaveChanges();
         }
@@ -178,7 +218,6 @@ namespace AssetManagement.Application.Tests
 
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
             _context.Dispose();
         }
     }
