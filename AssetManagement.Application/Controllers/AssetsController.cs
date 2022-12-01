@@ -209,6 +209,11 @@ namespace AssetManagement.Application.Controllers
                         list = list.OrderBy(x => x.Id);
                         break;
                     }
+                default:
+                    {
+                        list = list.OrderBy(x => x.AssetCode);
+                        break;
+                    }
             }
 
             if (order == "DESC")

@@ -44,15 +44,15 @@ const AssetShow = (props) => {
   const { isOpened, toggle, record = {} } = props;
   const [assignements, setAssignments] = useState([]);
 
-  useEffect(() => {
-    if (record) {
-      getAssignementByAssetCodeId(record.id)
-        .then((response) => {
-          setAssignments(response);
-        })
-        .catch(() => {});
-    }
-  }, [record]);
+  // useEffect(() => {
+  //   if (record) {
+  //     getAssignementByAssetCodeId(record.id)
+  //       .then((response) => {
+  //         setAssignments(response);
+  //       })
+  //       .catch(() => {});
+  //   }
+  // }, [record]);
 
   return (
     <>

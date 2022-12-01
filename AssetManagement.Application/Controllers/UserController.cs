@@ -98,6 +98,11 @@ namespace AssetManagement.Application.Controllers
                         users = userWithRole;
                         break;
                     }
+                default:
+                    {
+                        users = users.OrderBy(x => x.StaffCode);
+                        break;
+                    }
             }
 
             if (order == "DESC")
