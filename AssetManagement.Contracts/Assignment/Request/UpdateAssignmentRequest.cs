@@ -8,9 +8,9 @@ namespace AssetManagement.Contracts.Assignment.Request
 {
     public class UpdateAssignmentRequest
     {
-        public Guid? AssignedTo { get; set; }
+        public string AssignToAppUserStaffCode { get; set; }
 
-        public int? AssetId { get; set; }
+        public string AssetCode { get; set; }
 
         public DateTime AssignedDate { get; set; }
 

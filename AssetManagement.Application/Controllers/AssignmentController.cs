@@ -71,18 +71,38 @@ namespace AssetManagement.Application.Controllers
         public async Task<IActionResult> UpdateAssignment(int id, UpdateAssignmentRequest request)
         {
             Assignment updatingAssignment = await _dbContext.Assignments
+                .Include(a => a.Asset)
+                .Include(a => a.AssignedToAppUser)
                 .Where(a => a.Id == id)
                 .FirstOrDefaultAsync();
 
             try
             {
-                if (updatingAssignment != null)
+                if (updatingAssignment != null && updatingAssignment.State == State.WaitingForAcceptance)
                 {
-                    updatingAssignment.AssignedTo = request.AssignedTo;
-                    updatingAssignment.AssetId = request.AssetId;
-                    updatingAssignment.AssignedDate = request.AssignedDate;
-                    updatingAssignment.Note = request.Note;
-                    await _dbContext.SaveChangesAsync();
+                    if (AssignmentChanged(updatingAssignment, request))
+                    {
+                        AppUser assignedToUser = await _dbContext.AppUsers
+                            .Where(u => u.StaffCode.Equals(request.AssignToAppUserStaffCode))
+                            .FirstOrDefaultAsync();
+
+                        Asset asset = await _dbContext.Assets
+                            .Where(a => a.AssetCode.Equals(request.AssetCode))
+                            .FirstOrDefaultAsync();
+
+                        if (assignedToUser != null && asset != null)
+                        {
+                            updatingAssignment.AssignedTo = assignedToUser.Id;
+                            updatingAssignment.AssetId = asset.Id;
+                            updatingAssignment.AssignedDate = request.AssignedDate;
+                            updatingAssignment.Note = request.Note;
+                            await _dbContext.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            throw new Exception("User or asset is invalid");
+                        }
+                    }
                 }
                 else
                 {
@@ -208,6 +228,18 @@ namespace AssetManagement.Application.Controllers
 
             return Ok(new ViewList_ListResponse<ViewListAssignmentResponse> { Data = sortedResult, Total = list.Count() });
             // return Ok(sortedResult);
+        }
+
+        private bool AssignmentChanged(Assignment updatingAssignment, UpdateAssignmentRequest updateRequest)
+        {
+            if (updatingAssignment.AssignedToAppUser.StaffCode == updateRequest.AssignToAppUserStaffCode
+                && updatingAssignment.Asset.AssetCode == updateRequest.AssetCode
+                && updatingAssignment.AssignedDate.Equals(updateRequest.AssignedDate)
+                && updatingAssignment.Note.Equals(updateRequest.Note))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -8,6 +8,8 @@ namespace AssetManagement.Contracts.Assignment.Response
 {
     public class UpdateAssignmentResponse
     {
+        public int Id { get; set; }
+
         public Guid? AssignedTo { get; set; }
 
         public int? AssetId { get; set; }

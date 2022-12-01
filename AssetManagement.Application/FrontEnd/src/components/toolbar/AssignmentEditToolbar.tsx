@@ -19,7 +19,7 @@ const AssignmentEditToolbar = ({ isEnable }) => {
                     label="Save"
                     mutationOptions={{
                         onSuccess: () => {
-                            // notify('Element updated');
+                            notify('Element updated');
                             navigate("/assignments")
                         }
                     }
