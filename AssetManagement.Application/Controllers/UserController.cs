@@ -56,8 +56,6 @@ namespace AssetManagement.Application.Controllers
                 return BadRequest(new ErrorResponseResult<string>(result.Errors.ToString()));
             }
 
-            user.IsLoginFirstTime = false;
-
             await _userManager.UpdateAsync(user);
 
             return Ok(new SuccessResponseResult<string>("Change password success!"));
