@@ -15,6 +15,11 @@ namespace AssetManagement.Contracts.AutoMapper
     {
         public AssignmentProfile()
         {
+            CreateMap<AssetManagement.Domain.Models.Assignment, ViewListAssignmentResponse>()
+                .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))
+                .ForMember(dest => dest.AssetName, opt => opt.MapFrom(src => src.Asset.Name))
+                .ForMember(dest => dest.AssignedTo, opt => opt.MapFrom(src => src.AssignedToAppUser.UserName))
+                .ForMember(dest => dest.AssignedBy, opt => opt.MapFrom(src => src.AssignedByToAppUser.UserName));
             CreateMap<AssetManagement.Domain.Models.Assignment, AssignmentResponse>()
                 .ForMember(dest => dest.AssignedDate, opt => opt.MapFrom(src => src.AssignedDate.ToShortDateString()))
                 .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.ToShortDateString()));

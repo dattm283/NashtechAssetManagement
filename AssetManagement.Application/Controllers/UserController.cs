@@ -36,30 +36,21 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? stateFilter = "",
             [FromQuery] string? searchString = "",
             [FromQuery] string? sort = "staffCode",
-            [FromQuery] string? order = "ASC",
-            [FromQuery] string? userName = "")
+            [FromQuery] string? order = "ASC")
         {
-            if (string.IsNullOrEmpty(userName))
-            {
-                return BadRequest("Invalid Username or Log in again!");
-            }
+            string userName = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name)?.Value;
             AppUser currentUser = await _dbContext.AppUsers.FirstAsync(x => x.UserName == userName);
-            if (currentUser == null)
-            {
-                return BadRequest("Invalid Username!");
-            }
             IQueryable<AppUser> users = _dbContext.AppUsers
-                                            .Where(x => x.IsDeleted==false && x.Location==currentUser.Location)
-                                            .AsQueryable();
+                                            .Where(x => x.IsDeleted==false && x.Location==currentUser.Location);
 
             if (!string.IsNullOrEmpty(stateFilter))
             {
-                var listType = stateFilter.Split("&").ToArray();
+                var listType = stateFilter.Split("&");
                 List<AppUser> tempData = new List<AppUser>();
                 for (int i=0; i<listType.Length-1; i++)
                 {
-                    string roleName = listType[i] == "0" ? "Admin" : "Staff";
-                    List<AppUser> tempUser = _userManager.GetUsersInRoleAsync(roleName).Result.ToList<AppUser>();
+                    string roleName = listType[i] == "Admin" ? "Admin" : "Staff";
+                    IQueryable<AppUser> tempUser = _userManager.GetUsersInRoleAsync(roleName).Result.AsQueryable<AppUser>();
                     tempData.AddRange(tempUser);
                 }
                 users = users.Where(x => tempData.Contains(x));
@@ -95,7 +86,14 @@ namespace AssetManagement.Application.Controllers
                     }
                 case "type":
                     {
-                        users = users.OrderBy(x => _userManager.GetRolesAsync(x).Result.FirstOrDefault());
+                        var userWithRole = from user in users
+                                           join userRole in _dbContext.UserRoles
+                                           on user.Id equals userRole.UserId
+                                           join role in _dbContext.Roles
+                                           on userRole.RoleId equals role.Id
+                                           orderby role.NormalizedName
+                                           select user;
+                        users = userWithRole;
                         break;
                     }
             }
@@ -132,7 +130,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet("{staffCode}")]
-        public async Task<ActionResult<ViewDetailUser_UserResponse>> GetSingleUser([FromRoute] string staffCode)
+        public async Task<ActionResult<SuccessResponseResult<ViewDetailUser_UserResponse>>> GetSingleUser([FromRoute] string staffCode)
         {
             AppUser user = _dbContext.AppUsers.Where(x => x.StaffCode.Trim()==staffCode.Trim()).FirstOrDefault();
 
@@ -143,7 +141,11 @@ namespace AssetManagement.Application.Controllers
 
             ViewDetailUser_UserResponse result = _mapper.Map<ViewDetailUser_UserResponse>(user);
             result.Type = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
-            return Ok(result);
+            return Ok(new SuccessResponseResult<ViewDetailUser_UserResponse>
+            {
+                Result = result,
+                IsSuccessed = true
+            });
         }
 
         [HttpDelete("{id}")]
