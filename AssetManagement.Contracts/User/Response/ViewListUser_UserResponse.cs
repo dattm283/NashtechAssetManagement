@@ -2,7 +2,7 @@
 {
     public class ViewListUser_UserResponse
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
         public string StaffCode { get; set; }
         public string FullName { get; set; }
         public string UserName { get; set; }

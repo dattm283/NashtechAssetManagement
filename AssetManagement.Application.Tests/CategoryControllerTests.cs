@@ -4,14 +4,12 @@ using AutoMapper;
 using AssetManagement.Contracts.AutoMapper;
 using AssetManagement.Domain.Models;
 using Xunit;
-using AssetManagement.Contracts.Category.Response;
 using AssetManagement.Contracts.Category.Request;
 using Microsoft.AspNetCore.Mvc;
-using System.Xml.Linq;
-using AssetManagement.Contracts.Asset.Response;
+using AssetManagement.Application.Controllers;
 
 #nullable disable
-namespace AssetManagement.Application.Controllers.Tests
+namespace AssetManagement.Application.Tests
 {
     public class CategoryControllerTests : IDisposable
     {
@@ -27,7 +25,8 @@ namespace AssetManagement.Application.Controllers.Tests
             //Create mapper using CategoryProfile
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new CategoryProfile())).CreateMapper();
 
-            SeedData();
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
         }
 
         #region GetCategory
@@ -50,6 +49,7 @@ namespace AssetManagement.Application.Controllers.Tests
         #region CreateCategory
         [Theory]
         [InlineData("Mouse", "Ms")]
+        [InlineData("Cable", "CA")]
         public async Task Create_SuccessAsync(string name, string prefix)
         {
             //ARRANGE
@@ -99,7 +99,7 @@ namespace AssetManagement.Application.Controllers.Tests
         }
 
         [Theory]
-        [InlineData("KeyBoard", "KY")]
+        [InlineData("Personal Computer", "KY")]
         [InlineData("laptop", "LA")]
         [InlineData("mOnitoR", "Mn")]
         public async Task Create_BadRequest_UniqueNameAsync(string name, string prefix)
@@ -118,8 +118,8 @@ namespace AssetManagement.Application.Controllers.Tests
 
         [Theory]
         [InlineData("Mouse", "MO")]
-        [InlineData("Lube Tube", "lT")]
-        [InlineData("Kibble", "kb")]
+        [InlineData("Large Cable", "lA")]
+        [InlineData("Kibble", "pc")]
         public async Task Create_BadRequest_UniquePrefixAsync(string name, string prefix)
         {
             //ARRANGE
@@ -182,26 +182,9 @@ namespace AssetManagement.Application.Controllers.Tests
         }
         #endregion
 
-        #region DataSeed
-        private void SeedData()
-        {
-            _context.Database.EnsureDeleted();
-            _categories = new()
-            {
-                new (){Name = "Laptop", Prefix = "LT", IsDeleted = false },
-                new (){Name = "Monitor", Prefix = "MO", IsDeleted = false },
-                new (){Name = "Keyboard", Prefix = "KB", IsDeleted = false },
-            };
-
-            _context.Categories.AddRange(_categories);
-            _context.SaveChanges();
-        }
-        #endregion
-
         //Clean up after tests
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
             _context.Dispose();
         }
     }

@@ -1,44 +1,44 @@
 ﻿using AssetManagement.Application.Controllers;
-using AssetManagement.Contracts.Asset.Response;
+using static AssetManagement.Application.Tests.TestHelper.ConverterFromIActionResult;
 using AssetManagement.Contracts.AutoMapper;
+using AssetManagement.Contracts.User.Request;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
 using AutoMapper;
-using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using Xunit;
-using Microsoft.AspNetCore.Identity;
-using AssetManagement.Contracts.User.Response;
 using Moq;
-using System.Linq;
-using AssetManagement.Domain.Enums.AppUser;
+using Xunit;
+using AssetManagement.Contracts.User.Response;
 using AssetManagement.Contracts.Common;
 using Microsoft.AspNetCore.Http;
 using System.Security.Principal;
 using AutoMapper.Internal;
-using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
-using AssetManagement.Contracts.User.Request;
+using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace AssetManagement.Application.Tests
 {
-    public class UserControllerTests : IDisposable
+    public class UsersControllerTests : IDisposable
     {
-        private readonly Mock<UserManager<AppUser>> _userManager;
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _config;
+        private readonly Mock<UserManager<AppUser>> _userManager;
+        private List<AppRole> _roles;
         private List<AppUser> _users;
-        private List<Asset> _assets;
-        private List<Category> _categories;
 
-        public UserControllerTests()
+        public UsersControllerTests()
         {
+            // Create InMemory dbcontext options
+            _options = new DbContextOptionsBuilder<AssetManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: "UserTestDb").Options;
+
+            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
+
             //Create UserManager mock using userStoreMoq
             _userManager = new(new Mock<IUserStore<AppUser>>().Object,
                 new Mock<IOptions<IdentityOptions>>().Object,
@@ -62,6 +62,174 @@ namespace AssetManagement.Application.Tests
             _context.Database.EnsureCreated();
         }
 
+        #region Change User Password
+
+        #region User Change Password Success
+        [Theory]
+        [InlineData("12345678", "123456")]
+        public async Task UserChangePassword_SuccessAsync(string currentpassword, string newpassword)
+        {
+            //ARRANGE
+            UserChangePasswordRequest request = new() { CurrentPassword = currentpassword, NewPassword = newpassword };
+            UserController userController = new UserController(_context, _userManager.Object, _mapper);
+            List<AppUser> listUsers = _context.AppUsers.ToList();
+            AppUser currentUser = listUsers.ElementAt(0);
+
+            //Set up UserManager
+            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(currentUser);
+            _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+                    .Returns(Task.FromResult(true));
+            _userManager.Setup(um => um.ChangePasswordAsync(currentUser, currentpassword, newpassword))
+                        .ReturnsAsync(IdentityResult.Success);
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
+            //ACT
+            IActionResult result = controller.ChangePassword(request).Result;
+            string message = ((SuccessResponseResult<string>)((ObjectResult)result).Value).Result;
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equal("Change password success!", message);
+        }
+        #endregion
+
+        #region Wrong Password Request
+        [Theory]
+        [InlineData("123456", "123456")]
+        public async Task UserChangePassword_WrongPassword_ReturnBadRequest(string currentpassword, string newpassword)
+        {
+            UserChangePasswordRequest request = new() { CurrentPassword = currentpassword, NewPassword = newpassword };
+            UserController userController = new UserController(_context, _userManager.Object, _mapper);
+            List<AppUser> listUsers = _context.AppUsers.ToList();
+            AppUser currentUser = listUsers.ElementAt(0);
+
+            //Set up UserManager
+            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(currentUser);
+            _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+                    .Returns(Task.FromResult(false));
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
+            //ACT
+            IActionResult result = controller.ChangePassword(request).Result;
+            string message = ((ErrorResponseResult<string>)((ObjectResult)result).Value).Message;
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("Password doesn't match", message);
+        }
+        #endregion
+
+        #region NewPassword Is Old Password
+        [Theory]
+        [InlineData("12345678", "12345678")]
+        public async Task UserChangePassword_NewPasswordIsOldPassword_ReturnBadRequest(string currentpassword, string newpassword)
+        {
+            UserChangePasswordRequest request = new() { CurrentPassword = currentpassword, NewPassword = newpassword };
+            UserController userController = new UserController(_context, _userManager.Object, _mapper);
+            List<AppUser> listUsers = _context.AppUsers.ToList();
+            AppUser currentUser = listUsers.ElementAt(0);
+
+            //Set up UserManager
+            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(currentUser);
+            _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+                    .Returns(Task.FromResult(true));
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
+                }
+            };
+
+            //ACT
+            IActionResult result = controller.ChangePassword(request).Result;
+            string message = ((ErrorResponseResult<string>)((ObjectResult)result).Value).Message;
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("New password must be different", message);
+        }
+        #endregion
+
+        #region Model State Invalid
+        [Theory]
+        [InlineData("12345", null)]
+        [InlineData("12345678", null)]
+        [InlineData(null, null)]
+        [InlineData(null, "12345")]
+        [InlineData(null, "1234567")]
+        public async Task UserChangePassword_BadRequest_ModelState_Invalid(string currentpassword, string newpassword)
+        {
+            UserChangePasswordRequest request = new() { CurrentPassword = currentpassword, NewPassword = newpassword };
+            UserController userController = new UserController(_context, _userManager.Object, _mapper);
+            List<AppUser> listUsers = _context.AppUsers.ToList();
+            AppUser currentUser = listUsers.ElementAt(0);
+
+            //Set up UserManager
+            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(currentUser);
+            //_userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+            //        .Returns(Task.FromResult(false));
+
+            //Create controller
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+            if (currentpassword == null) controller.ModelState.AddModelError("nullcurrentpassword", "Please enter old password");
+            if (newpassword == null) controller.ModelState.AddModelError("nullnewpassword", "Please enter new password");
+            if (currentpassword != null && currentpassword.Length < 6) controller.ModelState.AddModelError("invalidcurrentpassword", "Please enter valid password");
+            if (newpassword != null && newpassword.Length < 6) controller.ModelState.AddModelError("invalidnewpassword", "Please enter valid password");
+
+            //ACT
+            IActionResult result = controller.ChangePassword(request).Result;
+            SerializableError errors = (SerializableError)((ObjectResult)result).Value;
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+
+            if (errors != null && errors.ContainsKey("nullcurrentpassword"))
+            {
+                string message = (errors["nullcurrentpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter old password", message);
+            }
+            if (errors != null && errors.ContainsKey("nullnewpassword"))
+            {
+                string message = (errors["nullnewpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter new password", message);
+            }
+            if (errors != null && errors.ContainsKey("invalidcurrentpassword"))
+            {
+                string message = (errors["invalidcurrentpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter valid password", message);
+            }
+            if (errors != null && errors.ContainsKey("invalidnewpassword"))
+            {
+                string message = (errors["invalidnewpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter valid password", message);
+            }
+        }
+        #endregion
+
+        #endregion
 
         #region GetUser
         [Fact]
@@ -738,6 +906,136 @@ namespace AssetManagement.Application.Tests
             Assert.Equal(userRequest.Dob, actualResult.Dob);
             Assert.Equal(userRequest.JoinedDate, actualResult.CreatedDate);
         }
+
+        #region EditUser
+        #nullable disable
+        [Theory]
+        [InlineData(0)]
+        [InlineData(1)]
+        public async Task EditUser_SuccessAsync(int index)
+        {
+            //ARRANGE
+            UpdateUserRequest request = new()
+            {
+                Dob = new(2000, 11, 28),
+                Gender = (byte)Domain.Enums.AppUser.UserGender.Female,
+                JoinedDate = new(2022, 11, 28),
+                Type = "Admin"
+            };
+
+            string staffCode = _context.AppUsers.ToList()[index].StaffCode;
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+
+            //ACT
+            IActionResult result = await controller.UpdateUserAsync(staffCode, request);
+            string data = ConvertOkObject<UpdateUserResponse>(result);
+            UpdateUserResponse expected = _mapper.Map<UpdateUserResponse>(_context.AppUsers.ToList()[index]);
+            expected.Type = "Admin";
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.NotNull(data);
+            Assert.Equal(JsonConvert.SerializeObject(expected), data);
+        }
+
+        [Fact]
+        public async Task EditUser_BadRequest_UnderAgeAsync()
+        {
+            //ARRANGE
+            UpdateUserRequest request = new()
+            {
+                Dob = DateTime.Now.AddYears(-18).AddSeconds(1),
+                Gender = (byte)Domain.Enums.AppUser.UserGender.Female,
+                JoinedDate = new(2022, 11, 28),
+                Type = "Admin"
+            };
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+
+            //ACT
+            IActionResult result = await controller.UpdateUserAsync("SD0001", request);
+            string data = ConvertStatusCode(result);
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("\"User is under 18. Please select a different date\"", data);
+        }
+
+        [Fact]
+        public async Task EditUser_BadRequest_JoinedAgeAsync()
+        {
+            //ARRANGE
+            UpdateUserRequest request = new()
+            {
+                Dob = new(2000, 11, 29),
+                Gender = (byte)Domain.Enums.AppUser.UserGender.Female,
+                JoinedDate = new(2018, 11, 28),
+                Type = "Admin"
+            };
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+
+            //ACT
+            IActionResult result = await controller.UpdateUserAsync("SD0001", request);
+            string data = ConvertStatusCode(result);
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("\"User under the age 18 may not join the company. Please select a different date\"", data);
+        }
+
+        [Theory]
+        [InlineData(2022, 11, 27)]
+        [InlineData(2022, 11, 26)]
+        public async Task EditUser_BadRequest_JoinedWeekendAsync(int jyear, int jmonth, int jday)
+        {
+            //ARRANGE
+            UpdateUserRequest request = new()
+            {
+                Dob = new(2000, 11, 20),
+                Gender = (byte)Domain.Enums.AppUser.UserGender.Female,
+                JoinedDate = new(jyear, jmonth, jday),
+                Type = "Admin"
+            };
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+
+            //ACT
+            IActionResult result = await controller.UpdateUserAsync("SD0001", request);
+            string data = ConvertStatusCode(result);
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("\"Joined date is Saturday or Sunday. Please select a different date\"", data);
+        }
+
+        [Fact]
+        public async Task EditUser_BadRequest_NotFoundAsync()
+        {
+            //ARRANGE
+            UpdateUserRequest request = new()
+            {
+                Dob = new(2000, 11, 29),
+                Gender = (byte)Domain.Enums.AppUser.UserGender.Female,
+                JoinedDate = new(2022, 11, 28),
+                Type = "Admin"
+            };
+
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+
+            //ACT
+            IActionResult result = await controller.UpdateUserAsync("INVAUR", request);
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
+        }
+        #endregion
 
         public void Dispose()
         {

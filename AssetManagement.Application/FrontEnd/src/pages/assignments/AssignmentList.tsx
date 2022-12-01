@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import {
     Datagrid,
+    List,
     Title,
     TextField,
+    TextInput,
     DateField,
     EditButton,
     useDataProvider,
@@ -11,24 +13,35 @@ import {
     ListBase,
     FilterForm,
     CreateButton,
-    SearchInput
+    Button,
+    SearchInput,
+    useRecordContext
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
 import { ButtonGroup, Stack, Container } from "@mui/material";
-import {DateAssignedFilterSelect} from "../../components/select/DateAssignedFilterSelect";
+import { DateAssignedFilterSelect } from "../../components/select/DateAssignedFilterSelect";
+import { useNavigate } from "react-router-dom";
+import { assetProvider } from "../../providers/assetProvider/assetProvider";
+import AssignmentShow from "./AssignmentShow";
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
     const [record, setRecord] = useState();
-
+    const [assignment, setAssignment] = useState({});
     const toggle = () => {
         setIsOpened(!isOpened);
     };
-    const postRowClick = (id, resource, record) => {
-        setRecord(record);
+    const postRowClick = (id, resource) => {
+        assetProvider.getOne("assignments", { id: id })
+            .then(response => {
+                setAssignment(response.data);
+            })
+            .catch(err => {
+                console.log(err);
+            })
         toggle();
         return "";
     };
@@ -39,25 +52,25 @@ export default () => {
         <StateFilterSelect
             source="states"
             label="Type"
-            sx={{ width:"250px" }}
+            sx={{ width: "250px" }}
             statesList={[
                 { value: 0, text: "Accepted" },
                 { value: 1, text: "Waiting for acceptance" },
             ]}
             alwaysOn
         />,
-        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn/>,
+        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn />,
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
     return (
-        <Container component="main" sx={{padding:"20px 10px"}}>
-            <Title title="Manage Assignment"/>
+        <Container component="main" sx={{ padding: "20px 10px" }}>
+            <Title title="Manage Assignment" />
             <ListBase
                 perPage={5}
                 sort={{ field: "noNumber", order: "DESC" }}
             >
-                <h2 style={{ color: "#cf2338"}}>Assignment List</h2>
+                <h2 style={{ color: "#cf2338" }}>Assignment List</h2>
                 <Stack direction="row" justifyContent="end" alignContent="center">
                     <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assignmentsFilter} /></div>
                     <div style={{ display: "flex", alignItems: "end" }}>
@@ -90,7 +103,19 @@ export default () => {
                     <DateField label="Assigned Date" source="assignedDate" />
                     <FunctionField source="state" render={(record) => record.state == "0" ? "Accepted" : "Waiting for acceptance"} />
                     <ButtonGroup sx={{ border: null }}>
-                        <EditButton variant="text" size="small" label="" />
+                        <FunctionField render={(record) => {
+                            console.log(record);
+                            if (record.state === 1) {
+                                return (
+                                    <EditButton variant="text" size="small" label="" />
+                                )
+                            }
+                            else {
+                                return (
+                                    <EditButton disabled variant="text" size="small" label="" />
+                                )
+                            }
+                        }} />
                         <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure?"
@@ -101,7 +126,7 @@ export default () => {
                 </Datagrid>
                 <AssetsPagination />
             </ListBase>
-            {/* <AssetShow isOpened={isOpened} toggle={toggle} record={record} /> */}
+            <AssignmentShow isOpened={isOpened} toggle={toggle} assignment={assignment} />
         </Container>
     );
 };

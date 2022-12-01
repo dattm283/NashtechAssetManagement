@@ -24,6 +24,7 @@ export const assetProvider: DataProvider = {
         throw new Error("Function not implemented.");
     },
     update: (resource, params) => {
+        console.log(params.data);
         return axiosInstance.put(`/api/${resource}/${params.id}`, params.data).then(res => {
             localStorage.setItem("item", JSON.stringify(res.data))
             return res
@@ -64,7 +65,6 @@ export const assetProvider: DataProvider = {
                 tmp1 += element + "&";
             }
         }
-
         const query = {
             end: JSON.stringify((page) * perPage),
             start: JSON.stringify((page - 1) * perPage),
@@ -80,7 +80,6 @@ export const assetProvider: DataProvider = {
                 null,
             userName: localStorage.getItem("userName") ? localStorage.getItem("userName") : null
         };
-
         const url = `/api/${resource}?${stringify(query)}`;
         if (localStorage.getItem("item") != null && query.end != '99') {
             localStorage.removeItem("item");
