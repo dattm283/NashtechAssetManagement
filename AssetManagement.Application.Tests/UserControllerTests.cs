@@ -739,7 +739,7 @@ namespace AssetManagement.Application.Tests
             // Assert
             #region Assert
             Assert.NotNull(actualResult);
-            Assert.Equal(actualResult.Total, expectedResult.Count);
+            Assert.Equal(actualResult.Data.Count, expectedResult.Count);
             for (int i = 0; i < expectedResult.Count; i++)
             {
                 Assert.Equal(actualResult.Data.ElementAt(i).UserName, expectedResult.ElementAt(i).UserName);
