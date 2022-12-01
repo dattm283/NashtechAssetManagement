@@ -29,8 +29,8 @@ export default () => {
             label="Type"
             sx={{ width:"140px" }}
             statesList={[
-                { value: 0, text: "Admin" },
-                { value: 1, text: "Staff" },
+                { value: "Admin", text: "Admin" },
+                { value: "Staff", text: "Staff" },
             ]}
             alwaysOn
         />,
@@ -70,7 +70,7 @@ export default () => {
                 <Datagrid
                     rowClick={(id, resource, record) => {
                         assetProvider.getOne('user', { id:record.staffCode }).then(res => {
-                            setOpenDetail({ status:true, data:res.data })
+                            setOpenDetail({ status:true, data:res.data.result })
                         })
                         return "";
                     }}
@@ -81,7 +81,7 @@ export default () => {
                     <TextField label="Full Name" source="fullName" />
                     <TextField label="Username" source="userName" />
                     <FunctionField label="Joined Date" source="joinedDate" render={ data => data.joinedDate.split('T')[0] } />
-                    <FunctionField source="Type" render={ data => data.type == "Admin" ? "Admin" : "Staff"} />
+                    <FunctionField label="Type" source="type" render={ data => data.type == "Admin" ? "Admin" : "Staff"} />
 
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
