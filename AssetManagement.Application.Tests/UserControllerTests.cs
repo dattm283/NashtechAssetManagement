@@ -26,18 +26,36 @@ namespace AssetManagement.Application.Tests
 
         public UsersControllerTests()
         {
-            //Create InMemory dbcontext options
-            _options = new DbContextOptionsBuilder<AssetManagementDbContext>().UseInMemoryDatabase("UserTestDB").Options;
-            //Create InMemory dbcontext with options
-            _context = new AssetManagementDbContext(_options);
-            //Create mapper using UserProfile
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
+            ////Create InMemory dbcontext options
+            //_options = new DbContextOptionsBuilder<AssetManagementDbContext>().UseInMemoryDatabase("UserTestDB").Options;
+            ////Create InMemory dbcontext with options
+            //_context = new AssetManagementDbContext(_options);
+            ////Create mapper using UserProfile
+            //_mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
+
+            ////Mock UserManager
+            ////Create UserStore mock to enable user support for UserManager
+            //Mock<IUserStore<AppUser>> userStoreMoq = new();
+            ////Create UserManager mock using userStoreMoq
+            //_userManager = new(userStoreMoq.Object, null, null, null, null, null, null, null, null);
+            ////Create fake data
+            //SeedData();
 
             //Mock UserManager
             //Create UserStore mock to enable user support for UserManager
             Mock<IUserStore<AppUser>> userStoreMoq = new();
             //Create UserManager mock using userStoreMoq
             _userManager = new(userStoreMoq.Object, null, null, null, null, null, null, null, null);
+            // Create InMemory dbcontext options
+            _options = new DbContextOptionsBuilder<AssetManagementDbContext>()
+                .UseInMemoryDatabase(databaseName: "AssetTestDb").Options;
+
+            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
+
+            // Create InMemory dbcontext with options
+            _context = new AssetManagementDbContext(_options);
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
             //Create fake data
             SeedData();
         }
