@@ -31,21 +31,21 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
 
-        // [HttpGet("{assetCodeId}")]
-        // //[Authorize]
-        // public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
-        // {
-        //     var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId).ToList();
-        //     var assignmentResponse = _mapper.Map<List<AssignmentResponse>>(result);
+        [HttpGet("assets/{assetCodeId}")]
+        [Authorize]
+        public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
+        {
+            var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId).ToList();
+            var assignmentResponse = _mapper.Map<List<AssignmentResponse>>(result);
 
-        //     foreach (var item in assignmentResponse)
-        //     {
-        //         item.AssignedTo = _dbContext.Users.Find(new Guid(item.AssignedTo)).UserName;
-        //         item.AssignedBy = _dbContext.Users.Find(new Guid(item.AssignedBy)).UserName;
-        //     }
+            foreach (var item in assignmentResponse)
+            {
+                item.AssignedTo = _dbContext.Users.Find(new Guid(item.AssignedTo)).UserName;
+                item.AssignedBy = _dbContext.Users.Find(new Guid(item.AssignedBy)).UserName;
+            }
 
-        //     return Ok(assignmentResponse);
-        // }
+            return Ok(assignmentResponse);
+        }
 
 
         [HttpGet("{id}")]

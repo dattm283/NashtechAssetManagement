@@ -53,6 +53,7 @@ export default () => {
     const assetsFilter = [
         <StateFilterSelect
             source="states"
+            label="State"
             sx={{ width: "250px" }}
             statesList={[
                 { value: "0", text: "Available" },
