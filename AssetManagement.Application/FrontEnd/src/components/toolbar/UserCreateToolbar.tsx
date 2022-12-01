@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import {theme} from '../../theme';
 import { formToolbarStyle } from "../../styles/formToolbarStyle";
 
-const AssetCreateToolbar = ({ disable, url }) => {
+const UserCreateToolbar = ({ disable }) => {
     const notify = useNotify();
     const navigate = useNavigate();
     return (
@@ -15,7 +15,9 @@ const AssetCreateToolbar = ({ disable, url }) => {
                 label="Save"
                 mutationOptions={{
                     onSuccess: () => {
-                        navigate(url)
+                        localStorage.setItem("RaStore.users.listParams", 
+                        `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"name"}`)
+                        navigate("/user")
                     }}
                 }
                 type="button"
@@ -26,11 +28,11 @@ const AssetCreateToolbar = ({ disable, url }) => {
             />
             <Button
                 variant="outlined"
-                onClick={(e) => navigate(url)}
+                onClick={(e) => navigate("/user")}
                 color="secondary"
             >Cancel</Button>
         </Toolbar>
         </ThemeProvider>
     );
 };
-export default AssetCreateToolbar;
+export default UserCreateToolbar;

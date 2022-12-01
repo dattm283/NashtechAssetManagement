@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using AssetManagement.Domain.Enums.AppUser;
+using System.Collections.Generic;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -31,6 +32,16 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
 
+        private int GetAge(DateTime bornDate)
+        {
+            DateTime today = DateTime.Today;
+            int age = today.Year - bornDate.Year;
+            if (bornDate > today.AddYears(-age))
+                age--;
+
+            return age;
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateUser(CreateUserRequest userRequest)
@@ -38,6 +49,25 @@ namespace AssetManagement.Application.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            int age = GetAge(userRequest.Dob);
+            if (age < 18)
+            {
+                return BadRequest(new ErrorResponseResult<bool>("User is under 18. Please select a different date"));
+            }
+
+            if (userRequest.JoinedDate.DayOfWeek == DayOfWeek.Saturday || 
+                userRequest.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return BadRequest(new ErrorResponseResult<bool>("Joined date is Saturday or Sunday. Please select a different date"));
+            }
+
+            DateTime condition = userRequest.Dob;
+            condition.AddYears(18);
+            if (userRequest.JoinedDate < condition)
+            {
+                return BadRequest(new ErrorResponseResult<bool>("User under the age of 18 may not join company. Please select a different date"));
             }
 
             //auto generate staff code
@@ -73,12 +103,13 @@ namespace AssetManagement.Application.Controllers
 
             var duplicatename = await _userManager.FindByNameAsync(username);
 
+            string newUsername = username;
             int count = 0;
             while (duplicatename != null)
             {
                 count++;
-                username = (username + count.ToString());
-                duplicatename = await _userManager.FindByNameAsync(username);
+                newUsername = (username + count.ToString());
+                duplicatename = await _userManager.FindByNameAsync(newUsername);
             }
 
             //auto generate password
@@ -93,7 +124,7 @@ namespace AssetManagement.Application.Controllers
                 Dob = userRequest.Dob,
                 CreatedDate = userRequest.JoinedDate,
                 Gender = Enum.Parse<UserGender>(userRequest.Gender),
-                UserName = username,
+                UserName = newUsername,
                 Location = Enum.Parse<AppUserLocation>(User.FindFirst(ClaimTypes.Locality).Value.ToString()),
             };
 
@@ -115,7 +146,8 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? stateFilter = "",
             [FromQuery] string? searchString = "",
             [FromQuery] string? sort = "staffCode",
-            [FromQuery] string? order = "ASC")
+            [FromQuery] string? order = "ASC",
+            [FromQuery] string? createdId = "")
         {
             string userName = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name)?.Value;
             AppUser currentUser = await _dbContext.AppUsers.FirstAsync(x => x.UserName == userName);
@@ -180,6 +212,21 @@ namespace AssetManagement.Application.Controllers
             if (order == "DESC")
             {
                 users = users.Reverse();
+            }
+
+            if (!string.IsNullOrEmpty(createdId))
+            {
+                createdId = createdId.Substring(1, 36);
+                AppUser recentlyCreatedItem = users.Where(item => item.Id == Guid.Parse(createdId)).AsNoTracking().FirstOrDefault();
+                users = users.Where(item => item.Id != Guid.Parse(createdId));
+
+                var sortedResultWithCreatedIdParam = StaticFunctions<AppUser>.Paging(users, start, end - 1);
+
+                sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
+
+                var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListUser_UserResponse>>(sortedResultWithCreatedIdParam);
+
+                return Ok(new ViewList_ListResponse<ViewListUser_UserResponse> { Data = mappedResultWithCreatedIdParam, Total = users.Count() });
             }
 
             List<AppUser> sortedUsers = StaticFunctions<AppUser>.Paging(users, start, end);

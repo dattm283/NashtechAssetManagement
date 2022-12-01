@@ -144,7 +144,7 @@ function UserCreate() {
             <SimpleForm
               mode="onBlur"
               validate={requiredInput}
-              toolbar={<UserCreateToolbar disable={isValid} url="/user" />}
+              toolbar={<UserCreateToolbar disable={isValid} />}
             >
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
