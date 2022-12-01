@@ -34,14 +34,14 @@ namespace AssetManagement.Application.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(new ErrorResponseResult<string>("Invalid password"));
+                return BadRequest(ModelState);
             }
 
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
 
             if (!(await _userManager.CheckPasswordAsync(user, request.CurrentPassword)))
             {
-                return BadRequest(new ErrorResponseResult<string>("Password is incorrect"));
+                return BadRequest(new ErrorResponseResult<string>("Password doesn't match"));
             }
 
             if(request.CurrentPassword == request.NewPassword)
