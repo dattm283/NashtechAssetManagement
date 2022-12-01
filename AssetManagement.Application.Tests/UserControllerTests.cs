@@ -484,7 +484,7 @@ namespace AssetManagement.Application.Tests
                     staffRole.Contains(x));
             List<AppUser> expectedResult = await adminAccount.Concat(staffAccount).ToListAsync();
 
-            var result = await userController.GetAllUser(0, 2, "", "", "type", "DESC");
+            var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
             var okobjectResult = result.Result as OkObjectResult;
             ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
                 okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;

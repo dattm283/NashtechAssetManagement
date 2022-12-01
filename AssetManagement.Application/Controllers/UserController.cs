@@ -86,12 +86,14 @@ namespace AssetManagement.Application.Controllers
                     }
                 case "type":
                     {
-                        var adminUsers = _userManager.GetUsersInRoleAsync("Admin").Result;
-                        var staffUsers = _userManager.GetUsersInRoleAsync("Staff").Result;
-                        List<AppUser> listUsers_1 = await users.Where(x => adminUsers.Contains(x)).ToListAsync();
-                        List<AppUser> listUsers_2 = await users.Where(x => staffUsers.Contains(x)).ToListAsync();
-                        listUsers_1.AddRange(listUsers_2);
-                        users = listUsers_1.AsQueryable().AsNoTracking();
+                        var userWithRole = from user in users
+                                           join userRole in _dbContext.UserRoles
+                                           on user.Id equals userRole.UserId
+                                           join role in _dbContext.Roles
+                                           on userRole.RoleId equals role.Id
+                                           orderby role.NormalizedName
+                                           select user;
+                        users = userWithRole;
                         break;
                     }
             }

@@ -118,7 +118,7 @@ namespace AssetManagement.Application.Controllers
                 }
                 else
                 {
-                    throw new Exception("The user does not exist");
+                    throw new Exception("The asset does not exist");
                 }
             }
             catch (Exception ex)
@@ -132,23 +132,23 @@ namespace AssetManagement.Application.Controllers
         [HttpGet]
         //[Authorize]
         public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get(
-            [FromQuery]int start, 
-            [FromQuery]int end, 
-            [FromQuery]string? searchString="", 
-            [FromQuery]string? categoryFilter="", 
-            [FromQuery]string? stateFilter="", 
-            [FromQuery]string? sort="name", 
-            [FromQuery]string? order="ASC", 
-            [FromQuery]string? createdId="")
+            [FromQuery] int start,
+            [FromQuery] int end,
+            [FromQuery] string? searchString = "",
+            [FromQuery] string? categoryFilter = "",
+            [FromQuery] string? stateFilter = "",
+            [FromQuery] string? sort = "name",
+            [FromQuery] string? order = "ASC",
+            [FromQuery] string? createdId = "")
         {
             var list = _dbContext.Assets
-                .Include(x=>x.Category)
-                .Where(x=>!x.IsDeleted);
+                .Include(x => x.Category)
+                .Where(x => !x.IsDeleted);
             if (!string.IsNullOrEmpty(searchString))
             {
                 list = list.Where(x => x.Name.ToUpper().Contains(searchString.ToUpper()) || x.AssetCode.ToUpper().Contains(searchString.ToUpper()));
             }
-            if(!string.IsNullOrEmpty(categoryFilter))
+            if (!string.IsNullOrEmpty(categoryFilter))
             {
                 var arrayChar = categoryFilter.Split("&");
                 var arrNumberChar = new List<int>();
@@ -168,7 +168,7 @@ namespace AssetManagement.Application.Controllers
                 }).Where(a => a > -1);
                 list = list.Where(x => arrNumberChar.Contains(x.CategoryId.GetValueOrDefault()));
             }
-            if(!string.IsNullOrEmpty(stateFilter))
+            if (!string.IsNullOrEmpty(stateFilter))
             {
                 var arrayChar = stateFilter.Split("&");
                 var arrNumberChar = new List<int>();
@@ -180,7 +180,7 @@ namespace AssetManagement.Application.Controllers
                         arrNumberChar.Add(int.Parse(arrayChar[i]));
                     }
                 }
-                list = list.Where(x=> arrNumberChar.Contains((int)x.State));
+                list = list.Where(x => arrNumberChar.Contains((int)x.State));
             }
             switch (sort)
             {

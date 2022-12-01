@@ -1,6 +1,7 @@
 ﻿using AssetManagement.Application.Controllers;
 using AssetManagement.Contracts.Asset.Response;
 using AssetManagement.Contracts.Assignment.Response;
+using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.AutoMapper;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Enums.Asset;
@@ -9,6 +10,7 @@ using AutoMapper;
 using Castle.Core.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,7 @@ using Xunit;
 
 namespace AssetManagement.Application.Tests
 {
-    public class AssignmentControllerTests: IDisposable
+    public class AssignmentControllerTests : IDisposable
     {
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
@@ -43,7 +45,7 @@ namespace AssetManagement.Application.Tests
         {
             _context.Database.EnsureDeleted();
             //Create roles data
-            List<AppRole> _roles = new ()
+            List<AppRole> _roles = new()
             {
                 new AppRole()
                 {
@@ -117,7 +119,7 @@ namespace AssetManagement.Application.Tests
                 AssetId = 1,
                 AssignedTo = _users[0].Id,
                 AssignedBy = _users[1].Id,
-                Note="Co len",
+                Note = "Co len",
             });
             _context.SaveChanges();
         }
@@ -175,6 +177,484 @@ namespace AssetManagement.Application.Tests
         //     Assert.Empty(resultValue);
         //     Assert.Equal(resultValue.Count(), expected.Count());
         // }
+
+        #region GetList
+        [Fact]
+        public async Task GetList_ForDefault()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+
+            // Act 
+            var result = await assignmentController.Get(1, 2);
+
+            // var listDefault = _context.Assignments
+            //     .Include(x => x.Asset)
+            //     .Include(x => x.AssignedToAppUser)
+            //     .Include(x => x.AssignedByToAppUser)
+            //     .Where(x => !x.IsDeleted)
+            //     .Select(x => new ViewListAssignmentResponse
+            //     {
+            //         Id = x.Id,
+            //         AssetCode = x.Asset.AssetCode,
+            //         AssetName = x.Asset.Name,
+            //         AssignedTo = x.AssignedToAppUser.UserName,
+            //         AssignedBy = x.AssignedByToAppUser.UserName,
+            //         AssignedDate = x.AssignedDate,
+            //         State = x.State,
+            //     })
+            //     .OrderBy(x => x.Id)
+            //     .ToList();
+
+            // var list = listDefault.Select((x, index) => new ViewListAssignmentResponse
+            // {
+            //     Id = x.Id,
+            //     NoNumber = index + 1,
+            //     AssetCode = x.AssetCode,
+            //     AssetName = x.AssetName,
+            //     AssignedTo = x.AssignedTo,
+            //     AssignedBy = x.AssignedBy,
+            //     AssignedDate = x.AssignedDate,
+            //     State = x.State,
+            // }).AsQueryable<ViewListAssignmentResponse>();
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted)
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+
+            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = resultValue.Data;
+
+            var isSorted = assignmentsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assignmentsList.Count(), expected.Count());
+        }
+
+        [Fact]
+        public async Task GetList_SearchString_WithData()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            var searchString = "top 1";
+            // Act 
+            var result = await assignmentController.Get(1, 2, searchString);
+
+            // var listDefault = _context.Assignments
+            //     .Include(x => x.Asset)
+            //     .Include(x => x.AssignedToAppUser)
+            //     .Include(x => x.AssignedByToAppUser)
+            //     .Where(x => !x.IsDeleted)
+            //     .Select(x => new ViewListAssignmentResponse
+            //     {
+            //         Id = x.Id,
+            //         AssetCode = x.Asset.AssetCode,
+            //         AssetName = x.Asset.Name,
+            //         AssignedTo = x.AssignedToAppUser.UserName,
+            //         AssignedBy = x.AssignedByToAppUser.UserName,
+            //         AssignedDate = x.AssignedDate,
+            //         State = x.State,
+            //     })
+            //     .OrderBy(x => x.Id)
+            //     .ToList();
+
+            // var list = listDefault
+            // .Where(x => (x.AssetName.Contains(searchString) || x.AssetCode.Contains(searchString)))
+            // .Select((x, index) => new ViewListAssignmentResponse
+            // {
+            //     Id = x.Id,
+            //     NoNumber = index + 1,
+            //     AssetCode = x.AssetCode,
+            //     AssetName = x.AssetName,
+            //     AssignedTo = x.AssignedTo,
+            //     AssignedBy = x.AssignedBy,
+            //     AssignedDate = x.AssignedDate,
+            //     State = x.State,
+            // }).AsQueryable<ViewListAssignmentResponse>();
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted && (x.Asset.Name.Contains(searchString) || x.Asset.AssetCode.Contains(searchString)))
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+
+            var expected = JsonConvert.SerializeObject(StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2));
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
+
+            var isSorted = assignmentsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assignmentsList.Count(), expected.Count());
+        }
+
+        [Fact]
+        public async Task GetList_SearchString_WithOutData()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            var searchString = "top 1";
+            // Act 
+            var result = await assignmentController.Get(1, 2, searchString);
+
+            // var listDefault = _context.Assignments
+            //     .Include(x => x.Asset)
+            //     .Include(x => x.AssignedToAppUser)
+            //     .Include(x => x.AssignedByToAppUser)
+            //     .Where(x => !x.IsDeleted)
+            //     .Select(x => new ViewListAssignmentResponse
+            //     {
+            //         Id = x.Id,
+            //         AssetCode = x.Asset.AssetCode,
+            //         AssetName = x.Asset.Name,
+            //         AssignedTo = x.AssignedToAppUser.UserName,
+            //         AssignedBy = x.AssignedByToAppUser.UserName,
+            //         AssignedDate = x.AssignedDate,
+            //         State = x.State,
+            //     })
+            //     .OrderBy(x => x.Id)
+            //     .ToList();
+
+            // var list = listDefault
+            // .Where(x => (x.AssetName.Contains(searchString) || x.AssetCode.Contains(searchString)))
+            // .Select((x, index) => new ViewListAssignmentResponse
+            // {
+            //     Id = x.Id,
+            //     NoNumber = index + 1,
+            //     AssetCode = x.AssetCode,
+            //     AssetName = x.AssetName,
+            //     AssignedTo = x.AssignedTo,
+            //     AssignedBy = x.AssignedBy,
+            //     AssignedDate = x.AssignedDate,
+            //     State = x.State,
+            // }).AsQueryable<ViewListAssignmentResponse>();
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted && (x.Asset.Name.Contains(searchString) ||  x.Asset.AssetCode.Contains(searchString)))
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+
+            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = resultValue.Data;
+
+            var isSorted = assignmentsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assignmentsList.Count(), expected.Count());
+        }
+
+        [Fact]
+        public async Task GetList_FilterState()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            var state = (int)AssetManagement.Domain.Enums.Assignment.State.Accepted;
+            // Act 
+            var result = await assignmentController.Get(1, 2, state.ToString());
+
+            // var listDefault = _context.Assignments
+            //     .Include(x => x.Asset)
+            //     .Include(x => x.AssignedToAppUser)
+            //     .Include(x => x.AssignedByToAppUser)
+            //     .Where(x => !x.IsDeleted)
+            //     .Select(x => new ViewListAssignmentResponse
+            //     {
+            //         Id = x.Id,
+            //         AssetCode = x.Asset.AssetCode,
+            //         AssetName = x.Asset.Name,
+            //         AssignedTo = x.AssignedToAppUser.UserName,
+            //         AssignedBy = x.AssignedByToAppUser.UserName,
+            //         AssignedDate = x.AssignedDate,
+            //         State = x.State,
+            //     })
+            //     .OrderBy(x => x.Id)
+            //     .ToList();
+
+            // var list = listDefault
+            // .Where(x => (int)x.State == state)
+            // .Select((x, index) => new ViewListAssignmentResponse
+            // {
+            //     Id = x.Id,
+            //     NoNumber = index + 1,
+            //     AssetCode = x.AssetCode,
+            //     AssetName = x.AssetName,
+            //     AssignedTo = x.AssignedTo,
+            //     AssignedBy = x.AssignedBy,
+            //     AssignedDate = x.AssignedDate,
+            //     State = x.State,
+            // }).AsQueryable<ViewListAssignmentResponse>();
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted && (int)x.State == state)
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+
+            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = resultValue.Data;
+
+            var isSorted = assignmentsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assignmentsList.Count(), expected.Count());
+        }
+
+        [Fact]
+        public async Task GetList_FilterAssignedDate()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            var assignedDateFilter = "2022-11-28";
+            // Act 
+            var result = await assignmentController.Get(1, 2, assignedDateFilter);
+
+            // var listDefault = _context.Assignments
+            //     .Include(x => x.Asset)
+            //     .Include(x => x.AssignedToAppUser)
+            //     .Include(x => x.AssignedByToAppUser)
+            //     .Where(x => !x.IsDeleted)
+            //     .Select(x => new ViewListAssignmentResponse
+            //     {
+            //         Id = x.Id,
+            //         AssetCode = x.Asset.AssetCode,
+            //         AssetName = x.Asset.Name,
+            //         AssignedTo = x.AssignedToAppUser.UserName,
+            //         AssignedBy = x.AssignedByToAppUser.UserName,
+            //         AssignedDate = x.AssignedDate,
+            //         State = x.State,
+            //     })
+            //     .OrderBy(x => x.Id)
+            //     .ToList();
+
+            // var list = listDefault
+            // .Where(x => x.AssignedDate.Date == DateTime.Parse(assignedDateFilter).Date)
+            // .Select((x, index) => new ViewListAssignmentResponse
+            // {
+            //     Id = x.Id,
+            //     NoNumber = index + 1,
+            //     AssetCode = x.AssetCode,
+            //     AssetName = x.AssetName,
+            //     AssignedTo = x.AssignedTo,
+            //     AssignedBy = x.AssignedBy,
+            //     AssignedDate = x.AssignedDate,
+            //     State = x.State,
+            // }).AsQueryable<ViewListAssignmentResponse>();
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted && x.AssignedDate.Date == DateTime.Parse(assignedDateFilter).Date)
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = resultValue.Data;
+
+            var isSorted = assignmentsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assignmentsList.Count(), expected.Count());
+        }
+
+        [Fact]
+        public async Task GetList_ForDefaultSortedByAssetCode()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            var sortType = "assetCode";
+            // Act 
+            var result = await assignmentController.Get(1, 2, sortType);
+
+            // var listDefault = _context.Assignments
+            //     .Include(x => x.Asset)
+            //     .Include(x => x.AssignedToAppUser)
+            //     .Include(x => x.AssignedByToAppUser)
+            //     .Where(x => !x.IsDeleted)
+            //     .Select(x => new ViewListAssignmentResponse
+            //     {
+            //         Id = x.Id,
+            //         AssetCode = x.Asset.AssetCode,
+            //         AssetName = x.Asset.Name,
+            //         AssignedTo = x.AssignedToAppUser.UserName,
+            //         AssignedBy = x.AssignedByToAppUser.UserName,
+            //         AssignedDate = x.AssignedDate,
+            //         State = x.State,
+            //     })
+            //     .ToList();
+
+            // var list = listDefault
+            // .Select((x, index) => new ViewListAssignmentResponse
+            // {
+            //     Id = x.Id,
+            //     NoNumber = index + 1,
+            //     AssetCode = x.AssetCode,
+            //     AssetName = x.AssetName,
+            //     AssignedTo = x.AssignedTo,
+            //     AssignedBy = x.AssignedBy,
+            //     AssignedDate = x.AssignedDate,
+            //     State = x.State,
+            // }).OrderBy(x => x.AssetCode)
+            // .AsQueryable<ViewListAssignmentResponse>();
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted)
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                }).OrderBy(x => x.AssetCode);
+
+            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = resultValue.Data;
+
+            var isSorted = assignmentsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assignmentsList.Count(), expected.Count());
+        }
+
+        [Fact]
+        public async Task GetList_ForDefault_InvalidPaging()
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+
+            // Act 
+            var result = await assignmentController.Get(-1, 2);
+
+            // var listDefault = _context.Assignments
+            //     .Include(x => x.Asset)
+            //     .Include(x => x.AssignedToAppUser)
+            //     .Include(x => x.AssignedByToAppUser)
+            //     .Where(x => !x.IsDeleted)
+            //     .Select(x => new ViewListAssignmentResponse
+            //     {
+            //         Id = x.Id,
+            //         AssetCode = x.Asset.AssetCode,
+            //         AssetName = x.Asset.Name,
+            //         AssignedTo = x.AssignedToAppUser.UserName,
+            //         AssignedBy = x.AssignedByToAppUser.UserName,
+            //         AssignedDate = x.AssignedDate,
+            //         State = x.State,
+            //     })
+            //     .OrderBy(x => x.Id)
+            //     .ToList();
+
+            // var list = listDefault.Select((x, index) => new ViewListAssignmentResponse
+            // {
+            //     Id = x.Id,
+            //     NoNumber = index + 1,
+            //     AssetCode = x.AssetCode,
+            //     AssetName = x.AssetName,
+            //     AssignedTo = x.AssignedTo,
+            //     AssignedBy = x.AssignedBy,
+            //     AssignedDate = x.AssignedDate,
+            //     State = x.State,
+            // }).AsQueryable<ViewListAssignmentResponse>();
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted)
+                .Select(x => new ViewListAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    AssignedTo = x.AssignedToAppUser.UserName,
+                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+
+            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, -1, 2);
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = resultValue.Data;
+
+            var isSorted = assignmentsList.SequenceEqual(expected);
+            // Assert
+            Assert.True(isSorted);
+            Assert.Equal(assignmentsList.Count(), expected.Count());
+        }
+        #endregion
 
         public void Dispose()
         {
