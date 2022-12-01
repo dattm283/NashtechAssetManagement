@@ -117,6 +117,7 @@ export default () => {
                     <TextField label="Category" source="categoryName" />
                     <FunctionField
                         source="state"
+                        label="State"
                         render={(record) =>
                             record.state == "NotAvailable"
                                 ? "Not available"

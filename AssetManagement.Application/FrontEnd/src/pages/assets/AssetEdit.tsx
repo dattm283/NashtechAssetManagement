@@ -60,9 +60,6 @@ function EditAssetInformations() {
         } else if (!values.specification) {
             errors.specification = "This is required";
             setIsValid(true);
-        } else if (!values.state) {
-            errors.state = "This is required";
-            setIsValid(true);
         } else {
             setIsValid(false);
             return {};
