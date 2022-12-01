@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Principal;
 using AutoMapper.Internal;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace AssetManagement.Application.Tests
 {
@@ -36,11 +39,17 @@ namespace AssetManagement.Application.Tests
 
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
 
-            //Mock UserManager
-            //Create UserStore mock to enable user support for UserManager
-            Mock<IUserStore<AppUser>> userStoreMoq = new();
             //Create UserManager mock using userStoreMoq
-            _userManager = new(userStoreMoq.Object, null, null, null, null, null, null, null, null);
+            _userManager = new(new Mock<IUserStore<AppUser>>().Object,
+                new Mock<IOptions<IdentityOptions>>().Object,
+                new Mock<IPasswordHasher<AppUser>>().Object,
+                new IUserValidator<AppUser>[0],
+                new IPasswordValidator<AppUser>[0],
+                new Mock<ILookupNormalizer>().Object,
+                new Mock<IdentityErrorDescriber>().Object,
+                new Mock<IServiceProvider>().Object,
+                new Mock<ILogger<UserManager<AppUser>>>().Object);
+
             // Create InMemory dbcontext options
             _options = new DbContextOptionsBuilder<AssetManagementDbContext>()
                 .UseInMemoryDatabase(databaseName: "AssetTestDb").Options;
@@ -246,10 +255,10 @@ namespace AssetManagement.Application.Tests
             List<AppUser> staffRole = await _context.AppUsers
                .Where(x => !x.IsDeleted && x.UserName.Contains("staff"))
                .ToListAsync();
-            foreach(AppUser user in listUsers)
+            foreach (AppUser user in listUsers)
             {
                 if (addminRole.Contains(user))
-                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Admin"});
+                    _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Admin" });
                 else
                     _userManager.Setup(_ => _.GetRolesAsync(user).Result).Returns(new List<string> { "Staff" });
             }
@@ -261,7 +270,7 @@ namespace AssetManagement.Application.Tests
             #region Act
             List<AppUser> expectedResult = await _context.AppUsers
                 .Where(
-                    x => !x.IsDeleted && 
+                    x => !x.IsDeleted &&
                     x.Location == currentUser.Location &&
                     (addminRole.Contains(x) || staffRole.Contains(x)))
                 .OrderBy(x => x.StaffCode)
@@ -269,7 +278,7 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, "", "", "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult = 
+            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
                 okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
             #endregion
 
@@ -277,7 +286,7 @@ namespace AssetManagement.Application.Tests
             #region Assert
             Assert.NotNull(actualResult);
             Assert.Equal(actualResult.Total, expectedResult.Count);
-            for(int i=0; i<expectedResult.Count; i++)
+            for (int i = 0; i < expectedResult.Count; i++)
             {
                 Assert.Equal(actualResult.Data.ElementAt(i).UserName, expectedResult.ElementAt(i).UserName);
             }
@@ -322,9 +331,9 @@ namespace AssetManagement.Application.Tests
             // Act 
             #region Act
             List<AppUser> expectedResult = await _context.AppUsers
-                .Where(x => 
-                    !x.IsDeleted && 
-                    x.Location == currentUser.Location && 
+                .Where(x =>
+                    !x.IsDeleted &&
+                    x.Location == currentUser.Location &&
                     (x.StaffCode.Contains(searchString) || $"{x.FirstName} {x.LastName}".Contains(searchString)) &&
                     (addminRole.Contains(x) || staffRole.Contains(x)))
                 .OrderBy(x => x.StaffCode)
@@ -717,7 +726,7 @@ namespace AssetManagement.Application.Tests
                 .AsQueryable();
             List<AppUser> expectedResult = await sortedListUser
                 .Skip(start < 0 || start > end ? 1 : start)
-                .Take(end>sortedListUser.Count() ? sortedListUser.Count()-start : end-start)
+                .Take(end > sortedListUser.Count() ? sortedListUser.Count() - start : end - start)
                 .ToListAsync();
 
 
@@ -730,7 +739,7 @@ namespace AssetManagement.Application.Tests
             // Assert
             #region Assert
             Assert.NotNull(actualResult);
-            Assert.Equal(actualResult.Total, expectedResult.Count);
+            Assert.Equal(actualResult.Data.Count, expectedResult.Count);
             for (int i = 0; i < expectedResult.Count; i++)
             {
                 Assert.Equal(actualResult.Data.ElementAt(i).UserName, expectedResult.ElementAt(i).UserName);
@@ -823,6 +832,80 @@ namespace AssetManagement.Application.Tests
             #endregion
         }
         #endregion
+
+        [Fact]
+        public async Task CreateUser_SuccessAsync()
+        {
+            //ARRANGE
+            System.DateTime today = System.DateTime.Now;
+            System.TimeSpan duration = new System.TimeSpan(157680, 0, 0, 0);
+            CreateUserRequest userRequest = new()
+            {
+                FirstName = "Trong",
+                LastName = "Nghia",
+                Dob = new DateTime(1995, 12, 12),
+                JoinedDate = today.Add(new TimeSpan(157680, 0, 0, 0)),
+                Gender = "0",
+                Role = "admin"
+            };
+            var users = new List<AppUser>
+            {
+                new AppUser
+                {
+                    UserName = "Test",
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.it"
+                },
+                 new AppUser
+                {
+                    UserName = "Test1234",
+                    Id = Guid.NewGuid(),
+                    Email = "test@test.it"
+                }
+            }.AsQueryable();
+
+            _userManager.Setup(x => x.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(value: null);
+            _userManager.Setup(x => x.Users)
+                .Returns(users);
+            _userManager.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+               .ReturnsAsync(IdentityResult.Success);
+            _userManager.Setup(x => x.AddToRoleAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+              .ReturnsAsync(IdentityResult.Success);
+
+            UserController controller = new(_context, _userManager.Object, _mapper);
+            AppUser user = await _context.Users.FirstOrDefaultAsync();
+
+            ClaimsIdentity _identity = new ClaimsIdentity();
+            _identity.AddClaims(new[]
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Locality, user.Location.ToString()),
+            });
+
+            //Create context for controller with fake login
+            controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new ClaimsPrincipal(_identity)
+                }
+            };
+
+            //ACT
+            var response = await controller.CreateUser(userRequest);
+            var okResult = response as OkObjectResult;
+            var actualResult = okResult.Value as CreateUserResponse;
+
+            //ASSERT
+            Assert.NotNull(response);
+            Assert.NotNull(actualResult);
+            Assert.IsType<OkObjectResult>(response);
+            Assert.IsType<CreateUserResponse>(actualResult);
+            Assert.Equal(userRequest.FirstName, actualResult.FirstName);
+            Assert.Equal(userRequest.LastName, actualResult.LastName);
+            Assert.Equal(userRequest.Dob, actualResult.Dob);
+            Assert.Equal(userRequest.JoinedDate, actualResult.CreatedDate);
+        }
 
         #region EditUser
         #nullable disable
@@ -956,6 +1039,7 @@ namespace AssetManagement.Application.Tests
 
         public void Dispose()
         {
+            _context.Database.EnsureDeleted();
             _context.Dispose();
         }
     }

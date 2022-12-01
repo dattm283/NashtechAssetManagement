@@ -13,7 +13,5 @@ namespace AssetManagement.Domain.Models
 
         [MaxLength(100)]
         public string Description { get; set; }
-
-        //public virtual ICollection<AppUser> AppUsers { get; set; }
     }
 }

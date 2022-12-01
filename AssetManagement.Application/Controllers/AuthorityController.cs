@@ -61,7 +61,7 @@ namespace AssetManagement.Application.Controllers
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             //var role = await _dbContext.AppRoles.FindAsync(user.RoleId);
 
-            return Ok(new SuccessResponseResult<LoginResponse>(new LoginResponse { Token = CreateToken(user, request.Username, role), Role = role }));
+            return Ok(new SuccessResponseResult<LoginResponse>(new LoginResponse { Token = CreateToken(user, request.Username, role, user.Location.ToString()), Role = role }));
         }
 
         [HttpGet("auth/user-profile/")]
@@ -99,23 +99,23 @@ namespace AssetManagement.Application.Controllers
             return Ok(new SuccessResponseResult<string>("Change password success!"));
         }
 
-        private string CreateToken(AppUser user, string username, string role)
+        private string CreateToken(AppUser user, string username, string role, string location)
         {
             var signingCredentials = GetSigningCredentials();
-            var claims = GetClaims(user, username, role);
+            var claims = GetClaims(user, username, role, location);
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
             return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         }
 
-        private IList<Claim> GetClaims(AppUser user, string username, string role)
+        private IList<Claim> GetClaims(AppUser user, string username, string role, string location)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.GivenName, $"{user.FirstName} {user.LastName}"),
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Role, role),
+                new Claim(ClaimTypes.Locality, location)
             };
 
             return claims;
