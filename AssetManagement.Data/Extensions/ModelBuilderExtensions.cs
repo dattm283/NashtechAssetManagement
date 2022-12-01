@@ -199,7 +199,7 @@ namespace AssetManagement.Data.Extensions
                     Specification = $"Core i{i}, {i}GB RAM, {i}50 GB HDD, Window {i}",
                     CategoryId = i % 2 == 0 ? 1 : 2,
                     InstalledDate = DateTime.Now,
-                    State = i % 2 == 0 ? State.Available : State.NoAvailable,
+                    State = i % 2 == 0 ? State.Available : State.NotAvailable,
                     IsDeleted = i % 2 == 0 ? true : false,
                 });
             }

@@ -520,7 +520,7 @@ namespace AssetManagement.Application.Tests
                 Name = "Laptop Asus Rog Strix",
                 Specification = "Core 100, 1000 GB RAM, 200 50 GB HDD, Window 200",
                 InstalledDate = now,
-                State = (int)State.NoAvailable
+                State = (int)State.NotAvailable
             };
 
             AssetsController assetController = new AssetsController(_context, _mapper);
@@ -542,7 +542,7 @@ namespace AssetManagement.Application.Tests
                 Name = "Laptop Asus Rog Strix",
                 Specification = "Core 100, 1000 GB RAM, 200 50 GB HDD, Window 200",
                 InstalledDate = now,
-                State = (int)State.NoAvailable
+                State = (int)State.NotAvailable
             };
 
             AssetsController assetController = new AssetsController(_context, _mapper);
@@ -557,7 +557,7 @@ namespace AssetManagement.Application.Tests
                 Name = "Laptop Asus Rog Strix",
                 Specification = "Core 100, 1000 GB RAM, 200 50 GB HDD, Window 200",
                 InstalledDate = now,
-                State = State.NoAvailable,
+                State = State.NotAvailable,
                 IsDeleted = false,
             });
 

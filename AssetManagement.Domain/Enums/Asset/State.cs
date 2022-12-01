@@ -9,7 +9,7 @@ namespace AssetManagement.Domain.Enums.Asset
     public enum State
     {
         Available,
-        NoAvailable,
+        NotAvailable,
         WaitingForRecycling,
         Recycled
     }

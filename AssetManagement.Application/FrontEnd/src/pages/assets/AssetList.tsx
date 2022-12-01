@@ -57,7 +57,7 @@ export default () => {
             sx={{ width: "250px" }}
             statesList={[
                 { value: "0", text: "Available" },
-                { value: "1", text: "No Available" },
+                { value: "1", text: "Not available" },
                 { value: "2", text: "Waiting for recycling" },
                 { value: "3", text: "Recycled" },
             ]}
@@ -120,8 +120,8 @@ export default () => {
                         source="state"
                         label="State"
                         render={(record) =>
-                            record.state == "NoAvailable"
-                                ? "No available"
+                            record.state == "NotAvailable"
+                                ? "Not available"
                                 : record.state
                         }
                     />
