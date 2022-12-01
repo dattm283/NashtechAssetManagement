@@ -186,7 +186,7 @@ const AssetShow = (props) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {assignements.map((row: any, index) => (
+                    {Array.prototype.map.bind(assignements)((row: any, index) => (
                       <TableRow
                         key={index}
                         sx={{

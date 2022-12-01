@@ -30,7 +30,7 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("assignement/{assetCodeId}")]
+        [HttpGet("{assetCodeId}")]
         //[Authorize]
         public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
         {
