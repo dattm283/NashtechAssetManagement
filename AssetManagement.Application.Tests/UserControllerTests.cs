@@ -1,7 +1,5 @@
 ﻿using AssetManagement.Application.Controllers;
-using AssetManagement.Contracts.Asset.Request;
 using AssetManagement.Contracts.AutoMapper;
-using AssetManagement.Contracts.Category.Request;
 using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.User.Request;
 using AssetManagement.Data.EF;
@@ -11,18 +9,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AssetManagement.Application.Tests
 {
