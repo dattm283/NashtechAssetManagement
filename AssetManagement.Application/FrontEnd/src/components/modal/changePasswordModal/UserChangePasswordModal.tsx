@@ -6,19 +6,9 @@ import {
   Grid,
   Button,
   DialogContentText,
-  FormHelperText,
-  styled,
 } from "@mui/material";
-import {
-  Form,
-  PasswordInput,
-  required,
-  SaveButton,
-  useNotify,
-} from "react-admin";
+import { Form, PasswordInput, SaveButton, useNotify } from "react-admin";
 import userService from "../../../services/users";
-import { red } from "@mui/material/colors";
-import { ImportantDevices } from "@mui/icons-material";
 
 const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
   const [modalState, setModalState] = useState(false);
@@ -47,6 +37,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
         errors.newPassword = "Must be more than 6 leters";
       } else return {};
     }
+    if (error) errors.currentPassword = error;
     return errors;
   };
 
@@ -100,11 +91,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
             sx={{ width: "410px" }}
           >
             <br />
-            <Form
-              onSubmit={handleChangePassword}
-              validate={requiredInput}
-              {...(error && { error: true })}
-            >
+            <Form onSubmit={handleChangePassword} validate={requiredInput}>
               <Grid container alignItems="center">
                 <Grid item>
                   <label style={{ marginRight: "37px" }}>Old password:</label>
