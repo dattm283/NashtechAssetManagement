@@ -54,6 +54,9 @@ function EditAssetInformations() {
         } else if (!values.categoryId) {
             errors.categoryId = "This is required";
             setIsValid(true);
+        } else if (values.installedDate == null) {
+            errors.installedDate = "This is required";
+            setIsValid(true);
         } else if (!values.specification) {
             errors.specification = "This is required";
             setIsValid(true);
