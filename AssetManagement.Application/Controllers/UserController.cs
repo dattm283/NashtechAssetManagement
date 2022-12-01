@@ -230,9 +230,25 @@ namespace AssetManagement.Application.Controllers
 
                 sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
 
-                var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListUser_UserResponse>>(sortedResultWithCreatedIdParam);
+                List<ViewListUser_UserResponse> mapResultWithCreatedIdParam = new List<ViewListUser_UserResponse>();
 
-                return Ok(new ViewList_ListResponse<ViewListUser_UserResponse> { Data = mappedResultWithCreatedIdParam, Total = users.Count() });
+                //int tempCount = 0;
+                foreach (AppUser user in sortedResultWithCreatedIdParam)
+                {
+                    ViewListUser_UserResponse userData = _mapper.Map<ViewListUser_UserResponse>(user);
+                    //userData.Id = tempCount;
+                    string userRole = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+                    if (string.IsNullOrEmpty(userRole))
+                    {
+                        continue;
+                    }
+                    userData.Type = _userManager.GetRolesAsync(user).Result.FirstOrDefault();
+                    mapResultWithCreatedIdParam.Insert(0, userData);
+                    //tempCount += 1;
+                }
+                mapResultWithCreatedIdParam.Reverse();
+
+                return Ok(new ViewList_ListResponse<ViewListUser_UserResponse> { Data = mapResultWithCreatedIdParam, Total = users.Count() });
             }
 
             List<AppUser> sortedUsers = StaticFunctions<AppUser>.Paging(users, start, end);
@@ -253,11 +269,12 @@ namespace AssetManagement.Application.Controllers
                 mapResult.Insert(0, userData);
                 //tempCount += 1;
             }
+            mapResult.Reverse();
 
             return Ok(new ViewList_ListResponse<ViewListUser_UserResponse>
             {
                 Data = mapResult,
-                Total = mapResult.Count
+                Total = users.Count()
             });
         }
 

@@ -25,11 +25,6 @@ import { useLocation } from "react-router-dom";
 export default () => {
     const [openDetail, setOpenDetail] = useState({ status:false, data:{} });
     const refresh = useRefresh();
-    const state = useLocation().state;
-
-    useEffect(()=>{
-        console.log(state);
-    }, [])
 
     const usersFilter = [
         <StateFilterSelect
@@ -42,7 +37,12 @@ export default () => {
             ]}
             alwaysOn
         />,
-        <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
+        <SearchInput 
+            sx={{ marginRight:"-300px" }}
+            InputLabelProps={{ shrink: false }} 
+            source="searchString" 
+            alwaysOn 
+        />
     ];
 
     return (
@@ -50,11 +50,13 @@ export default () => {
             <Title title="Manage User" />
             <ListBase
                 perPage={5}
-                sort={{ field: "staffCode", order: "DESC" }}
+                sort={{ field: "fullName", order: "DESC" }}
             >
                 <h2 style={{ color: "#cf2338" }}>User List</h2>
-                <Stack direction="row" justifyContent="end" alignContent="center">
-                    <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={usersFilter} /></div>
+                <Stack direction="row" justifyContent="start" alignContent="center">
+                    <div style={{ width:"800px", justifyContent:"space-between" }}>
+                        <FilterForm style={{ justifyContent: "space-between" }} filters={usersFilter} />
+                    </div>
                     <div style={{ display: "flex", alignItems: "end" }}>
                         <CreateButton
                             size="large"

@@ -15,8 +15,8 @@ const UserCreateToolbar = ({ disable }) => {
                 label="Save"
                 mutationOptions={{
                     onSuccess: () => {
-                        localStorage.setItem("RaStore.users.listParams", 
-                        `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"name"}`)
+                        localStorage.setItem("RaStore.user.listParams", 
+                        `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"fullName"}`)
                         navigate("/user")
                     }}
                 }
