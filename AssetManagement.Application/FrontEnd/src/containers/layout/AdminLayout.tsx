@@ -54,6 +54,7 @@ const App = () => {
                 localStorage.setItem("currentPassword", encrypt(currentPassword))
                 localStorage.setItem('loginFirstTime', "new");
             } else {
+                setPermissions(localStorage.getItem("permissions") || '')
                 refresh();
             }
             })
