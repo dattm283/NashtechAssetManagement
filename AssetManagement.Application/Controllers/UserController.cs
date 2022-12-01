@@ -14,17 +14,14 @@ namespace AssetManagement.Application.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly IConfiguration _config;
         private readonly AssetManagementDbContext _dbContext;
         private readonly IMapper _mapper;
 
         public UserController(UserManager<AppUser> userManager,
-            IConfiguration config,
             AssetManagementDbContext dbContext,
             IMapper mapper)
         {
             _userManager = userManager;
-            _config = config;
             _dbContext = dbContext;
             _mapper = mapper;
         }

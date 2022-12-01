@@ -31,7 +31,6 @@ namespace AssetManagement.Application.Tests
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _config;
         private readonly Mock<UserManager<AppUser>> _userManager;
         private List<AppRole> _roles;
         private List<AppUser> _users;
@@ -44,15 +43,6 @@ namespace AssetManagement.Application.Tests
             _context = new AssetManagementDbContext(_options);
             //Create mapper using UserProfile
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
-            //Create fake config with fake jwt settings
-            Dictionary<string, string> inMemorySettings = new()  {
-                {"JwtSettings:validIssuer", "issuer"},
-                {"JwtSettings:expires", "1"},
-                {"JwtSettings:Key", "!^##7w7$3tt!n9Key##^!" }
-            };
-            _config = new ConfigurationBuilder()
-                .AddInMemoryCollection(inMemorySettings)
-                .Build();
 
             //Mock UserManager
             //Create UserStore mock to enable user support for UserManager
@@ -66,7 +56,6 @@ namespace AssetManagement.Application.Tests
         #region Change User Password
         [Theory]
         [InlineData("12345678", "123456")]
-        //[InlineData("12345678", "1234567")]
         public async Task UserChangePassword_SuccessAsync(string currentpassword, string newpassword)
         {
             //ARRANGE
@@ -79,7 +68,7 @@ namespace AssetManagement.Application.Tests
             _userManager.Setup(um => um.ChangePasswordAsync(_users[0], currentpassword, newpassword))
                         .ReturnsAsync(IdentityResult.Success);
 
-            UserController controller = new UserController(_userManager.Object, _config, _context, _mapper);
+            UserController controller = new UserController(_userManager.Object, _context, _mapper);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext
@@ -109,7 +98,7 @@ namespace AssetManagement.Application.Tests
             _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(false));
 
-            UserController controller = new UserController(_userManager.Object, _config, _context, _mapper);
+            UserController controller = new UserController(_userManager.Object, _context, _mapper);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext
@@ -139,7 +128,7 @@ namespace AssetManagement.Application.Tests
             _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
                     .Returns(Task.FromResult(true));
 
-            UserController controller = new UserController(_userManager.Object, _config, _context, _mapper);
+            UserController controller = new UserController(_userManager.Object, _context, _mapper);
             controller.ControllerContext = new ControllerContext()
             {
                 HttpContext = new DefaultHttpContext
@@ -174,7 +163,7 @@ namespace AssetManagement.Application.Tests
             //        .Returns(Task.FromResult(false));
 
             //Create controller
-            UserController controller = new UserController(_userManager.Object, _config, _context, _mapper);
+            UserController controller = new UserController(_userManager.Object, _context, _mapper);
             if (currentpassword == null) controller.ModelState.AddModelError("nullcurrentpassword", "Please enter old password");
             if (newpassword == null) controller.ModelState.AddModelError("nullnewpassword", "Please enter new password");
             if (currentpassword != null && currentpassword.Length < 6) controller.ModelState.AddModelError("invalidcurrentpassword", "Please enter valid password");
