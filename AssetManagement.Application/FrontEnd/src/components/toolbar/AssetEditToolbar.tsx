@@ -5,15 +5,17 @@ import {
     useRedirect,
     useNotify,
     ThemeProvider,
+    resolveRedirectTo,
 } from "react-admin";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../theme";
 import { formToolbarStyle } from "../../styles/formToolbarStyle";
 
-const AssetEditToolbar = () => {
+const AssetEditToolbar = ({ disable }) => {
     const notify = useNotify();
     const navigate = useNavigate();
+    const redirect = useRedirect();
     return (
         <ThemeProvider theme={theme}>
             <Toolbar sx={formToolbarStyle.toolbarStyle}>
@@ -31,6 +33,7 @@ const AssetEditToolbar = () => {
                     variant="contained"
                     icon={<></>}
                     color="secondary"
+                    disabled={disable}
                 />
                 <Button
                     variant="outlined"

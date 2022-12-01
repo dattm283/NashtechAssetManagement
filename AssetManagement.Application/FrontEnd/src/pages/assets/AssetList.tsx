@@ -13,14 +13,14 @@ import {
     FilterForm,
     CreateButton,
     Button,
-    SearchInput
+    SearchInput,
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
 import AssetShow from "./AssetShow";
-import { ButtonGroup, Stack } from "@mui/material";
+import { ButtonGroup, Stack, Container } from "@mui/material";
 import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
 import { useNavigate } from "react-router-dom";
 import FilterSearchForm from "../../components/forms/FilterSearchForm";
@@ -30,7 +30,13 @@ export default () => {
     const [record, setRecord] = useState();
     // const { data } = useGetList("category", { pagination: { page: 1, perPage: 99 } })
     const dataProvider = useDataProvider();
-    let data = dataProvider.getList("category", { pagination: { page: 1, perPage: 99 }, sort: { field: "name", order: "ASC" }, filter: {} }).then(res => res.data)
+    let data = dataProvider
+        .getList("category", {
+            pagination: { page: 1, perPage: 99 },
+            sort: { field: "name", order: "ASC" },
+            filter: {},
+        })
+        .then((res) => res.data);
 
     const navigate = useNavigate();
     const toggle = () => {
@@ -56,19 +62,16 @@ export default () => {
             ]}
             alwaysOn
         />,
-        <CategoryFilterSelect
-            source="categories"
-            statesList={data}
+        <CategoryFilterSelect source="categories" statesList={data} alwaysOn />,
+        <SearchInput
+            InputLabelProps={{ shrink: false }}
+            source="searchString"
             alwaysOn
         />,
-        <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
-
-
-
     return (
-        <>
+        <Container component="main" sx={{padding:"20px 10px"}}>
             <Title title="Manage Asset" />
             <ListBase
                 perPage={5}
@@ -76,8 +79,17 @@ export default () => {
                 filterDefaultValues={{ states: ["0", "1", "4"] }}
             >
                 <h2 style={{ color: "#cf2338" }}>Asset List</h2>
-                <Stack direction="row" justifyContent="end" alignContent="center">
-                    <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assetsFilter} /></div>
+                <Stack
+                    direction="row"
+                    justifyContent="end"
+                    alignContent="center"
+                >
+                    <div style={{ flexGrow: 1 }}>
+                        <FilterForm
+                            style={{ justifyContent: "space-between" }}
+                            filters={assetsFilter}
+                        />
+                    </div>
                     <div style={{ display: "flex", alignItems: "end" }}>
                         <CreateButton
                             size="large"
@@ -103,7 +115,14 @@ export default () => {
                     <TextField source="assetCode" />
                     <TextField label="Asset Name" source="name" />
                     <TextField label="Category" source="categoryName" />
-                    <FunctionField source="state" render={(record) => record.state == "NotAvailable" ? "Not available" : record.state} />
+                    <FunctionField
+                        source="state"
+                        render={(record) =>
+                            record.state == "NotAvailable"
+                                ? "Not available"
+                                : record.state
+                        }
+                    />
                     <ButtonGroup sx={{ border: null }}>
                         <EditButton variant="text" size="small" label="" />
                         <CustomDeleteWithConfirmButton
@@ -116,7 +135,7 @@ export default () => {
                 </Datagrid>
                 <AssetsPagination />
             </ListBase>
-            <AssetShow isOpened={isOpened} toggle={toggle} record={record} />
-        </>
+            {isOpened && <AssetShow isOpened={isOpened} toggle={toggle} record={record} /> }
+        </Container>
     );
 };

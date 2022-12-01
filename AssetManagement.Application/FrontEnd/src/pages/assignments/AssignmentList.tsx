@@ -5,6 +5,7 @@ import {
     Title,
     TextField,
     TextInput,
+    DateField,
     EditButton,
     useDataProvider,
     FunctionField,
@@ -20,22 +21,16 @@ import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDel
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
-// import AssetShow from "./AssetShow";
-import { ButtonGroup, Stack } from "@mui/material";
-import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
+import { ButtonGroup, Stack, Container } from "@mui/material";
+import { DateAssignedFilterSelect } from "../../components/select/DateAssignedFilterSelect";
 import { useNavigate } from "react-router-dom";
 import { assetProvider } from "../../providers/assetProvider/assetProvider";
-import FilterSearchForm from "../../components/forms/FilterSearchForm";
 import AssignmentShow from "./AssignmentShow";
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
-    const [assignment, setAssignment] = useState();
-    // const { data } = useGetList("category", { pagination: { page: 1, perPage: 99 } })
-    const dataProvider = useDataProvider();
-    let data = dataProvider.getList("category", { pagination: { page: 1, perPage: 99 }, sort: { field: "name", order: "ASC" }, filter: {} }).then(res => res.data)
-
-    const navigate = useNavigate();
+    const [record, setRecord] = useState();
+    const [assignment, setAssignment] = useState({});
     const toggle = () => {
         setIsOpened(!isOpened);
     };
@@ -53,43 +48,31 @@ export default () => {
 
     const refresh = useRefresh();
 
-    const assetsFilter = [
-        // <SelectArrayInput source="states" choices={[
-        //     { id: '0', name: 'Available' },
-        //     { id: '1', name: 'Not available' },
-        //     { id: '2', name: 'Waiting for recycling' },
-        //     { id: '3', name: 'Recyled' },
-        // ]} />,
+    const assignmentsFilter = [
         <StateFilterSelect
             source="states"
+            label="Type"
             sx={{ width: "250px" }}
             statesList={[
-                { value: 0, text: "Available" },
-                { value: 1, text: "Not Available" },
-                { value: 2, text: "Waiting for recycling" },
-                { value: 3, text: "Recycled" },
+                { value: 0, text: "Accepted" },
+                { value: 1, text: "Waiting for acceptance" },
             ]}
             alwaysOn
         />,
-        <CategoryFilterSelect
-            source="categories"
-            statesList={data}
-            alwaysOn
-        />,
+        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn />,
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
-
     return (
-        <>
+        <Container component="main" sx={{ padding: "20px 10px" }}>
             <Title title="Manage Assignment" />
             <ListBase
                 perPage={5}
-                sort={{ field: "id", order: "DESC" }}
+                sort={{ field: "noNumber", order: "DESC" }}
             >
-                <h2 style={{ color: "#cf2338" }}>Asset List</h2>
+                <h2 style={{ color: "#cf2338" }}>Assignment List</h2>
                 <Stack direction="row" justifyContent="end" alignContent="center">
-                    <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assetsFilter} /></div>
+                    <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assignmentsFilter} /></div>
                     <div style={{ display: "flex", alignItems: "end" }}>
                         <CreateButton
                             size="large"
@@ -112,12 +95,13 @@ export default () => {
                     }
                     bulkActionButtons={false}
                 >
+                    <TextField label="No" source="noNumber" />
                     <TextField label="Asset Code" source="assetCode" />
                     <TextField label="Asset Name" source="assetName" />
                     <TextField label="Assigned to" source="assignedTo" />
                     <TextField label="Assigned by" source="assignedBy" />
-                    <TextField label="Assigned Date" source="assignedDate" />
-                    <FunctionField source="state" render={(record) => record.state === 0 ? "Accepted" : "Waiting For Acceptance"} />
+                    <DateField label="Assigned Date" source="assignedDate" />
+                    <FunctionField source="state" render={(record) => record.state == "0" ? "Accepted" : "Waiting for acceptance"} />
                     <ButtonGroup sx={{ border: null }}>
                         <FunctionField render={(record) => {
                             console.log(record);
@@ -143,6 +127,6 @@ export default () => {
                 <AssetsPagination />
             </ListBase>
             <AssignmentShow isOpened={isOpened} toggle={toggle} assignment={assignment} />
-        </>
+        </Container>
     );
 };
