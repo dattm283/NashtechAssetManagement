@@ -136,7 +136,7 @@ export default () => {
                 </Datagrid>
                 <AssetsPagination />
             </ListBase>
-            <AssetShow isOpened={isOpened} toggle={toggle} record={record} />
+            {isOpened && <AssetShow isOpened={isOpened} toggle={toggle} record={record} /> }
         </Container>
     );
 };
