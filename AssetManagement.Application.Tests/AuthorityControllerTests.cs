@@ -25,8 +25,6 @@ namespace AssetManagement.Application.Tests
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
         private readonly Mock<UserManager<AppUser>> _userManager;
-        private List<AppRole> _roles;
-        private List<AppUser> _users;
 
         public AuthorityControllerTests()
         {
@@ -50,19 +48,22 @@ namespace AssetManagement.Application.Tests
             Mock<IUserStore<AppUser>> userStoreMoq = new();
             //Create UserManager mock using userStoreMoq
             _userManager = new(userStoreMoq.Object, null, null, null, null, null, null, null, null);
-            //Create fake data
-            SeedData();
+
+            _context.Database.EnsureDeleted();
+            _context.Database.EnsureCreated();
         }
 
         //Tests
         [Theory]
-        [InlineData(0, "binhnv")]
-        [InlineData(1, "annv")]
-        public void GetUserProfile_Success(int index, string username)
+        [InlineData("adminhcm")]
+        [InlineData("adminhn")]
+        public void GetUserProfile_Success(string username)
         {
             //ARRANGE
+            AppUser user = _context.AppUsers.FirstOrDefault(u => u.UserName == username);
             //Set up UserManager, assume that user is stored
-            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(_users[index]);
+            _userManager.Setup(um => um.FindByNameAsync(username))
+                        .ReturnsAsync(user);
             //Create controller
             AuthorityController controller = new AuthorityController(_userManager.Object, _config, _context, _mapper);
             //Create context for controller with fake login
@@ -81,28 +82,30 @@ namespace AssetManagement.Application.Tests
             //ASSERT
             Assert.NotNull(result);
             Assert.IsType<OkObjectResult>(result);
-            Assert.Equivalent(_mapper.Map<UserResponse>(_users[index]), ((OkObjectResult)result).Value);
+            Assert.Equivalent(_mapper.Map<UserResponse>(user), ((OkObjectResult)result).Value);
         }
 
-        //[Fact]
-        //public void Authenticate_Success()
-        //{
-        //    //ARRANGE
-        //    //Create login request (no need password)
-        //    LoginRequest request = new() { Username = "binhnv" };
-        //    //Set up UserManager, assume that login request is correct
-        //    _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(_users[0]);
-        //    _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>())).ReturnsAsync(true);
-        //    //Create controller
-        //    AuthorityController controller = new AuthorityController(_userManager.Object, _config, _context, _mapper);
+        [Fact]
+        public void Authenticate_Success()
+        {
+            //ARRANGE
+            //Create login request
+            LoginRequest request = new() { Username = "adminhcm", Password = "12345678" };
+            AppUser user = _context.AppUsers.FirstOrDefault(u => u.UserName == request.Username);
+            //Set up UserManager, assume that login request is correct
+            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(user);
+            _userManager.Setup(um => um.CheckPasswordAsync(user, request.Password)).ReturnsAsync(true);
+            _userManager.Setup(um => um.GetRolesAsync(user)).ReturnsAsync(new List<string>{ "Admin, Staff"});
+            //Create controller
+            AuthorityController controller = new AuthorityController(_userManager.Object, _config, _context, _mapper);
 
-        //    //ACT
-        //    IActionResult result = controller.Authenticate(request).Result;
+            //ACT
+            IActionResult result = controller.Authenticate(request).Result;
 
-        //    //ASSERT
-        //    Assert.NotNull(result);
-        //    Assert.IsType<OkObjectResult>(result);
-        //}
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<OkObjectResult>(result);
+        }
 
         [Theory]
         [InlineData(null, "123")]
@@ -147,7 +150,7 @@ namespace AssetManagement.Application.Tests
             LoginRequest request = new() { Username = username };
             //Set up UserManager
             _userManager.Setup(um => um.FindByNameAsync(username))
-                        .ReturnsAsync(_users.FirstOrDefault(u => u.UserName == username));
+                        .ReturnsAsync(_context.AppUsers.FirstOrDefault(u => u.UserName == username));
 
             AuthorityController controller = new AuthorityController(_userManager.Object, _config, _context, _mapper);
             //ACT
@@ -161,14 +164,14 @@ namespace AssetManagement.Application.Tests
         }
 
         [Theory]
-        [InlineData("binhnv", "asdkjg")]
-        [InlineData("annv", "qwerty")]
+        [InlineData("adminhcm", "asdkjg")]
+        [InlineData("adminhn", "qwerty")]
         public void Authenticate_BadRequest_Password(string username, string passwordHash)
         {
             // ARRANGE
             //Create login request (no need password)
             LoginRequest request = new() { Username = username };
-            AppUser user = _users.FirstOrDefault(u => u.UserName == username);
+            AppUser user = _context.AppUsers.FirstOrDefault(u => u.UserName == username);
             //Set up UserManager
             _userManager.Setup(um => um.FindByNameAsync(username)).ReturnsAsync(user);
             _userManager.Setup(um => um.CheckPasswordAsync(user, passwordHash))
@@ -192,17 +195,18 @@ namespace AssetManagement.Application.Tests
         public void ChangePassword_Success(int index)
         {
             // ARRANGE
+            AppUser user = _context.Users.ToList()[index];
             //Create change password request
             ChangePasswordRequest request = new()
             {
-                CurrentPassword = _users[index].PasswordHash,
+                CurrentPassword = user.PasswordHash,
                 NewPassword = "qwe",
                 ConfirmPassword = "qwe"
             };
 
             //Set up UserManager
-            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(_users[index]);
-            _userManager.Setup(um => um.ChangePasswordAsync(_users[index], request.CurrentPassword, request.NewPassword))
+            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(user);
+            _userManager.Setup(um => um.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword))
                         .ReturnsAsync(IdentityResult.Success);
 
             //Create context for controller with fake login
@@ -211,7 +215,7 @@ namespace AssetManagement.Application.Tests
             {
                 HttpContext = new DefaultHttpContext
                 {
-                    User = new GenericPrincipal(new GenericIdentity(_users[index].UserName), null)
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
                 }
             };
 
@@ -225,77 +229,9 @@ namespace AssetManagement.Application.Tests
             Assert.Equal("Change password success!", message);
         }
 
-        //Create InMemory Data
-        private void SeedData()
-        {
-            //Make sure InMemory data is deleted before creating new data
-            //To avoid duplicated keys error
-            _context.Database.EnsureDeleted();
-            //Create roles data
-            _roles = new()
-            {
-                new AppRole()
-                {
-                    Id = new Guid(1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 4),
-                    Name = "Admin",
-                    Description = "Admin role"
-                },
-
-                new AppRole()
-                {
-                    Id = new Guid(1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 5),
-                    Name = "Staff",
-                    Description = "Staff role"
-                }
-            };
-            //Create users data
-            _users = new()
-            {
-                new AppUser()
-                {
-                    Id = new Guid(1, 2, 3, 4, 4, 4, 4, 4, 4, 4, 7),
-                    FirstName = "Binh",
-                    LastName = "Nguyen Van",
-                    UserName = "binhnv",
-                    Email = "bnv@gmail.com",
-                    PasswordHash = "abc",
-                    Gender = Domain.Enums.AppUser.UserGender.Male,
-                    Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-                    //RoleId = _roles[0].Id,
-                    IsLoginFirstTime = true,
-                    StaffCode = "SD01",
-                },
-
-                new AppUser()
-                {
-                    FirstName = "An",
-                    LastName = "Nguyen Van",
-                    UserName = "annv",
-                    Email = "anv@gmail.com",
-                    PasswordHash = "xyz",
-                    Gender = Domain.Enums.AppUser.UserGender.Male,
-                    Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-                    //RoleId = _roles[0].Id,
-                    IsLoginFirstTime = true,
-                    StaffCode = "SD02",
-                }
-            };
-            //Add roles
-            _context.AppRoles.AddRange(_roles);
-            //Add users
-            _context.AppUsers.AddRange(_users);
-            _context.UserRoles.Add(new IdentityUserRole<Guid>
-            {
-                RoleId = _roles.First().Id,
-                UserId = _users.First().Id,
-            });
-            _context.SaveChanges();
-        }
-
         //Clean up after tests
         public void Dispose()
         {
-            _context.Database.EnsureDeleted();
             _context.Dispose();
         }
     }

@@ -6,6 +6,6 @@ export const formToolbarStyle: Record<string, SxProps<Theme> | undefined> = {
         justifyContent: "end",
         mt: "20px",
         backgroundColor: "#fff",
-        "button" : {margin: "10px"}
+        "button" : {margin: "10px"},
     }
 };

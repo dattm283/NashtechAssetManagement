@@ -1,7 +1,6 @@
-﻿using AssetManagement.Contracts.Asset.Response;
-using AssetManagement.Contracts.Authority.Response;
+﻿using AssetManagement.Contracts.Authority.Response;
+using AssetManagement.Contracts.User.Response;
 using AssetManagement.Domain.Models;
-using AssetManagement.Contracts.Asset.Request;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,8 @@ using System.Threading.Tasks;
 using AssetManagement.Contracts.Assignment.Response;
 using AssetManagement.Contracts.User.Response;
 using AssetManagement.Domain.Enums.AppUser;
+using AssetManagement.Contracts.Asset.Response;
+using AssetManagement.Contracts.Asset.Request;
 
 namespace AssetManagement.Contracts.AutoMapper
 {
@@ -19,6 +20,8 @@ namespace AssetManagement.Contracts.AutoMapper
         public UserProfile()
         {
             CreateMap<AppUser, UserResponse>();
+            CreateMap<AppUser, UpdateUserResponse>();
+            
             CreateMap<AssetManagement.Domain.Models.Asset, GetAssetByIdResponse>();
             CreateMap<AssetManagement.Domain.Models.Asset, ViewListAssets_AssetResponse>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
@@ -40,7 +43,7 @@ namespace AssetManagement.Contracts.AutoMapper
                 .ForMember(dest => dest.AssignByAppUser, opt => opt.MapFrom(src => src.AssignedByToAppUser.UserName));
             CreateMap<AssetManagement.Domain.Models.Assignment, UpdateAssignmentResponse>();
             CreateMap<AppUser, ViewListUser_UserResponse>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.StaffCode))
                 .ForMember(dest => dest.JoinedDate, opt => opt.MapFrom(src => src.CreatedDate.Date))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FirstName + ' ' + src.LastName));
             CreateMap<AppUser, ViewDetailUser_UserResponse>()

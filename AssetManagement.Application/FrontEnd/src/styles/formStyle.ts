@@ -18,6 +18,11 @@ export const formStyle: Record<string, SxProps<Theme> | undefined> = {
         maxWidth: "430px",
         margin: "0",
         padding: "0",
+        color:"#ffffff",
+        "input:disabled":{
+            color:"#ffffff",
+            backgroundColor: "whitesmoke"
+        }
     },
     typographyStyle: {
         width: "220px",

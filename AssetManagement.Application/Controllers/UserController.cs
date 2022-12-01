@@ -1,4 +1,4 @@
-using AssetManagement.Contracts.Authority.Request;
+﻿using AssetManagement.Contracts.Authority.Request;
 using AssetManagement.Contracts.User.Request;
 using AssetManagement.Contracts.Asset.Response;
 using AssetManagement.Contracts.Common;
@@ -7,8 +7,8 @@ using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using AssetManagement.Contracts.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -155,6 +155,58 @@ namespace AssetManagement.Application.Controllers
             });
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{StaffCode}")]
+        public async Task<IActionResult> UpdateUserAsync(string staffCode, UpdateUserRequest request)
+        {
+            if (ModelState.IsValid)
+            {
+                if(request.Dob > DateTime.Now.AddYears(-18))
+                {
+                    return BadRequest("User is under 18. Please select a different date");
+                }
+
+                if(request.JoinedDate < request.Dob.AddYears(18))
+                {
+                    return BadRequest("User under the age 18 may not join the company. Please select a different date");
+                }
+
+                if(request.JoinedDate.DayOfWeek == DayOfWeek.Saturday || request.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    return BadRequest("Joined date is Saturday or Sunday. Please select a different date");
+                }
+
+                AppUser? user = _dbContext.AppUsers.FirstOrDefault(u => u.StaffCode == staffCode && !u.IsDeleted);
+                AppRole? role = _dbContext.AppRoles.FirstOrDefault(r => r.Name == request.Type);
+                
+                if (user != null && role != null)
+                {
+                    try
+                    {
+                        IdentityUserRole<Guid>? roleKey = _dbContext.UserRoles.FirstOrDefault(ur => ur.UserId == user.Id);
+
+                        user.Dob = request.Dob;
+                        user.CreatedDate = request.JoinedDate;
+                        user.Gender = (Domain.Enums.AppUser.UserGender)request.Gender;
+                        user.ModifiedDate = DateTime.Now;
+                        roleKey.UserId = user.Id;
+                        roleKey.RoleId = role.Id;
+
+                        await _dbContext.SaveChangesAsync();
+                        UpdateUserResponse response = _mapper.Map<UpdateUserResponse>(user);
+                        response.Type = request.Type;
+                        return Ok(response);
+                    }
+
+                    catch (Exception e) { return BadRequest(e.Message); }
+                }
+
+                return NotFound();
+            }
+
+            return BadRequest(ModelState);
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> Delete(Guid id)
@@ -163,7 +215,7 @@ namespace AssetManagement.Application.Controllers
             var userName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
             if (deletingUser != null)
             {
-                if(deletingUser.UserName == userName)
+                if (deletingUser.UserName == userName)
                 {
                     return BadRequest(new ErrorResponseResult<string>("You can't delete yourself"));
                 }

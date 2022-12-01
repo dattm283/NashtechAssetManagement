@@ -35,7 +35,7 @@ namespace AssetManagement.Application.Tests
             _options = new DbContextOptionsBuilder<AssetManagementDbContext>()
                 .UseInMemoryDatabase(databaseName: "AssetTestDb").Options;
 
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
+            _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new AssetProfile())).CreateMapper();
 
             // Create InMemory dbcontext with options
             _context = new AssetManagementDbContext(_options);
@@ -51,8 +51,8 @@ namespace AssetManagement.Application.Tests
             CreateAssetRequest request = new()
             {
                 CategoryId = 2,
-                Name = "Laptop 21",
-                Specification = "This is laptop #21",
+                Name = "Monitor 1",
+                Specification = "This is monitor #1",
                 InstalledDate = DateTime.Now,
                 State = (int)(State.Available)
             };

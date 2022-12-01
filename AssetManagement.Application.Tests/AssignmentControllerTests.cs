@@ -35,7 +35,7 @@ namespace AssetManagement.Application.Tests
         {
             // Create InMemory dbcontext options
             _options = new DbContextOptionsBuilder<AssetManagementDbContext>()
-                .UseInMemoryDatabase(databaseName: "AssetTestDb1").Options;
+                .UseInMemoryDatabase(databaseName: "AssignmentTestDb").Options;
 
             _mapper = new MapperConfiguration(cfg => cfg.AddProfile(new UserProfile())).CreateMapper();
 
@@ -200,9 +200,9 @@ namespace AssetManagement.Application.Tests
             var assignmentController = new AssignmentsController(_context, _mapper);
 
             // Act 
-            var result = assignmentController.GetAssignmentsByAssetCodeId(2);
+            var result = assignmentController.GetAssignmentsByAssetCodeId(-1);
 
-            var list = _context.Assignments.Where(x => x.AssetId == 2).ToList();
+            var list = _context.Assignments.Where(x => x.AssetId == -1).ToList();
 
             var expected = _mapper.Map<List<AssignmentResponse>>(list);
 
@@ -293,7 +293,7 @@ namespace AssetManagement.Application.Tests
         {
             // Arrange 
             AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
-            var searchString = "top 1";
+            var searchString = "SD";
             // Act 
             var result = await assignmentController.Get(1, 2, searchString);
 
