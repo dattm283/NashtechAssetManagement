@@ -40,8 +40,9 @@ namespace AssetManagement.Application.Tests
 
             // Create InMemory dbcontext with options
             _context = new AssetManagementDbContext(_options);
-            //SeedData();
             _context.Database.EnsureDeleted();
+            //SeedData();
+
             _context.Database.EnsureCreated();
         }
 
@@ -50,7 +51,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetAssignmentDetail_Success_ReturnAssignmentDetail()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(null, _context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
 
             // Act 
             var assignment = _mapper.Map<AssignmentDetailResponse>(await _context.Assignments
@@ -71,7 +72,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetAssignmentDetail_AssignmentNotExist_ReturnBadRequest()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(null, _context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
 
             // Act 
             var result = await assignmentController.GetAssignmentDetail(0);
@@ -431,7 +432,7 @@ namespace AssetManagement.Application.Tests
             AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
             var state = (int)AssetManagement.Domain.Enums.Assignment.State.Accepted;
             // Act 
-            var result = await assignmentController.Get(1, 2, state.ToString());
+            var result = await assignmentController.Get(1, 2, stateFilter: state.ToString());
 
             // var listDefault = _context.Assignments
             //     .Include(x => x.Asset)
@@ -470,6 +471,7 @@ namespace AssetManagement.Application.Tests
                 .Select(x => new ViewListAssignmentResponse
                 {
                     Id = x.Id,
+                    NoNumber = x.Id,
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
@@ -479,18 +481,20 @@ namespace AssetManagement.Application.Tests
                 })
                 .OrderBy(x => x.Id);
 
-            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+            var expected = JsonConvert.SerializeObject(
+                StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2));
 
             var okobjectResult = (OkObjectResult)result.Result;
 
             var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
 
-            var assignmentsList = resultValue.Data;
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
-            var isSorted = assignmentsList.SequenceEqual(expected);
+            //var isSorted = assignmentsList.SequenceEqual(expected);
             // Assert
-            Assert.True(isSorted);
-            Assert.Equal(assignmentsList.Count(), expected.Count());
+            //Assert.True(isSorted);
+            //Assert.Equal(assignmentsList.Count(), expected.Count());
+            Assert.Equal(expected, assignmentsList);
         }
 
         [Fact]
@@ -539,6 +543,7 @@ namespace AssetManagement.Application.Tests
                 .Select(x => new ViewListAssignmentResponse
                 {
                     Id = x.Id,
+                    NoNumber = x.Id,
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
@@ -547,18 +552,20 @@ namespace AssetManagement.Application.Tests
                     State = x.State,
                 })
                 .OrderBy(x => x.Id);
-            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+            var expected = JsonConvert.SerializeObject(
+                StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2));
 
             var okobjectResult = (OkObjectResult)result.Result;
 
             var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
 
-            var assignmentsList = resultValue.Data;
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
-            var isSorted = assignmentsList.SequenceEqual(expected);
+            //var isSorted = assignmentsList.SequenceEqual(expected);
             // Assert
-            Assert.True(isSorted);
-            Assert.Equal(assignmentsList.Count(), expected.Count());
+            //Assert.True(isSorted);
+            //Assert.Equal(assignmentsList.Count(), expected.Count());
+            Assert.Equal(expected, assignmentsList);
         }
 
         [Fact]
@@ -568,7 +575,7 @@ namespace AssetManagement.Application.Tests
             AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
             var sortType = "assetCode";
             // Act 
-            var result = await assignmentController.Get(1, 2, sortType);
+            var result = await assignmentController.Get(1, 2, sort: sortType);
 
             // var listDefault = _context.Assignments
             //     .Include(x => x.Asset)
@@ -606,6 +613,7 @@ namespace AssetManagement.Application.Tests
                 .Select(x => new ViewListAssignmentResponse
                 {
                     Id = x.Id,
+                    NoNumber = x.Id,
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
@@ -614,18 +622,20 @@ namespace AssetManagement.Application.Tests
                     State = x.State,
                 }).OrderBy(x => x.AssetCode);
 
-            var expected = StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2);
+            var expected = JsonConvert.SerializeObject(
+                StaticFunctions<ViewListAssignmentResponse>.Paging(list, 1, 2));
 
             var okobjectResult = (OkObjectResult)result.Result;
 
             var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
 
-            var assignmentsList = resultValue.Data;
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
-            var isSorted = assignmentsList.SequenceEqual(expected);
+            //var isSorted = assignmentsList.SequenceEqual(expected);
             // Assert
-            Assert.True(isSorted);
-            Assert.Equal(assignmentsList.Count(), expected.Count());
+            //Assert.True(isSorted);
+            //Assert.Equal(assignmentsList.Count(), expected.Count());
+            Assert.Equal(expected, assignmentsList);
         }
 
         [Fact]
@@ -694,6 +704,9 @@ namespace AssetManagement.Application.Tests
             Assert.True(isSorted);
             Assert.Equal(assignmentsList.Count(), expected.Count());
         }
+        #endregion
+
+        #region UpdateAssignment
         #endregion
 
         public void Dispose()
