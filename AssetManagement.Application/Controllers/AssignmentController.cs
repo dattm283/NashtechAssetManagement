@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 // using Microsoft.AspNetCore.Http;
 using AssetManagement.Domain.Enums.Assignment;
+using AssetManagement.Contracts.Assignment.Request;
 // using System;
 // using System.Globalization;
 
@@ -30,34 +31,103 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("{assetCodeId}")]
-        //[Authorize]
-        public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
+        // [HttpGet("{assetCodeId}")]
+        // //[Authorize]
+        // public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
+        // {
+        //     var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId).ToList();
+        //     var assignmentResponse = _mapper.Map<List<AssignmentResponse>>(result);
+
+        //     foreach (var item in assignmentResponse)
+        //     {
+        //         item.AssignedTo = _dbContext.Users.Find(new Guid(item.AssignedTo)).UserName;
+        //         item.AssignedBy = _dbContext.Users.Find(new Guid(item.AssignedBy)).UserName;
+        //     }
+
+        //     return Ok(assignmentResponse);
+        // }
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetAssignmentDetail(int id)
         {
-            var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId).ToList();
-            var assignmentResponse = _mapper.Map<List<AssignmentResponse>>(result);
-
-            foreach (var item in assignmentResponse)
+            var assignment = await _dbContext.Assignments
+                .Include(x => x.Asset)
+                .Include(x => x.AssignedToAppUser)
+                .Include(x => x.AssignedByToAppUser)
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
+            if (assignment != null)
             {
-                item.AssignedTo = _dbContext.Users.Find(new Guid(item.AssignedTo)).UserName;
-                item.AssignedBy = _dbContext.Users.Find(new Guid(item.AssignedBy)).UserName;
+                return Ok(_mapper.Map<AssignmentDetailResponse>(assignment));
             }
-
-            return Ok(assignmentResponse);
+            else
+            {
+                return BadRequest();
+            }
         }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAssignment(int id, UpdateAssignmentRequest request)
+        {
+            Assignment updatingAssignment = await _dbContext.Assignments
+                .Include(a => a.Asset)
+                .Include(a => a.AssignedToAppUser)
+                .Where(a => a.Id == id)
+                .FirstOrDefaultAsync();
+
+            try
+            {
+                if (updatingAssignment != null && updatingAssignment.State == State.WaitingForAcceptance)
+                {
+                    if (AssignmentChanged(updatingAssignment, request))
+                    {
+                        AppUser assignedToUser = await _dbContext.AppUsers
+                            .Where(u => u.StaffCode.Equals(request.AssignToAppUserStaffCode))
+                            .FirstOrDefaultAsync();
+
+                        Asset asset = await _dbContext.Assets
+                            .Where(a => a.AssetCode.Equals(request.AssetCode))
+                            .FirstOrDefaultAsync();
+
+                        if (assignedToUser != null && asset != null)
+                        {
+                            updatingAssignment.AssignedTo = assignedToUser.Id;
+                            updatingAssignment.AssetId = asset.Id;
+                            updatingAssignment.AssignedDate = request.AssignedDate;
+                            updatingAssignment.Note = request.Note;
+                            await _dbContext.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            throw new Exception("User or asset is invalid");
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Cannot find an assignment with id: {id}");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponseResult<string>(ex.Message));
+            }
+
+            return Ok(_mapper.Map<UpdateAssignmentResponse>(updatingAssignment));
+        }
 
         [HttpGet]
         //[Authorize]
         public async Task<ActionResult<ViewList_ListResponse<ViewListAssignmentResponse>>> Get(
-        [FromQuery] int start,
-        [FromQuery] int end,
-        [FromQuery] string? searchString = "",
-        [FromQuery] string? assignedDateFilter = "",
-        [FromQuery] string? stateFilter = "",
-        [FromQuery] string? sort = "name",
-        [FromQuery] string? order = "ASC",
-        [FromQuery] string? createdId = "")
+            [FromQuery] int start,
+            [FromQuery] int end,
+            [FromQuery] string? searchString = "",
+            [FromQuery] string? assignedDateFilter = "",
+            [FromQuery] string? stateFilter = "",
+            [FromQuery] string? sort = "name",
+            [FromQuery] string? order = "ASC",
+            [FromQuery] string? createdId = "")
         {
             // var listDefault = _dbContext.Assignments
             //     .Include(x => x.Asset)
@@ -90,6 +160,9 @@ namespace AssetManagement.Application.Controllers
             // }).AsQueryable<ViewListAssignmentResponse>();
 
             var list = _dbContext.Assignments
+                // .Include(x => x.Asset)
+                // .Include(x => x.AssignedToAppUser)
+                // .Include(x => x.AssignedByToAppUser)
                 .Where(x => !x.IsDeleted)
                 .Select(x => new ViewListAssignmentResponse
                 {
@@ -187,6 +260,18 @@ namespace AssetManagement.Application.Controllers
 
             return Ok(new ViewList_ListResponse<ViewListAssignmentResponse> { Data = sortedResult, Total = list.Count() });
             // return Ok(listWithIndex);
+        }
+
+        private bool AssignmentChanged(Assignment updatingAssignment, UpdateAssignmentRequest updateRequest)
+        {
+            if (updatingAssignment.AssignedToAppUser.StaffCode == updateRequest.AssignToAppUserStaffCode
+                && updatingAssignment.Asset.AssetCode == updateRequest.AssetCode
+                && updatingAssignment.AssignedDate.Equals(updateRequest.AssignedDate)
+                && updatingAssignment.Note.Equals(updateRequest.Note))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

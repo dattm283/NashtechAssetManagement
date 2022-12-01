@@ -10,17 +10,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Moq;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static AssetManagement.Application.Tests.TestHelper.ConverterFromIActionResult;
 using Xunit;
-using AssetManagement.Contracts.Asset.Request;
-using AssetManagement.Application.Tests.TestHelper;
 using AssetManagement.Contracts.Common;
 using Microsoft.AspNetCore.Http;
 using System.Security.Principal;
@@ -319,18 +311,16 @@ namespace AssetManagement.Application.Tests
 
             list.Insert(0, queryCreatedId);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = JsonConvert.SerializeObject(
+                _mapper.Map<List<ViewListAssets_AssetResponse>>(list));
 
             var okobjectResult = (OkObjectResult)result.Result;
 
             var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
 
-            var assetsList = resultValue.Data;
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
-            var isSorted = assetsList.SequenceEqual(expected);
-            // Assert
-            Assert.True(isSorted);
-            Assert.Equal(assetsList.Count(), expected.Count());
+            Assert.Equal(expected, assignmentsList);
         }
 
         [Fact]

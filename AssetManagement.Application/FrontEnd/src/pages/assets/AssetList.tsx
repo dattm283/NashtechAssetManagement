@@ -53,8 +53,7 @@ export default () => {
     const assetsFilter = [
         <StateFilterSelect
             source="states"
-            label="State"
-            sx={{ width:"250px" }}
+            sx={{ width: "250px" }}
             statesList={[
                 { value: "0", text: "Available" },
                 { value: "1", text: "Not Available" },
@@ -118,6 +117,7 @@ export default () => {
                     <TextField label="Category" source="categoryName" />
                     <FunctionField
                         source="state"
+                        label="State"
                         render={(record) =>
                             record.state == "NotAvailable"
                                 ? "Not available"
