@@ -125,7 +125,7 @@ namespace AssetManagement.Application.Tests
             //ASSERT
             Assert.NotNull(result);
             Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Password is incorrect", message);
+            Assert.Equal("Password doesn't match", message);
         }
 
         [Theory]
@@ -137,7 +137,7 @@ namespace AssetManagement.Application.Tests
             //Set up UserManager
             _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(_users[0]);
             _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
-                    .Returns(Task.FromResult(false));
+                    .Returns(Task.FromResult(true));
 
             UserController controller = new UserController(_userManager.Object, _config, _context, _mapper);
             controller.ControllerContext = new ControllerContext()
@@ -155,7 +155,59 @@ namespace AssetManagement.Application.Tests
             //ASSERT
             Assert.NotNull(result);
             Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Password is incorrect", message);
+            Assert.Equal("New password must be different", message);
+        }
+
+        [Theory]
+        [InlineData("12345", null)]
+        [InlineData("12345678", null)]
+        [InlineData(null, null)]
+        [InlineData(null, "12345")]
+        [InlineData(null, "1234567")]
+        public async Task UserChangePassword_BadRequest_ModelState_Invalid(string currentpassword, string newpassword)
+        {
+            UserChangePasswordRequest request = new() { CurrentPassword = currentpassword, NewPassword = newpassword };
+
+            //Set up UserManager
+            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(_users[0]);
+            //_userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+            //        .Returns(Task.FromResult(false));
+
+            //Create controller
+            UserController controller = new UserController(_userManager.Object, _config, _context, _mapper);
+            if (currentpassword == null) controller.ModelState.AddModelError("nullcurrentpassword", "Please enter old password");
+            if (newpassword == null) controller.ModelState.AddModelError("nullnewpassword", "Please enter new password");
+            if (currentpassword != null && currentpassword.Length < 6) controller.ModelState.AddModelError("invalidcurrentpassword", "Please enter valid password");
+            if (newpassword != null && newpassword.Length < 6) controller.ModelState.AddModelError("invalidnewpassword", "Please enter valid password");
+
+            //ACT
+            IActionResult result = controller.ChangePassword(request).Result;
+            SerializableError errors = (SerializableError)((ObjectResult)result).Value;
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+
+            if (errors != null && errors.ContainsKey("nullcurrentpassword"))
+            {
+                string message = (errors["nullcurrentpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter old password", message);
+            }
+            if (errors != null && errors.ContainsKey("nullnewpassword"))
+            {
+                string message = (errors["nullnewpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter new password", message);
+            }
+            if (errors != null && errors.ContainsKey("invalidcurrentpassword"))
+            {
+                string message = (errors["invalidcurrentpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter valid password", message);
+            }
+            if (errors != null && errors.ContainsKey("invalidnewpassword"))
+            {
+                string message = (errors["invalidnewpassword"] as string[]).FirstOrDefault();
+                Assert.Equal("Please enter valid password", message);
+            }
         }
 
         #endregion
