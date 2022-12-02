@@ -11,6 +11,7 @@ namespace AssetManagement.Domain.Enums.Asset
         Available,
         NotAvailable,
         WaitingForRecycling,
-        Recycled
+        Recycled,
+        Assigned
     }
 }

@@ -29,6 +29,7 @@ import AssignmentEdit from '../../pages/assignments/AssignmentEdit';
 import SelectAssetModal from '../../components/modal/selectAssetModal/SelectAssetModal';
 import EditUser from '../../pages/users/UserEdit';
 import { Route } from 'react-router-dom';
+import AssignmentCreate from '../../pages/assignments/AssignmentCreate';
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
@@ -44,12 +45,12 @@ const App = () => {
             .toString();
     }
 
-    const [permissions, setPermissions] = useState(localStorage.getItem("permissions") || '' )
+    const [permissions, setPermissions] = useState(localStorage.getItem("permissions") || '')
     useEffect(() => {
         setPermissions(localStorage.getItem("permissions") || '')
     })
 
-    console.log("permissionsAdminlayout" , permissions)
+    console.log("permissionsAdminlayout", permissions)
     const checkIsLoginFirstTime = (currentPassword) => {
         authService.getUserProfile()
         .then(data => {
@@ -99,7 +100,7 @@ const App = () => {
             >
                 <Resource name="home" options={{ label: 'Home' }} list={HomeList} />
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
-                {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} edit={AssignmentEdit} options={{ label: 'Manage Assignments' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} edit={AssignmentEdit} create={AssignmentCreate} options={{ label: 'Manage Assignments' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="user" list={UserList} create={UserCreate} edit={EditUser} options={{ label: 'Manage User' }} /> : null}
             </Admin>
 

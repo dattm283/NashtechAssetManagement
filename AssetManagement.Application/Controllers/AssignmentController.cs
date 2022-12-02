@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 // using Microsoft.AspNetCore.Http;
 using AssetManagement.Domain.Enums.Assignment;
 using AssetManagement.Contracts.Assignment.Request;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 // using System;
 // using System.Globalization;
 
@@ -22,11 +24,14 @@ namespace AssetManagement.Application.Controllers
     {
         private readonly AssetManagementDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
         public AssignmentsController(
             AssetManagementDbContext dbContext,
+            UserManager<AppUser> userManager,
             IMapper mapper)
         {
+            _userManager = userManager;
             _dbContext = dbContext;
             _mapper = mapper;
         }
@@ -161,9 +166,6 @@ namespace AssetManagement.Application.Controllers
             // }).AsQueryable<ViewListAssignmentResponse>();
 
             var list = _dbContext.Assignments
-                // .Include(x => x.Asset)
-                // .Include(x => x.AssignedToAppUser)
-                // .Include(x => x.AssignedByToAppUser)
                 .Where(x => !x.IsDeleted)
                 .Select(x => new ViewListAssignmentResponse
                 {
@@ -291,6 +293,44 @@ namespace AssetManagement.Application.Controllers
                 catch (Exception e) { return BadRequest(e.Message); }
             }
             return NotFound("Assignment does not exist");
+        }
+
+        [HttpPost]
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> Create(CreateAssignmentRequest requestData)
+        {
+            var currentUsername = User.Claims.First(x => x.Type == ClaimTypes.Name).Value;
+            var currentUser = await _userManager.FindByNameAsync(currentUsername);
+            var assignment = _mapper.Map<Assignment>(requestData);
+            var staffId = _dbContext.AppUsers.First(x => x.StaffCode == requestData.AssignToAppUserStaffCode).Id;
+            var assetId = _dbContext.Assets.First(x=>x.AssetCode == requestData.AssetCode).Id;
+
+            var isUnique = _dbContext.Assignments
+                .FirstOrDefault(x => 
+                x.AssetId == assetId && 
+                x.AssignedTo == staffId) == null;
+            if (!isUnique)
+            {
+                return BadRequest(new ErrorResponseResult<string>("Try again."));
+            }
+            try
+            {
+                assignment.State = State.WaitingForAcceptance;
+                assignment.AssignedBy = currentUser.Id;
+                assignment.AssignedTo = staffId;
+                assignment.AssetId = assetId;
+                _dbContext.Assignments.Add(assignment);
+                var asset = _dbContext.Assets.First(x => x.AssetCode == requestData.AssetCode);
+                asset.State = Domain.Enums.Asset.State.Assigned;
+                _dbContext.Assets.Update(asset);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ErrorResponseResult<string>(e.Message));
+            }
+            _dbContext.SaveChanges();
+            var mappedResult = _mapper.Map<CreateAssignmentResponse>(assignment);
+            return Ok(mappedResult);
         }
     }
 }

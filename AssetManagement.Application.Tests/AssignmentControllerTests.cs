@@ -16,6 +16,7 @@ using static AssetManagement.Application.Tests.TestHelper.ConverterFromIActionRe
 using FluentAssertions;
 using AssetManagement.Contracts.Assignment.Request;
 using AssetManagement.Application.Tests.TestHelper;
+using Microsoft.AspNetCore.Identity;
 
 namespace AssetManagement.Application.Tests
 {
@@ -25,6 +26,7 @@ namespace AssetManagement.Application.Tests
         private readonly AssetManagementDbContext _context;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
+        private readonly UserManager<AppUser> _userManager; 
 
         public AssignmentControllerTests()
         {
@@ -46,7 +48,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetAssignmentDetail_Success_ReturnAssignmentDetail()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act 
             var assignment = _mapper.Map<AssignmentDetailResponse>(await _context.Assignments
@@ -67,7 +69,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetAssignmentDetail_AssignmentNotExist_ReturnBadRequest()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act 
             var result = await assignmentController.GetAssignmentDetail(0);
@@ -164,7 +166,7 @@ namespace AssetManagement.Application.Tests
         public void GetAssignmentListByAssetCodeId_ReturnResults()
         {
             // Arrange 
-            var assignmentController = new AssignmentsController(_context, _mapper);
+            var assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act 
             var result = assignmentController.GetAssignmentsByAssetCodeId(1);
@@ -191,7 +193,7 @@ namespace AssetManagement.Application.Tests
         public void GetAssignmentListByAssetCodeId_ReturnEmptyResult()
         {
             // Arrange 
-            var assignmentController = new AssignmentsController(_context, _mapper);
+            var assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act 
             var result = assignmentController.GetAssignmentsByAssetCodeId(-1);
@@ -219,7 +221,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetList_ForDefault()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act 
             var result = await assignmentController.Get(1, 2);
@@ -286,7 +288,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetList_SearchString_WithData()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
             var searchString = "SD";
             // Act 
             var result = await assignmentController.Get(1, 2, searchString);
@@ -355,7 +357,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetList_SearchString_WithOutData()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
             var searchString = "top 1";
             // Act 
             var result = await assignmentController.Get(1, 2, searchString);
@@ -424,7 +426,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetList_FilterState()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
             var state = (int)AssetManagement.Domain.Enums.Assignment.State.Accepted;
             // Act 
             var result = await assignmentController.Get(1, 2, stateFilter: state.ToString());
@@ -496,7 +498,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetList_FilterAssignedDate()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
             var assignedDateFilter = "2022-11-28";
             // Act 
             var result = await assignmentController.Get(1, 2, assignedDateFilter);
@@ -567,7 +569,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetList_ForDefaultSortedByAssetCode()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
             var sortType = "assetCode";
             // Act 
             var result = await assignmentController.Get(1, 2, sort: sortType);
@@ -637,7 +639,7 @@ namespace AssetManagement.Application.Tests
         public async Task GetList_ForDefault_InvalidPaging()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act 
             var result = await assignmentController.Get(-1, 2);
@@ -706,7 +708,7 @@ namespace AssetManagement.Application.Tests
         public async Task UpdateAssignment_Success_ReturnUpdatedAssignment()
         {
             // Arrange 
-            AssignmentsController assignmentController = new AssignmentsController(_context, _mapper);
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act 
             var updatingAssignment = await _context.Assignments
@@ -742,7 +744,7 @@ namespace AssetManagement.Application.Tests
         public async Task UpdateAssignment_AssignmentNotFound_ReturnBadRequest()
         {
             // Arrange
-            var assignmentController = new AssignmentsController(_context, _mapper);
+            var assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act
             var result = await assignmentController.UpdateAssignment(0, new UpdateAssignmentRequest
@@ -761,7 +763,7 @@ namespace AssetManagement.Application.Tests
         public async Task UpdateAssignment_AssetNotFound_ReturnBadRequest()
         {
             // Arrange
-            var assignmentController = new AssignmentsController(_context, _mapper);
+            var assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act
             var result = await assignmentController.UpdateAssignment(9, new UpdateAssignmentRequest
@@ -780,7 +782,7 @@ namespace AssetManagement.Application.Tests
         public async Task UpdateAssignment_UserNotFound_ReturnBadRequest()
         {
             // Arrange
-            var assignmentController = new AssignmentsController(_context, _mapper);
+            var assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act
             var result = await assignmentController.UpdateAssignment(9, new UpdateAssignmentRequest
@@ -799,7 +801,7 @@ namespace AssetManagement.Application.Tests
         public async Task UpdateAssignment_AcceptedAssignment_ReturnBadRequest()
         {
             // Arrange
-            var assignmentController = new AssignmentsController(_context, _mapper);
+            var assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
             // Act
             var result = await assignmentController.UpdateAssignment(2, new UpdateAssignmentRequest
@@ -857,7 +859,7 @@ namespace AssetManagement.Application.Tests
         public async Task Delete_SuccessAsync(int id)
         {
             //ARRANGE
-            AssignmentsController controller = new(_context, _mapper);
+            AssignmentsController controller = new(_context, _userManager, _mapper);
 
             //ACT
             IActionResult result = await controller.DeleteAsync(id);
@@ -881,7 +883,7 @@ namespace AssetManagement.Application.Tests
         public async Task Delete_NotFoundAsync(int id)
         {
             //ARRANGE
-            AssignmentsController controller = new(_context, _mapper);
+            AssignmentsController controller = new(_context, _userManager, _mapper);
 
             //ACT
             IActionResult result = await controller.DeleteAsync(id);
@@ -901,7 +903,7 @@ namespace AssetManagement.Application.Tests
         {
             //ARRANGE
             //Use null mapper to cause exception
-            AssignmentsController controller = new(_context, null);
+            AssignmentsController controller = new(_context, _userManager, null);
 
             //ACT
             IActionResult result = await controller.DeleteAsync(1);

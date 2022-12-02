@@ -30,7 +30,8 @@ import AssignmentShow from "./AssignmentShow";
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
     const [record, setRecord] = useState();
-    const [assignment, setAssignment] = useState({});
+    const [assignment, setAssignment] = useState();
+
     const toggle = () => {
         setIsOpened(!isOpened);
     };
@@ -78,7 +79,7 @@ export default () => {
                             size="large"
                             variant="contained"
                             color="secondary"
-                            label="Create new asset"
+                            label="Create new assignment"
                             sx={{
                                 width: "250px",
                             }}

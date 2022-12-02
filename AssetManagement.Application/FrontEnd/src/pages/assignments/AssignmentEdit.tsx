@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, SelectInput } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, SelectInput, useListContext } from "react-admin";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Container } from "@mui/material";
 import {
@@ -30,13 +30,22 @@ const AssignmentEdit = () => {
     const [selectedUser, setSelectedUser] = useState("");
     const { id } = useParams();
     let theme = createTheme();
+    const { setSort } = useListContext();
     theme = unstable_createMuiStrictModeTheme(theme);
 
     const toggleAssetChoice = () => {
+        setSort({
+            field: "type",
+            order: "ASC",
+        });
         setAssetChoiceOpen(!assetChoiceOpen);
     }
 
     const toggleUserChoice = () => {
+        setSort({
+            field: "name",
+            order: "ASC",
+        });
         setUserChoiceOpen(!userChoiceOpen);
     }
 

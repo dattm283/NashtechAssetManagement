@@ -9,8 +9,8 @@ import AssetsPagination from '../../pagination/AssetsPagination';
 import CategoryFilterSelect from '../../select/CategoryFilterSelect';
 import StateFilterSelect from '../../select/StateFilterSelect';
 import { useNavigate } from 'react-router-dom';
-import RadioChoice from '../../buttons/RadioChoice';
 import { useFormContext } from "react-hook-form";
+import RadioChoice from '../../buttons/RadioChoice';
 
 const StyledDialog = styled(Dialog)`
 .MuiBackdrop-root {
@@ -37,6 +37,12 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
         toggle();
         return "";
     };
+
+    const { sort, setSort } = useListContext();
+
+    useEffect(() => {
+        console.log(sort);
+    }, [])
 
     const handleChange = (staffCode) => {
         setSelectedUser(staffCode);
@@ -113,7 +119,7 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
                             />
                             <TextField label="Staff Code" source="staffCode" />
                             <TextField label="Full Name" source="fullName" />
-                            <FunctionField source="Type" render={data => data.type == "Admin" ? "Admin" : "Staff"} />
+                            <FunctionField source="type" render={data => data.type == "Admin" ? "Admin" : "Staff"} />
                         </Datagrid>
                         <AssetsPagination />
                     </ListBase>

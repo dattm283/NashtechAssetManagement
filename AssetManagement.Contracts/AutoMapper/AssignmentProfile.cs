@@ -45,6 +45,9 @@ namespace AssetManagement.Contracts.AutoMapper
             CreateMap<AssetManagement.Domain.Models.Assignment, AssignmentResponse>()
                 .ForMember(dest => dest.AssignedDate, opt => opt.MapFrom(src => src.AssignedDate.ToShortDateString()))
                 .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.ToShortDateString()));
+
+            CreateMap<CreateAssignmentRequest, AssetManagement.Domain.Models.Assignment>();
+            CreateMap<AssetManagement.Domain.Models.Assignment, CreateAssignmentResponse>();
         }
     }
 }

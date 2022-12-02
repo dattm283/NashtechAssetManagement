@@ -35,8 +35,8 @@ export const assetProvider: DataProvider = {
     },
     create: function <RecordType extends RaRecord = any>(resource: string, params: CreateParams<any>): Promise<CreateResult<RecordType>> {
         return axiosInstance.post(`/api/${resource}`, params.data).then(res => {
-            localStorage.setItem("item", JSON.stringify(res.data))
-            return res
+            localStorage.setItem("item", JSON.stringify(res.data));
+            return res;
         });
     },
     delete: async (resource, params) => {
@@ -52,6 +52,7 @@ export const assetProvider: DataProvider = {
         const { states, searchString, categories, assignedDateFilter, noNumber } = params.filter;
         const { field, order } = params.sort;
         let tmp = "";
+        console.log(resource, field);
         for (const key in states) {
             if (Object.prototype.hasOwnProperty.call(states, key)) {
                 const element = states[key];
@@ -84,7 +85,7 @@ export const assetProvider: DataProvider = {
         if (localStorage.getItem("item") != null && query.end != '99') {
             localStorage.removeItem("item");
         }
-        
+
         return axiosInstance(url).then(res => {
             return Promise.resolve({ data: res.data.data, total: res.data.total });
         });
