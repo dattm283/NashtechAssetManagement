@@ -349,11 +349,11 @@ namespace AssetManagement.Application.Controllers
             return BadRequest(ModelState);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{staffCode}")]
         [Authorize]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(string staffCode)
         {
-            var deletingUser = await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
+            var deletingUser = await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.StaffCode == staffCode);
             var userName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
             if (deletingUser != null)
             {
