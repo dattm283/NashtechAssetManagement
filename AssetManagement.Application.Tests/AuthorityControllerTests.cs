@@ -18,7 +18,7 @@ using Xunit;
 #nullable disable
 namespace AssetManagement.Application.Tests
 {
-    public class AuthorityControllerTests : IDisposable
+    public class AuthorityControllerTests : IAsyncDisposable
     {
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
@@ -230,9 +230,10 @@ namespace AssetManagement.Application.Tests
         }
 
         //Clean up after tests
-        public void Dispose()
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
         {
-            _context.Dispose();
+            await _context.DisposeAsync();
         }
     }
 }

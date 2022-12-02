@@ -20,7 +20,7 @@ using System.Security.Principal;
 #nullable disable
 namespace AssetManagement.Application.Tests
 {
-    public class AssetsControllerTest: IDisposable
+    public class AssetsControllerTest: IAsyncDisposable
     {
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
@@ -88,6 +88,10 @@ namespace AssetManagement.Application.Tests
             Assert.Equal(newAsset.Name, request.Name);
             Assert.Equal("MO000001", newAsset.AssetCode);
             Assert.Equal(user.Location, newAsset.Location);
+
+            //Re-create context for other tests
+            await _context.Database.EnsureDeletedAsync();
+            await _context.Database.EnsureCreatedAsync();
         }
 
         [Fact]
@@ -604,9 +608,10 @@ namespace AssetManagement.Application.Tests
         }
         #endregion
 
-        public void Dispose()
+        async ValueTask IAsyncDisposable.DisposeAsync()
         {
-            _context.Dispose();
+            await _context.Database.EnsureDeletedAsync();
+            await _context.DisposeAsync();
         }
     }
 }
