@@ -24,7 +24,7 @@ namespace AssetManagement.Domain.Models
         [ForeignKey(nameof(AssignedToAppUser))]
         public Guid? AssignedTo { get; set; }
 
-        [ForeignKey(nameof(AssignedByToAppUser))]
+        [ForeignKey(nameof(AssignedByAppUser))]
         public Guid? AssignedBy { get; set; }
 
         public bool IsDeleted { get; set; } = false;
@@ -32,6 +32,6 @@ namespace AssetManagement.Domain.Models
         public string Note { get; set; }
 
         public virtual AppUser AssignedToAppUser { get; set; }
-        public virtual AppUser AssignedByToAppUser { get; set; }
+        public virtual AppUser AssignedByAppUser { get; set; }
     }
 }

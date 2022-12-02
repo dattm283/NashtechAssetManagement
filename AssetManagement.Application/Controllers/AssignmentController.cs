@@ -32,7 +32,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet("assets/{assetCodeId}")]
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
         {
             var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId).ToList();
@@ -54,7 +54,7 @@ namespace AssetManagement.Application.Controllers
             var assignment = await _dbContext.Assignments
                 .Include(x => x.Asset)
                 .Include(x => x.AssignedToAppUser)
-                .Include(x => x.AssignedByToAppUser)
+                .Include(x => x.AssignedByAppUser)
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
             if (assignment != null)
@@ -68,6 +68,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAssignment(int id, UpdateAssignmentRequest request)
         {
             Assignment updatingAssignment = await _dbContext.Assignments
@@ -118,7 +119,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<ViewList_ListResponse<ViewListAssignmentResponse>>> Get(
             [FromQuery] int start,
             [FromQuery] int end,
@@ -171,7 +172,7 @@ namespace AssetManagement.Application.Controllers
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 });
@@ -258,7 +259,7 @@ namespace AssetManagement.Application.Controllers
 
             // var mappedResult = _mapper.Map<List<ViewListAssignmentResponse>>(list);
 
-            return Ok(new ViewList_ListResponse<ViewListAssignmentResponse> { Data = sortedResult, Total = list.Count() });
+            return Ok(new ViewListPageResult<ViewListAssignmentResponse> { Data = sortedResult, Total = list.Count() });
             // return Ok(listWithIndex);
         }
 

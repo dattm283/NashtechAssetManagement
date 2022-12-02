@@ -25,7 +25,7 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
         [HttpGet("{id}")]
-        // [Authorize]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> GetAssetById(int id)
         {
             Asset gettingAsset = await _dbContext.Assets
@@ -43,7 +43,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpPost()]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateAssetAsync(CreateAssetRequest createAssetRequest)
         {
             string token = Request.Headers.Authorization;
@@ -71,7 +71,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateAsset(int id, UpdateAssetRequest request)
         {
             Asset? updatingAsset = await _dbContext.Assets
@@ -102,7 +102,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAsset(int id)
         {
             Asset deletingAsset = await _dbContext.Assets
@@ -130,7 +130,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet]
-        //[Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get(
             [FromQuery] int start,
             [FromQuery] int end,
@@ -230,16 +230,16 @@ namespace AssetManagement.Application.Controllers
 
                 sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
 
-                var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssets_AssetResponse>>(sortedResultWithCreatedIdParam);
+                var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssetsResponse>>(sortedResultWithCreatedIdParam);
 
-                return Ok(new ViewList_ListResponse<ViewListAssets_AssetResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() });
+                return Ok(new ViewListPageResult<ViewListAssetsResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() });
             }
 
             var sortedResult = StaticFunctions<Asset>.Paging(list, start, end);
 
-            var mappedResult = _mapper.Map<List<ViewListAssets_AssetResponse>>(sortedResult);
+            var mappedResult = _mapper.Map<List<ViewListAssetsResponse>>(sortedResult);
 
-            return Ok(new ViewList_ListResponse<ViewListAssets_AssetResponse> { Data = mappedResult, Total = list.Count() });
+            return Ok(new ViewListPageResult<ViewListAssetsResponse> { Data = mappedResult, Total = list.Count() });
         }
     }
 }

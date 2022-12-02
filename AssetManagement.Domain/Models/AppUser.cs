@@ -39,7 +39,7 @@ namespace AssetManagement.Domain.Models
         [InverseProperty(nameof(Assignment.AssignedToAppUser))]
         public virtual ICollection<Assignment> AssignedToAssignments { get; set; }
 
-        [InverseProperty(nameof(Assignment.AssignedByToAppUser))]
+        [InverseProperty(nameof(Assignment.AssignedByAppUser))]
         public virtual ICollection<Assignment> AssignedByAssignments { get; set; }
 
     }

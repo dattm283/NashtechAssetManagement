@@ -184,11 +184,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -216,11 +216,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = JsonConvert.SerializeObject(_mapper.Map<List<ViewListAssets_AssetResponse>>(list));
+            var expected = JsonConvert.SerializeObject(_mapper.Map<List<ViewListAssetsResponse>>(list));
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = JsonConvert.SerializeObject(resultValue.Data);
 
@@ -249,11 +249,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -279,11 +279,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -316,11 +316,11 @@ namespace AssetManagement.Application.Tests
             list.Insert(0, queryCreatedId);
 
             var expected = JsonConvert.SerializeObject(
-                _mapper.Map<List<ViewListAssets_AssetResponse>>(list));
+                _mapper.Map<List<ViewListAssetsResponse>>(list));
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
@@ -344,11 +344,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -375,11 +375,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -406,11 +406,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -437,11 +437,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -468,11 +468,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, 1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 
@@ -498,11 +498,11 @@ namespace AssetManagement.Application.Tests
 
             var list = StaticFunctions<Asset>.Paging(query, -1, 2);
 
-            var expected = _mapper.Map<List<ViewListAssets_AssetResponse>>(list);
+            var expected = _mapper.Map<List<ViewListAssetsResponse>>(list);
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssets_AssetResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssetsResponse>)okobjectResult.Value;
 
             var assetsList = resultValue.Data;
 

@@ -141,6 +141,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ViewList_ListResponse<ViewListUser_UserResponse>>> GetAllUser(
             [FromQuery] int start,
             [FromQuery] int end,
@@ -248,7 +249,7 @@ namespace AssetManagement.Application.Controllers
                 }
                 mapResultWithCreatedIdParam.Reverse();
 
-                return Ok(new ViewList_ListResponse<ViewListUser_UserResponse> { Data = mapResultWithCreatedIdParam, Total = users.Count() });
+                return Ok(new ViewListPageResult<ViewListUser_UserResponse> { Data = mapResultWithCreatedIdParam, Total = users.Count() });
             }
 
             List<AppUser> sortedUsers = StaticFunctions<AppUser>.Paging(users, start, end);
@@ -271,7 +272,7 @@ namespace AssetManagement.Application.Controllers
             }
             mapResult.Reverse();
 
-            return Ok(new ViewList_ListResponse<ViewListUser_UserResponse>
+            return Ok(new ViewListPageResult<ViewListUser_UserResponse>
             {
                 Data = mapResult,
                 Total = users.Count()
@@ -279,6 +280,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet("{staffCode}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<SuccessResponseResult<ViewDetailUser_UserResponse>>> GetSingleUser([FromRoute] string staffCode)
         {
             AppUser user = _dbContext.AppUsers.Where(x => x.StaffCode.Trim() == staffCode.Trim()).FirstOrDefault();
@@ -350,7 +352,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpDelete("{staffCode}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string staffCode)
         {
             var deletingUser = await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.StaffCode == staffCode);
@@ -373,6 +375,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpPost("change-password")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] UserChangePasswordRequest request)
         {
             if (!ModelState.IsValid)

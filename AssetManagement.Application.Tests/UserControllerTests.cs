@@ -278,8 +278,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, "", "", "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert
@@ -341,8 +341,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, "", searchString, "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert
@@ -411,8 +411,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, filterState, "", "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert
@@ -473,8 +473,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert
@@ -535,8 +535,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert
@@ -597,8 +597,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert
@@ -664,8 +664,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(0, 2, "", "", sort, "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert
@@ -732,8 +732,8 @@ namespace AssetManagement.Application.Tests
 
             var result = await userController.GetAllUser(start, end, "", "", "staffCode", "ASC");
             var okobjectResult = result.Result as OkObjectResult;
-            ViewList_ListResponse<ViewListUser_UserResponse> actualResult =
-                okobjectResult.Value as ViewList_ListResponse<ViewListUser_UserResponse>;
+            ViewListPageResult<ViewListUser_UserResponse> actualResult =
+                okobjectResult.Value as ViewListPageResult<ViewListUser_UserResponse>;
             #endregion
 
             // Assert

@@ -27,12 +27,12 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ViewList_ListResponse<GetCategoryResponse>>> GetAsync()
         {
             List<Category> categories = await _dbContext.Categories.Where(c => !c.IsDeleted).ToListAsync();
             var mappedData = _mapper.Map<List<GetCategoryResponse>>(categories);
-            return Ok(new ViewList_ListResponse<GetCategoryResponse>{ Data = mappedData, Total = mappedData.Count()});
+            return Ok(new ViewListPageResult<GetCategoryResponse>{ Data = mappedData, Total = mappedData.Count()});
         }
 
         [HttpPost]

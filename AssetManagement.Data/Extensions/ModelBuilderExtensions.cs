@@ -165,6 +165,12 @@ namespace AssetManagement.Data.Extensions
                 UserId = staffAbleId1
             });
 
+            modelBuilder.Entity<IdentityUserRole<Guid>>().HasData(new IdentityUserRole<Guid>
+            {
+                RoleId = staffRoleId,
+                UserId = staffAbleId2
+            });
+
             modelBuilder.Entity<Category>().HasData(new Category
             {
                 Id = 1,

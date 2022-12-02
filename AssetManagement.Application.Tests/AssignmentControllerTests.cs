@@ -52,7 +52,7 @@ namespace AssetManagement.Application.Tests
             var assignment = _mapper.Map<AssignmentDetailResponse>(await _context.Assignments
                 .Include(x => x.Asset)
                 .Include(x => x.AssignedToAppUser)
-                .Include(x => x.AssignedByToAppUser)
+                .Include(x => x.AssignedByAppUser)
                 .Where(a => a.Id == 1)
                 .FirstOrDefaultAsync());
             string expected = JsonConvert.SerializeObject(assignment);
@@ -262,7 +262,7 @@ namespace AssetManagement.Application.Tests
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 })
@@ -272,7 +272,7 @@ namespace AssetManagement.Application.Tests
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssignmentResponse>)okobjectResult.Value;
 
             var assignmentsList = resultValue.Data;
 
@@ -331,7 +331,7 @@ namespace AssetManagement.Application.Tests
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 })
@@ -341,7 +341,7 @@ namespace AssetManagement.Application.Tests
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssignmentResponse>)okobjectResult.Value;
 
             var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
@@ -400,7 +400,7 @@ namespace AssetManagement.Application.Tests
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 })
@@ -410,7 +410,7 @@ namespace AssetManagement.Application.Tests
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssignmentResponse>)okobjectResult.Value;
 
             var assignmentsList = resultValue.Data;
 
@@ -470,7 +470,7 @@ namespace AssetManagement.Application.Tests
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 })
@@ -481,7 +481,7 @@ namespace AssetManagement.Application.Tests
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssignmentResponse>)okobjectResult.Value;
 
             var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
@@ -542,7 +542,7 @@ namespace AssetManagement.Application.Tests
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 })
@@ -552,7 +552,7 @@ namespace AssetManagement.Application.Tests
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssignmentResponse>)okobjectResult.Value;
 
             var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
@@ -612,7 +612,7 @@ namespace AssetManagement.Application.Tests
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 }).OrderBy(x => x.AssetCode);
@@ -622,7 +622,7 @@ namespace AssetManagement.Application.Tests
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssignmentResponse>)okobjectResult.Value;
 
             var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
 
@@ -680,7 +680,7 @@ namespace AssetManagement.Application.Tests
                     AssetCode = x.Asset.AssetCode,
                     AssetName = x.Asset.Name,
                     AssignedTo = x.AssignedToAppUser.UserName,
-                    AssignedBy = x.AssignedByToAppUser.UserName,
+                    AssignedBy = x.AssignedByAppUser.UserName,
                     AssignedDate = x.AssignedDate,
                     State = x.State,
                 })
@@ -690,7 +690,7 @@ namespace AssetManagement.Application.Tests
 
             var okobjectResult = (OkObjectResult)result.Result;
 
-            var resultValue = (ViewList_ListResponse<ViewListAssignmentResponse>)okobjectResult.Value;
+            var resultValue = (ViewListPageResult<ViewListAssignmentResponse>)okobjectResult.Value;
 
             var assignmentsList = resultValue.Data;
 
