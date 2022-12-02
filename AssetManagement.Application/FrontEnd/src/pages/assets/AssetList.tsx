@@ -122,6 +122,8 @@ export default () => {
                         render={(record) =>
                             record.state == "NotAvailable"
                                 ? "Not available"
+                                : record.state == "WaitingForRecycling" 
+                                ? "Waiting for recycling" 
                                 : record.state
                         }
                     />

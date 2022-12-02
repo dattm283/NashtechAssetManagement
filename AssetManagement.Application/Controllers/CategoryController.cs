@@ -28,7 +28,7 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ViewList_ListResponse<GetCategoryResponse>>> GetAsync()
+        public async Task<ActionResult<ViewListPageResult<GetCategoryResponse>>> GetAsync()
         {
             List<Category> categories = await _dbContext.Categories.Where(c => !c.IsDeleted).ToListAsync();
             var mappedData = _mapper.Map<List<GetCategoryResponse>>(categories);

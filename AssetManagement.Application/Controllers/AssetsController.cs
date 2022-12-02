@@ -131,7 +131,7 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ViewList_ListResponse<ViewListAssets_AssetResponse>>> Get(
+        public async Task<ActionResult<ViewListPageResult<ViewListAssetsResponse>>> Get(
             [FromQuery] int start,
             [FromQuery] int end,
             [FromQuery] string? searchString = "",

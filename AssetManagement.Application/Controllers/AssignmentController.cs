@@ -120,7 +120,7 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<ViewList_ListResponse<ViewListAssignmentResponse>>> Get(
+        public async Task<ActionResult<ViewListPageResult<ViewListAssignmentResponse>>> Get(
             [FromQuery] int start,
             [FromQuery] int end,
             [FromQuery] string? searchString = "",

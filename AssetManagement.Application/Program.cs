@@ -25,6 +25,8 @@ builder.Services.AddDbContext<AssetManagementDbContext>(options =>
 
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(UserProfile)));
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AssignmentProfile)));
+builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AssetProfile)));
+builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(CategoryProfile)));
 
 //password policy configuration
 builder.Services.Configure<IdentityOptions>(options =>

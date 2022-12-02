@@ -142,7 +142,7 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ViewList_ListResponse<ViewListUser_UserResponse>>> GetAllUser(
+        public async Task<ActionResult<ViewListPageResult<ViewListUser_UserResponse>>> GetAllUser(
             [FromQuery] int start,
             [FromQuery] int end,
             [FromQuery] string? stateFilter = "",

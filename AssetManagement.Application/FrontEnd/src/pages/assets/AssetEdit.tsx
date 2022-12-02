@@ -178,7 +178,7 @@ function EditAssetInformations() {
                                     choices={[
                                         { id: 0, name: "Available" },
                                         { id: 1, name: "Not available" },
-                                        { id: 2, name: "WaitingForRecycling" },
+                                        { id: 2, name: "Waiting for recycling" },
                                         { id: 3, name: "Recycled" },
                                     ]}
                                     optionText="name"

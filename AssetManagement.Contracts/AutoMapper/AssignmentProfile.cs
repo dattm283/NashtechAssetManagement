@@ -1,4 +1,7 @@
-﻿using AssetManagement.Contracts.Asset.Response;
+﻿using AssetManagement.Contracts.Asset.Request;
+using AssetManagement.Contracts.Asset.Response;
+using AssetManagement.Contracts.Common;
+using AssetManagement.Contracts.Assignment.Request;
 using AssetManagement.Contracts.Assignment.Response;
 using AssetManagement.Contracts.Authority.Response;
 using AssetManagement.Domain.Models;
