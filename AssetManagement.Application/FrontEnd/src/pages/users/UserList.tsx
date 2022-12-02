@@ -51,6 +51,7 @@ export default () => {
             <ListBase
                 perPage={5}
                 sort={{ field: "fullName", order: "DESC" }}
+                filterDefaultValues={{ states: ["Staff", "Admin"] }}
             >
                 <h2 style={{ color: "#cf2338" }}>User List</h2>
                 <Stack direction="row" justifyContent="start" alignContent="center">
@@ -83,7 +84,10 @@ export default () => {
                     <TextField label="Staff Code" source="staffCode" />
                     <TextField label="Full Name" source="fullName" />
                     <TextField label="Username" source="userName" />
-                    <FunctionField label="Joined Date" source="joinedDate" render={ data => data.joinedDate.split('T')[0] } />
+                    <FunctionField label="Joined Date" source="joinedDate" render={ data => {
+                        var [yyyy, mm, dd] = data.joinedDate.split('T')[0].split('-');
+                        return `${dd}/${mm}/${yyyy}`
+                    }} />
                     <FunctionField label="Type" source="type" render={ data => data.type == "Admin" ? "Admin" : "Staff"} />
 
                     {/* Button (Edit, Delete) */}
