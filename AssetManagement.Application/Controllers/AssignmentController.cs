@@ -131,7 +131,7 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? searchString = "",
             [FromQuery] string? assignedDateFilter = "",
             [FromQuery] string? stateFilter = "",
-            [FromQuery] string? sort = "name",
+            [FromQuery] string? sort = "noNumber",
             [FromQuery] string? order = "ASC",
             [FromQuery] string? createdId = "")
         {
@@ -181,7 +181,7 @@ namespace AssetManagement.Application.Controllers
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                list = list.Where(x => x.AssetName.ToUpper().Contains(searchString.ToUpper()) || x.AssetCode.ToUpper().Contains(searchString.ToUpper()));
+                list = list.Where(x => x.AssetCode.ToUpper().Contains(searchString.ToUpper()) || x.AssetName.ToUpper().Contains(searchString.ToUpper()) || x.AssignedTo.ToUpper().Contains(searchString.ToUpper()) || x.AssignedBy.ToUpper().Contains(searchString.ToUpper()));
             }
             if (!string.IsNullOrEmpty(assignedDateFilter))
             {

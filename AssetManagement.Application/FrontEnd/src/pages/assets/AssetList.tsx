@@ -56,12 +56,14 @@ export default () => {
         <StateFilterSelect
             source="states"
             label="State"
-            sx={{ width: "150px" }}
+            sx={{ width: "240px" }}
             statesList={[
+                { value: "4", text: "Assigned" },
                 { value: "0", text: "Available" },
                 { value: "1", text: "Not available" },
                 { value: "2", text: "Waiting for recycling" },
                 { value: "3", text: "Recycled" },
+
             ]}
             alwaysOn
         />,

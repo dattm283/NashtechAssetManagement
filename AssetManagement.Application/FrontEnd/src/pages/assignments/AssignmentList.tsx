@@ -54,7 +54,7 @@ export default () => {
     const assignmentsFilter = [
         <StateFilterSelect
             source="states"
-            label="Type"
+            label="State"
             sx={{ width: "250px" }}
             statesList={[
                 { value: 0, text: "Accepted" },
@@ -62,7 +62,7 @@ export default () => {
             ]}
             alwaysOn
         />,
-        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn/>,
+        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn id="DateAssignedFilterAssignment"/>,
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
@@ -89,6 +89,7 @@ export default () => {
                             variant="contained"
                             color="secondary"
                             label="Create new assignment"
+                            id="createNewAssignmentBtn"
                             icon={<></>}
                         />
                     </div>

@@ -19,7 +19,7 @@ export default (props) => {
    const MenuProps = {
       PaperProps: {
          style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+            // maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
             width: props.sx.width!=null ? props.sx.width : ITEM_WIDTH,
          },
       },

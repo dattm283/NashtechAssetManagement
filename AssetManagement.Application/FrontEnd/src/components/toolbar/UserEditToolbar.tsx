@@ -19,6 +19,7 @@ const UserEditToolbar = ({disabled}) => {
                     variant="contained"
                     type="submit"
                     color="secondary"
+                    id="editAssetSaveButton"
                     disabled = {disabled}
                 >
                     Save
@@ -27,6 +28,7 @@ const UserEditToolbar = ({disabled}) => {
                     variant="outlined"
                     onClick={(e) => navigate("/user")}
                     color="secondary"
+                    id="editAssetCancelButton"
                 >
                     Cancel
                 </Button>

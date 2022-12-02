@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Checkbox, FormControl, InputLabel, ListItemText } from '@mui/material';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
-const ITEM_HEIGHT = 48;
+const ITEM_HEIGHT = 100;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
    PaperProps: {
