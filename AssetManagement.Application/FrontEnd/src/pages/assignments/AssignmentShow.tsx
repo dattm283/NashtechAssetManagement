@@ -1,7 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
 import styled from "styled-components";
-import { DateField, SimpleShowLayout, TextField, useRecordContext } from "react-admin";
+import { DateField, FunctionField, SimpleShowLayout, TextField, useRecordContext } from "react-admin";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import DataLabel from "../../components/grid/DataLabel";
@@ -71,7 +71,7 @@ const AssignmentShow = ({ isOpened, toggle, assignment }) => {
                         <DataLabel label="Assigned Date" />
                         <DataText><DateField source="assignedDate" /></DataText>
                         <DataLabel label="State" />
-                        <DataText><TextField source="stateName" /></DataText>
+                        <DataText><FunctionField source="stateName" render={(record) => record.state == "0" ? "Accepted" : "Waiting for acceptance"} /></DataText>
                         <DataLabel label="Note" />
                         <DataText><TextField source="note" /></DataText>
                     </Grid>

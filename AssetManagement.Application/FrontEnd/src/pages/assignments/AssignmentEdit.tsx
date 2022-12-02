@@ -34,18 +34,10 @@ const AssignmentEdit = () => {
     theme = unstable_createMuiStrictModeTheme(theme);
 
     const toggleAssetChoice = () => {
-        setSort({
-            field: "type",
-            order: "ASC",
-        });
         setAssetChoiceOpen(!assetChoiceOpen);
     }
 
     const toggleUserChoice = () => {
-        setSort({
-            field: "name",
-            order: "ASC",
-        });
         setUserChoiceOpen(!userChoiceOpen);
     }
 
@@ -141,11 +133,7 @@ const AssignmentEdit = () => {
                                     source="assignToAppUserStaffCode"
                                     onClick={() => { toggleUserChoice() }}
                                     disabled
-                                    sx={{
-                                        maxWidth: "430px",
-                                        margin: "0",
-                                        padding: "0",
-                                    }}
+                                    sx={formStyle.textInputStyle}
                                     helperText={false}
                                     InputLabelProps={{ shrink: false }}
                                 />
@@ -175,8 +163,6 @@ const AssignmentEdit = () => {
                                     sx={formStyle.textInputStyle}
                                     helperText={false}
                                     InputLabelProps={{ shrink: false }}
-                                    defaultValue={selectedAsset}
-                                    value={selectedAsset}
                                 />
 
                                 <SelectAssetModal
