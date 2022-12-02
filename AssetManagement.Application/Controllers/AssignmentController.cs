@@ -273,5 +273,23 @@ namespace AssetManagement.Application.Controllers
             }
             return true;
         }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            Assignment? assignment = await _dbContext.Assignments.FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
+            if(assignment != null)
+            {
+                try
+                {
+                    assignment.IsDeleted = true;
+                    await _dbContext.SaveChangesAsync();
+                    return Ok(_mapper.Map<AssignmentResponse>(assignment));
+                }
+                catch (Exception e) { return BadRequest(e.Message); }
+            }
+            return NotFound("Assignment does not exist");
+        }
     }
 }

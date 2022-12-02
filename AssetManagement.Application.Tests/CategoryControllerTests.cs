@@ -11,7 +11,8 @@ using AssetManagement.Application.Controllers;
 #nullable disable
 namespace AssetManagement.Application.Tests
 {
-    public class CategoryControllerTests : IDisposable
+
+    public class CategoryControllerTests : IAsyncDisposable
     {
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
@@ -183,9 +184,9 @@ namespace AssetManagement.Application.Tests
         #endregion
 
         //Clean up after tests
-        public void Dispose()
+        async ValueTask IAsyncDisposable.DisposeAsync()
         {
-            _context.Dispose();
+            await _context.DisposeAsync();
         }
     }
 }

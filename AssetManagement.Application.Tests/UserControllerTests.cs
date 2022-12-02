@@ -22,7 +22,7 @@ using System.Security.Claims;
 
 namespace AssetManagement.Application.Tests
 {
-    public class UsersControllerTests : IDisposable
+    public class UsersControllerTests : IAsyncDisposable
     {
         private readonly DbContextOptions _options;
         private readonly AssetManagementDbContext _context;
@@ -1101,6 +1101,12 @@ namespace AssetManagement.Application.Tests
         {
             _context.Database.EnsureDeleted();
             _context.Dispose();
+        }
+
+        async ValueTask IAsyncDisposable.DisposeAsync()
+        {
+            await _context.Database.EnsureDeletedAsync();
+            await _context.DisposeAsync();
         }
     }
 }
