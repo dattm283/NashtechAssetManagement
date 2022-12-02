@@ -19,13 +19,15 @@ import {
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import ReplayIcon from '@mui/icons-material/Replay';
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
-import { ButtonGroup, Stack, Container } from "@mui/material";
+import { ButtonGroup, Stack, Container, Typography } from "@mui/material";
 import { DateAssignedFilterSelect } from "../../components/select/DateAssignedFilterSelect";
 import { useNavigate } from "react-router-dom";
 import { assetProvider } from "../../providers/assetProvider/assetProvider";
 import AssignmentShow from "./AssignmentShow";
+import { listStyle } from "../../styles/listStyle";
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
@@ -60,7 +62,7 @@ export default () => {
             ]}
             alwaysOn
         />,
-        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn />,
+        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn/>,
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
@@ -73,16 +75,21 @@ export default () => {
             >
                 <h2 style={{ color: "#cf2338" }}>Assignment List</h2>
                 <Stack direction="row" justifyContent="end" alignContent="center">
-                    <div style={{ flexGrow: 1 }}><FilterForm style={{ justifyContent: "space-between" }} filters={assignmentsFilter} /></div>
+                    <Typography 
+                    sx={{ flexGrow: 1,
+                        "form" : {
+                            "div:nth-of-type(2)": {
+                                marginRight: "auto"
+                            }
+                        }
+                     }}><FilterForm filters={assignmentsFilter}/></Typography>
                     <div style={{ display: "flex", alignItems: "end" }}>
                         <CreateButton
                             size="large"
                             variant="contained"
                             color="secondary"
                             label="Create new assignment"
-                            sx={{
-                                width: "250px",
-                            }}
+                            icon={<></>}
                         />
                     </div>
                 </Stack>
@@ -107,12 +114,13 @@ export default () => {
                         <FunctionField render={(record) => {
                             if (record.state === 1) {
                                 return (
-                                    <EditButton variant="text" size="small" label="" />
+                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
                                 )
                             }
                             else {
                                 return (
-                                    <EditButton disabled variant="text" size="small" label="" />
+                                    <EditButton disabled variant="text" size="small" label="" 
+                                    sx={listStyle.buttonToolbar}/>
                                 )
                             }
                         }} />
@@ -122,6 +130,10 @@ export default () => {
                             confirmContent="Do you want to delete this asset?"
                             mutationOptions={{ onSuccess: (data) => refresh() }}
                         />
+                        <Button variant="text" size="small" 
+                        sx={listStyle.returningButtonToolbar}>
+                            <ReplayIcon/>
+                        </Button>
                     </ButtonGroup>
                 </Datagrid>
                 <AssetsPagination />

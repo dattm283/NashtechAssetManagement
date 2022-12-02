@@ -102,6 +102,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                       fullWidth
                       label={false}
                       source="currentPassword"
+                      InputLabelProps={{ shrink: false }}
                       helperText={error ? <p style={{color: "#d32f2f", margin: "0"}}>{error}</p> : ""} 
                     />
                   </Grid>
@@ -114,6 +115,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                     <PasswordInput
                       fullWidth
                       label={false}
+                      InputLabelProps={{ shrink: false }}
                       source="newPassword"
                     />
                   </Grid>

@@ -1,7 +1,7 @@
 import React from "react";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { Box, Typography, Modal, IconButton } from '@mui/material';
-import { theme } from '../../../theme'
+import { theme } from '../../theme'
 
 // Style for Modal
 const style = {
@@ -19,6 +19,7 @@ const style = {
     boxShadow: 24,
 };
 
+
 // Capitalize string
 function isDateAndRestyle(sentence) {
     if (sentence === null){
@@ -35,7 +36,7 @@ function isDateAndRestyle(sentence) {
 }
 
 // Params: openDetail:object, setOpenDetail:function, label:string, data:object
-function DetailModal({ openDetail, setOpenDetail, label }) {
+function UserShow({ openDetail, setOpenDetail, label }) {
     return (
         <Modal
             open={openDetail.status}
@@ -117,7 +118,7 @@ function DetailModal({ openDetail, setOpenDetail, label }) {
                         <Typography variant="h6" sx={{ m:"10px 50px"}}>{openDetail.data["gender"]}</Typography>
                         <Typography variant="h6" sx={{ m:"10px 50px"}}>{isDateAndRestyle(openDetail.data["joinedDate"])}</Typography>
                         <Typography variant="h6" sx={{ m:"10px 50px"}}>{openDetail.data["type"]}</Typography>
-                        <Typography variant="h6" sx={{ m:"10px 50px"}}>{openDetail.data["location"]}</Typography>
+                        <Typography variant="h6" sx={{ m:"10px 50px"}}>{openDetail.data["location"] == "HoChiMinh" ? "HCM" : openDetail.data["location"] == "HaNoi" ? "HN" : openDetail.data["location"]}</Typography>
                     </Box>
                 </Box>
             </Box>
@@ -125,4 +126,4 @@ function DetailModal({ openDetail, setOpenDetail, label }) {
     )
 }
 
-export default DetailModal
+export default UserShow

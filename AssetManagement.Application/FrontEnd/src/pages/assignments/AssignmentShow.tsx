@@ -1,9 +1,17 @@
-import React from "react";
-import { Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Dialog, DialogContent, DialogTitle, Grid, Typography } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import styled from "styled-components";
-import { DateField, FunctionField, SimpleShowLayout, TextField, useRecordContext } from "react-admin";
+import { SimpleShowLayout, TextField, FunctionField } from "react-admin";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { getAssignementByAssetCodeId } from "../../services/assignment";
 import DataLabel from "../../components/grid/DataLabel";
 import DataText from "../../components/grid/DataText";
 
@@ -15,8 +23,9 @@ const StyledDialog = styled(Dialog)`
 
 const StyledDialogTitle = styled(DialogTitle)`
 &.MuiDialogTitle-root {
-  background-color: #EFF1F5;
-  color: #CF2338;
+    padding: 16px 38px;
+    background-color: #EFF1F5;
+    color: #CF2338;
 }
 `;
 
@@ -29,6 +38,7 @@ const StyledDialogContent = styled(DialogContent)`
 const AssignmentShow = ({ isOpened, toggle, assignment }) => {
     const style = {
         bgcolor: "#cf2338",
+        fontWeight: "bold",
         color: "#fff",
     };
 
@@ -69,9 +79,17 @@ const AssignmentShow = ({ isOpened, toggle, assignment }) => {
                         <DataLabel label="Assigned by" />
                         <DataText><TextField source="assignByAppUser" /></DataText>
                         <DataLabel label="Assigned Date" />
-                        <DataText><DateField source="assignedDate" /></DataText>
+                        <DataText><TextField source="assignedDate" /></DataText>
                         <DataLabel label="State" />
-                        <DataText><FunctionField source="stateName" render={(record) => record.state == "0" ? "Accepted" : "Waiting for acceptance"} /></DataText>
+                        <DataText>
+                        <FunctionField  render={record =>  record ? (record.state == 0
+                                ? "Accepted"
+                                : record.state == 1
+                                ? "Waiting for acceptance"
+                                : "") : ""
+                            }/>
+                            
+                        </DataText>
                         <DataLabel label="Note" />
                         <DataText><TextField source="note" /></DataText>
                     </Grid>

@@ -13,14 +13,16 @@ import {
     DatagridRow,
     useRecordContext
 } from "react-admin";
-import { ButtonGroup, Stack, Container } from "@mui/material";
+import { ButtonGroup, Stack, Container, Typography } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
-import DetailModal from '../../components/modal/userDetailModal/DetailModal';
+import UserShow from './UserShow';
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import { assetProvider } from '../../providers/assetProvider/assetProvider'
 import { useLocation } from "react-router-dom";
+import { listStyle } from "../../styles/listStyle";
+
 
 export default () => {
     const [openDetail, setOpenDetail] = useState({ status:false, data:{} });
@@ -30,7 +32,7 @@ export default () => {
         <StateFilterSelect
             source="type"
             label="Type"
-            sx={{ width:"140px" }}
+            sx={{ width:"250px" }}
             statesList={[
                 { value: "Admin", text: "Admin" },
                 { value: "Staff", text: "Staff" },
@@ -38,7 +40,6 @@ export default () => {
             alwaysOn
         />,
         <SearchInput 
-            sx={{ marginRight:"-300px" }}
             InputLabelProps={{ shrink: false }} 
             source="searchString" 
             alwaysOn 
@@ -55,18 +56,24 @@ export default () => {
             >
                 <h2 style={{ color: "#cf2338" }}>User List</h2>
                 <Stack direction="row" justifyContent="start" alignContent="center">
-                    <div style={{ width:"800px", justifyContent:"space-between" }}>
+                    <Typography 
+                    sx={{ flexGrow: 1,
+                        "form" : {
+                            "div:nth-of-type(2)": {
+                                paddingRight: "20px",
+                                marginLeft: "auto"
+                            }
+                        }
+                     }}>
                         <FilterForm style={{ justifyContent: "space-between" }} filters={usersFilter} />
-                    </div>
+                    </Typography>
                     <div style={{ display: "flex", alignItems: "end" }}>
                         <CreateButton
                             size="large"
                             variant="contained"
                             color="secondary"
                             label="Create new user"
-                            sx={{
-                                width: "250px",
-                            }}
+                            icon={<></>}
                         />
                     </div>
                 </Stack>
@@ -92,7 +99,7 @@ export default () => {
 
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
-                        <EditButton variant="text" size="small" label="" />
+                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
                         <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure, bro?"
@@ -105,7 +112,7 @@ export default () => {
                 <AssetsPagination />
             </ListBase>
             
-            <DetailModal 
+            <UserShow 
                 openDetail={openDetail} 
                 setOpenDetail={setOpenDetail} 
                 label="Detailed User Information"

@@ -180,6 +180,7 @@ function EditAssetInformations() {
                                         { id: 1, name: "Not available" },
                                         { id: 2, name: "Waiting for recycling" },
                                         { id: 3, name: "Recycled" },
+                                        { id: 4, name: "Assigned" },
                                     ]}
                                     optionText="name"
                                     optionValue="id"

@@ -68,7 +68,7 @@ export default (props) => {
          setCategoriesList(res);
 
 
-         var tmp = (<FormControl variant='standard' sx={{ m: 1, width: 120 }}>
+         var tmp = (<FormControl variant='standard' sx={{ m: 1, width: 250 }}>
             <InputLabel id="demo-multiple-name" shrink={false}>Category</InputLabel>
             <Select
                autoWidth={false}

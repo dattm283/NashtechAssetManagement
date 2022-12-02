@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Typography, ThemeProvider } from '@mui/material';
 import { DeleteButton, Form, PasswordInput, SaveButton, TextInput, useNotify } from 'react-admin';
 import authService from "../../../services/changePasswordFirstTime/auth";
 import Button from '@mui/material/Button';
@@ -11,6 +11,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import * as CryptoJS from 'crypto-js';
 import config from "../../../connectionConfigs/config.json";
 import AuthProvider from '../../../providers/authenticationProvider/authProvider';
+import { theme } from '../../../theme';
 
 const encryptKey = config.encryption.key;
 
@@ -69,17 +70,37 @@ const ChangePasswordModal = ({
     }
 
     const style = {
-        bgcolor: '#cf2338',
-        color: "#fff",
+        bgcolor: "#EFF0F4",
+        color: "#CE2339",
+        borderBottom: "0.5px solid gray",
+        fontWeight: "bold",
+        padding: "20px 30px"
     }
 
     const buttonStyle = {
         bgcolor: '#cf2338',
         color: "#fff",
-        marginRight: 3
+    }
+    const container = {
+        padding: "20px"
+    }
+    const typographyStyle = {
+        marginTop: "5px",
+        padding: "0",
+        alignSelf: "center",
+    }
+
+    const dialogContentTextStyle = {
+        margin: "10px 0 20px"
+    }
+
+    const logoutButtonStyle = {
+        border: "1px solid #212121",
+        color: "#212121",
     }
 
     return (
+        <ThemeProvider theme={theme}>
         <Dialog
             open={loginFirstTime}
             aria-labelledby="alert-dialog-title"
@@ -89,26 +110,43 @@ const ChangePasswordModal = ({
                 {"Change Password"}
             </DialogTitle>
             <DialogContent>
-                <DialogContentText component={"div"} id="alert-dialog-description">
-                    <DialogContentText>
+                <DialogContentText component={"div"} id="alert-dialog-description" sx={container}>
+                    <DialogContentText sx={dialogContentTextStyle}>
                         This is the first time you login. <br />
                         You have to change the password to continue
                     </DialogContentText>
 
                     <Form onSubmit={handleChangePassword} validate={requiredInput}>
                         <Grid container>
-                            <Grid item xs={12}>
-                                <PasswordInput source="newPassword" fullWidth />
+                            <Grid container>
+                                <Grid item sm={4} xs={12}>
+                                <Typography
+                                    sx={typographyStyle}
+                                >New password:</Typography>
+                                </Grid>
+                                <Grid item sm={8} xs={12}>
+                                    <PasswordInput 
+                                        fullWidth
+                                        label={false}
+                                        InputLabelProps={{ shrink: false }}
+                                        source="newPassword" 
+                                    />
+                                </Grid>
                             </Grid>
-                            <Grid alignItems="left" item xs={12}>
-                                <SaveButton label='Save' sx={buttonStyle} type="submit" icon={<></>}/>
-                                <Button type="button" onClick={handleLogout} sx={buttonStyle}>Logout</Button>
+                            <Grid container columnSpacing={2} justifyContent="flex-end">
+                                <Grid item sm={2.5} xs={6}>
+                                    <SaveButton label='Save' color="secondary" sx={buttonStyle} type="submit" icon={<></>}/>
+                                </Grid>
+                                <Grid item sm={2.5} xs={6}>
+                                    <Button type="button" color="primary" onClick={handleLogout} sx={logoutButtonStyle}>Logout</Button>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Form>
                 </DialogContentText>
             </DialogContent>
         </Dialog>
+        </ThemeProvider>
     )
 }
 

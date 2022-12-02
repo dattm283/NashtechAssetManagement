@@ -69,8 +69,7 @@ const AssetShow = (props) => {
               m: "0px",
               padding: "15px 0px",
               display: "flex",
-              bgcolor: "lightgray",
-              borderBottom: "1px solid black",
+              bgcolor: "#EFF1F5",
               borderTopLeftRadius: "10px",
               borderTopRightRadius: "10px",
             }}
@@ -99,9 +98,7 @@ const AssetShow = (props) => {
                 onClick={toggle}
                 sx={{
                   p: "0px",
-                  color: theme.palette.secondary.main,
-                  border: `2px solid ${theme.palette.secondary.main}`,
-                  borderRadius: "3px",
+                  color: theme.palette.secondary.main
                 }}
               >
                 <CloseRoundedIcon sx={{ fontWeight: "bold" }} />
@@ -163,10 +160,18 @@ const AssetShow = (props) => {
                 {new Date(record.installedDate).toLocaleDateString()}
               </Typography>
               <Typography variant="subtitle1" sx={{ m: "20px 50px" }}>
-                {record.state}
+                {record.state == "NotAvailable"
+                  ? "Not available"
+                  : record.state == "WaitingForRecycling"
+                  ? "Waiting for recycling"
+                  : record.state}
               </Typography>
               <Typography variant="subtitle1" sx={{ m: "20px 50px" }}>
-                {record.location}
+                {record.location == "HoChiMinh"
+                  ? "HCM"
+                  : record.location == "HaNoi"
+                  ? "HN"
+                  : record.location}
               </Typography>
               <Typography
                 variant="subtitle1"

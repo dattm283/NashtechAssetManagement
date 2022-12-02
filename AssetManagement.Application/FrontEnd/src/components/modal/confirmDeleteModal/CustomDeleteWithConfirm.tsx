@@ -105,11 +105,9 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
                 className={clsx('ra-delete-button', className)}
                 key="button"
                 {...rest}
-                sx={{
-                    padding: 0,
-                    margin: 0,
-
-                }}
+                sx={{"span": { 
+                    margin: 0
+                }}}
             >
                 {icon}
             </StyledButton>

@@ -24,6 +24,8 @@ import { ButtonGroup, Stack, Container } from "@mui/material";
 import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
 import { useNavigate } from "react-router-dom";
 import FilterSearchForm from "../../components/forms/FilterSearchForm";
+import { listStyle } from "../../styles/listStyle";
+
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
@@ -54,7 +56,7 @@ export default () => {
         <StateFilterSelect
             source="states"
             label="State"
-            sx={{ width: "250px" }}
+            sx={{ width: "150px" }}
             statesList={[
                 { value: "0", text: "Available" },
                 { value: "1", text: "Not available" },
@@ -97,9 +99,7 @@ export default () => {
                             variant="contained"
                             color="secondary"
                             label="Create new asset"
-                            sx={{
-                                width: "250px",
-                            }}
+                            icon={<></>}
                         />
                     </div>
                 </Stack>
@@ -128,7 +128,7 @@ export default () => {
                         }
                     />
                     <ButtonGroup sx={{ border: null }}>
-                        <EditButton variant="text" size="small" label="" />
+                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
                         <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure?"
