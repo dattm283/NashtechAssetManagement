@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,10 +11,8 @@ import { Form, PasswordInput, SaveButton, useNotify } from "react-admin";
 import userService from "../../../services/users";
 
 const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
-  const [modalState, setModalState] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const notify = useNotify();
 
   const requiredInput = (values) => {
     let errors = {
@@ -69,14 +67,16 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
   };
 
   const style = {
-    bgcolor: "#cf2338",
-    color: "#fff",
+    bgcolor: "#EFF0F4",
+    color: "#CE2339",
+    borderBottom: "0.5px solid gray",
+    wordWeight: 900,
   };
 
   const buttonSaveStyle = {
     bgcolor: "#cf2338",
     color: "#fff",
-    marginRight: 3,
+    // marginRight: 3,
   };
   if (!success)
     return (
@@ -88,37 +88,54 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
           <DialogContentText
             component={"div"}
             id="alert-dialog-description"
-            sx={{ width: "410px" }}
+            sx={{ maxWidth: "410px" }}
           >
             <br />
             <Form onSubmit={handleChangePassword} validate={requiredInput}>
               <Grid container alignItems="center">
-                <Grid item>
-                  <label style={{ marginRight: "37px" }}>Old password:</label>
-                  <PasswordInput
-                    label={false}
-                    source="currentPassword"
-                    helperText={error ? error : ""}
-                  />
+                <Grid container>
+                  <Grid item sm={4} xs={12}>
+                    <label>Old password:</label>
+                  </Grid>
+                  <Grid item sm={8} xs={12}>
+                    <PasswordInput
+                      fullWidth
+                      label={false}
+                      source="currentPassword"
+                      helperText={error ? <p style={{color: "#d32f2f", margin: "0"}}>{error}</p> : ""} 
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <label style={{ marginRight: "30px" }}>New password:</label>
-                  <PasswordInput label={false} source="newPassword" />
+                <Grid container>
+                  <Grid item sm={4} xs={12}>
+                    <label>New password:</label>
+                  </Grid>
+                  <Grid item sm={8} xs={12}>
+                    <PasswordInput
+                      fullWidth
+                      label={false}
+                      source="newPassword"
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item justifyContent="flex-end" marginLeft="59%">
-                  <SaveButton
-                    label="Save"
-                    sx={buttonSaveStyle}
-                    type="submit"
-                    icon={<></>}
-                  />
-                  <Button
-                    type="button"
-                    onClick={() => stateChanger(false)}
-                    sx={{ border: "1px solid lightgray" }}
-                  >
-                    Cancel
-                  </Button>
+                <Grid container columnSpacing={2} justifyContent="flex-end">
+                  <Grid item sm={2.5} xs={6}>
+                    <SaveButton
+                      label="Save"
+                      sx={buttonSaveStyle}
+                      type="submit"
+                      icon={<></>}
+                    />
+                  </Grid>
+                  <Grid item sm={2.5} xs={6}>
+                    <Button
+                      type="button"
+                      onClick={() => stateChanger(false)}
+                      sx={{ border: "1px solid lightgray" }}
+                    >
+                      Cancel
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Form>
