@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, ButtonGroup, Dialog, DialogContent, DialogTitle, Grid, Radio, Stack } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
 import styled from "styled-components";
-import SearchIcon from '@mui/icons-material/Search';
-import { CreateButton, Datagrid, EditButton, FilterForm, FunctionField, ListBase, SearchInput, TextField, TextInput, useDataProvider, useListContext, useRecordContext, useRecordSelection, useRefresh } from 'react-admin';
-import { BloodtypeOutlined } from '@mui/icons-material';
-import { CustomDeleteWithConfirmButton } from '../confirmDeleteModal/CustomDeleteWithConfirm';
-import AssetsPagination from '../../pagination/AssetsPagination';
-import CategoryFilterSelect from '../../select/CategoryFilterSelect';
-import StateFilterSelect from '../../select/StateFilterSelect';
-import { useNavigate } from 'react-router-dom';
+import { Datagrid, FilterForm, ListBase, SearchInput, TextField } from 'react-admin';
 import RadioChoice from '../../buttons/RadioChoice';
 import { useFormContext } from "react-hook-form";
+import ChooseListBotToolbar from '../../toolbar/ChooseListBotToolbar';
+import ChooseListPagination from '../../pagination/ChooseListPagination';
 
 const StyledDialog = styled(Dialog)`
 .MuiBackdrop-root {
@@ -32,17 +27,31 @@ const StyledDialogContent = styled(DialogContent)`
 `;
 
 const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAsset }) => {
+    const [tempChoice, setTempChoice] = useState(selectedAsset);
     const postRowClick = (id, resource, record) => {
-        setSelectedAsset(record.assetCode);
-        toggle();
+        setTempChoice(record.assetCode);
         return record.assetCode;
     };
 
     const { setValue } = useFormContext();
 
+    useEffect(() => {
+        setTempChoice(selectedAsset);
+    }, [selectedAsset])
+
+    const handleSave = () => {
+        setSelectedAsset(tempChoice);
+        toggle();
+    }
+
     const handleChange = (assetCode) => {
-        setSelectedAsset(assetCode);
+        setTempChoice(assetCode);
     };
+
+    const handleClose = () => {
+        setTempChoice(selectedAsset);
+        toggle();
+    }
 
     useEffect(() => {
         setValue("assetCode", selectedAsset);
@@ -54,20 +63,11 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
 
     const getAssetCode = record => record.assetCode;
 
-    // const style = {
-    //     color: "#cf2338",
-    //     paddingLeft: "50px",
-    //     fontWeight: "bold",
-    //     fontSize: "20px"
-    // };
-
-
-
     return (
         <StyledDialog
             id="abcxyz"
             open={isOpened}
-            onClose={toggle}
+            onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             scroll="body"
@@ -87,6 +87,7 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
                     <ListBase
                         perPage={5}
                         sort={{ field: "name", order: "DESC" }}
+                        filter={{ "states": "0" }}
                         resource="assets"
                     >
                         <Grid container>
@@ -109,19 +110,19 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
                         >
                             <RadioChoice
                                 handleChange={handleChange}
-                                selectedValue={selectedAsset}
+                                selectedValue={tempChoice}
                                 propsGetter={getAssetCode}
                             />
                             <TextField source="assetCode" />
                             <TextField label="Asset Name" source="name" />
                             <TextField label="Category" source="categoryName" />
                         </Datagrid>
-                        <AssetsPagination />
+                        <ChooseListPagination />
                     </ListBase>
+                    <ChooseListBotToolbar handleSave={handleSave} handleCancel={handleClose} />
                 </StyledDialogContent>
             </Grid>
         </StyledDialog>
-
     );
 }
 

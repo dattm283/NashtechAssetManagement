@@ -1,16 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, ButtonGroup, Dialog, DialogContent, DialogTitle, Grid, Radio, Stack } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
 import styled from "styled-components";
-import SearchIcon from '@mui/icons-material/Search';
-import { CreateButton, Datagrid, EditButton, FilterForm, FunctionField, ListBase, SearchInput, TextField, TextInput, useDataProvider, useListContext, useRecordContext, useRecordSelection, useRefresh } from 'react-admin';
-import { BloodtypeOutlined } from '@mui/icons-material';
-import { CustomDeleteWithConfirmButton } from '../confirmDeleteModal/CustomDeleteWithConfirm';
-import AssetsPagination from '../../pagination/AssetsPagination';
-import CategoryFilterSelect from '../../select/CategoryFilterSelect';
-import StateFilterSelect from '../../select/StateFilterSelect';
-import { useNavigate } from 'react-router-dom';
+import { Datagrid, FilterForm, FunctionField, ListBase, SearchInput, TextField, useListContext } from 'react-admin';
 import { useFormContext } from "react-hook-form";
 import RadioChoice from '../../buttons/RadioChoice';
+import ChooseListPagination from '../../pagination/ChooseListPagination';
+import ChooseListBotToolbar from '../../toolbar/ChooseListBotToolbar';
 
 const StyledDialog = styled(Dialog)`
 .MuiBackdrop-root {
@@ -32,21 +27,29 @@ const StyledDialogContent = styled(DialogContent)`
 `;
 
 const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser }) => {
+    const [tempChoice, setTempChoice] = useState(selectedUser);
     const postRowClick = (id, resource, record) => {
-        setSelectedUser(record.staffCode);
-        toggle();
+        setTempChoice(record.staffCode);
         return "";
     };
 
-    const { sort, setSort } = useListContext();
-
     useEffect(() => {
-        console.log(sort);
-    }, [])
+        setTempChoice(selectedUser);
+    }, [selectedUser])
 
     const handleChange = (staffCode) => {
-        setSelectedUser(staffCode);
+        setTempChoice(staffCode);
     };
+
+    const handleSave = () => {
+        setSelectedUser(tempChoice);
+        toggle();
+    }
+
+    const handleClose = () => {
+        setTempChoice(selectedUser);
+        toggle();
+    }
 
     const { setValue } = useFormContext();
 
@@ -65,18 +68,11 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
 
     const getStaffCode = record => record.staffCode;
 
-    // const style = {
-    //     color: "#cf2338",
-    //     paddingLeft: "50px",
-    //     fontWeight: "bold",
-    //     fontSize: "20px"
-    // };
-
     return (
         <StyledDialog
             id="abcxyz"
             open={isOpened}
-            onClose={toggle}
+            onClose={handleClose}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
             scroll="body"
@@ -114,15 +110,16 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
                         >
                             <RadioChoice
                                 handleChange={handleChange}
-                                selectedValue={selectedUser}
+                                selectedValue={tempChoice}
                                 propsGetter={getStaffCode}
                             />
                             <TextField label="Staff Code" source="staffCode" />
                             <TextField label="Full Name" source="fullName" />
                             <FunctionField source="type" render={data => data.type == "Admin" ? "Admin" : "Staff"} />
                         </Datagrid>
-                        <AssetsPagination />
+                        <ChooseListPagination />
                     </ListBase>
+                    <ChooseListBotToolbar handleSave={handleSave} handleCancel={handleClose} />
                 </StyledDialogContent>
             </Grid>
         </StyledDialog>
