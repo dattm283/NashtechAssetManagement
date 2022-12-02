@@ -105,7 +105,6 @@ export default () => {
                     <FunctionField source="state" render={(record) => record.state == "0" ? "Accepted" : "Waiting for acceptance"} />
                     <ButtonGroup sx={{ border: null }}>
                         <FunctionField render={(record) => {
-                            console.log(record);
                             if (record.state === 1) {
                                 return (
                                     <EditButton variant="text" size="small" label="" />

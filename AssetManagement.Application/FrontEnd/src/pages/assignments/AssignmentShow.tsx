@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import styled from "styled-components";
-import { SimpleShowLayout, TextField } from "react-admin";
+import { DateField, SimpleShowLayout, TextField, useRecordContext } from "react-admin";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { getAssignementByAssetCodeId } from "../../services/assignment";
 import DataLabel from "../../components/grid/DataLabel";
 import DataText from "../../components/grid/DataText";
 
@@ -77,7 +69,7 @@ const AssignmentShow = ({ isOpened, toggle, assignment }) => {
                         <DataLabel label="Assigned by" />
                         <DataText><TextField source="assignByAppUser" /></DataText>
                         <DataLabel label="Assigned Date" />
-                        <DataText><TextField source="assignedDate" /></DataText>
+                        <DataText><DateField source="assignedDate" /></DataText>
                         <DataLabel label="State" />
                         <DataText><TextField source="stateName" /></DataText>
                         <DataLabel label="Note" />
