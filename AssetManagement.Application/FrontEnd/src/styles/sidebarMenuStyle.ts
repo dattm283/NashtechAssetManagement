@@ -50,6 +50,9 @@ export const sidebarMenuStyle: Record<string, SxProps<Theme> | undefined> = {
             marginBottom: "3px",
             opacity: "0.8"
         },
+        "&.RaMenu-closed": {
+            width: "240px"
+        }
     },
     cardMediaStyle: {
         maxWidth: "100px",
