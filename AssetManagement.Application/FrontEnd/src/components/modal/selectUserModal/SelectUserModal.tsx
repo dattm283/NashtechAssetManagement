@@ -87,6 +87,8 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
                 width: "45%",
                 borderRadius: "10px",
                 border: "1px solid",
+                maxHeight: "50vh",
+                overflow: "scroll",
             }}>
                 <StyledDialogContent>
                     <ListBase

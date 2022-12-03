@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, CreateBase, useListContext } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, CreateBase, useListContext, SearchInput } from "react-admin";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Container } from "@mui/material";
 import {
@@ -12,6 +12,7 @@ import { formStyle } from "../../styles/formStyle";
 import SelectUserModal from "../../components/modal/selectUserModal/SelectUserModal";
 import AssignmentEditToolbar from "../../components/toolbar/AssignmentEditToolbar";
 import SelectAssetModal from "../../components/modal/selectAssetModal/SelectAssetModal";
+import { theme } from "../../theme";
 
 const AssignmentCreate = () => {
    const [asset, setAsset] = useState("")
@@ -29,10 +30,9 @@ const AssignmentCreate = () => {
    })
    const [selectedUser, setSelectedUser] = useState("");
    const { id } = useParams();
-   let theme = createTheme();
-   theme = unstable_createMuiStrictModeTheme(theme);
+   let appTheme = createTheme(theme);
+   appTheme = unstable_createMuiStrictModeTheme(appTheme);
    const { setSort } = useListContext();
-   console.log(setSort);
    const toggleAssetChoice = () => {
       setAssetChoiceOpen(!assetChoiceOpen);
    }
@@ -80,17 +80,31 @@ const AssignmentCreate = () => {
    }, []);
 
    const requiredInput = (values) => {
-      const errors = {
-         note: "",
-      };
+      console.log(values);
+      const errors: Record<string, any> = {};
+      let today = new Date();
+      today.setDate(today.getDate() - 1);
+      let yesterday = today.toISOString();
       if (!values.note) {
          errors.note = "This is required";
-         setIsInvalid(true);
-      } else {
-         setIsInvalid(false);
-         return {};
       }
-      console.log(errors);
+      if (!values.assignedDate) {
+         errors.assignedDate = "This is required";
+      }
+      if (values.assignedDate < yesterday) {
+         errors.assignedDate = "Please select only current or future date";
+      }
+      if (!values.assetCode) {
+         errors.assetCode = "This is required";
+      }
+      if (!values.assignToAppUserStaffCode) {
+         errors.assignToAppUserStaffCode = "This is required";
+      }
+      if (Object.keys(errors).length === 0) {
+         setIsInvalid(false);
+      } else {
+         setIsInvalid(true);
+      }
       return errors;
    };
 
@@ -122,17 +136,17 @@ const AssignmentCreate = () => {
                         >
                            User *
                         </Typography>
-                        <TextInput
+                        <SearchInput
                            id="edit_assignment_user_choice"
                            fullWidth
                            label={false}
                            name="assignToAppUserStaffCode"
                            source="assignToAppUserStaffCode"
-                           disabled
                            onClick={() => { toggleUserChoice() }}
                            sx={formStyle.textInputStyle}
                            helperText={false}
                            InputLabelProps={{ shrink: false }}
+                           resettable={false}
                         />
 
                         <SelectUserModal
@@ -149,19 +163,19 @@ const AssignmentCreate = () => {
                         >
                            Asset *
                         </Typography>
-                        <TextInput
+                        <SearchInput
                            id="edit_assignment_asset_choice"
                            fullWidth
                            label={false}
                            name="assetCode"
                            source="assetCode"
-                           disabled
                            onClick={() => { toggleAssetChoice() }}
                            sx={formStyle.textInputStyle}
                            helperText={false}
                            InputLabelProps={{ shrink: false }}
                            defaultValue={selectedAsset}
                            value={selectedAsset}
+                           resettable={false}
                         />
 
                         <SelectAssetModal

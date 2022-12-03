@@ -82,6 +82,8 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
                 width: "45%",
                 borderRadius: "10px",
                 border: "1px solid",
+                maxHeight: "50vh",
+                overflow: "scroll",
             }}>
                 <StyledDialogContent>
                     <ListBase
