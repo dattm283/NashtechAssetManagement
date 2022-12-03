@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import styled from "styled-components";
-import { SimpleShowLayout, TextField, FunctionField } from "react-admin";
+import { SimpleShowLayout, TextField, FunctionField, DateField } from "react-admin";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { getAssignementByAssetCodeId } from "../../services/assignment";
@@ -79,7 +79,7 @@ const AssignmentShow = ({ isOpened, toggle, assignment }) => {
                         <DataLabel label="Assigned by" />
                         <DataText><TextField source="assignByAppUser" /></DataText>
                         <DataLabel label="Assigned Date" />
-                        <DataText><TextField source="assignedDate" /></DataText>
+                        <DataText><DateField source="assignedDate" locales="en-GB" /></DataText>
                         <DataLabel label="State" />
                         <DataText>
                         <FunctionField  render={record =>  record ? (record.state == 0
