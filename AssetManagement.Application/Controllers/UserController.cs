@@ -387,14 +387,9 @@ namespace AssetManagement.Application.Controllers
 
             if (!(await _userManager.CheckPasswordAsync(user, request.CurrentPassword)))
             {
-                return BadRequest(new ErrorResponseResult<string>("Password doesn't match"));
+                return BadRequest(new ErrorResponseResult<string>("Password is incorrect"));
             }
-
-            if(request.CurrentPassword == request.NewPassword)
-            {
-                return BadRequest(new ErrorResponseResult<string>("New password must be different"));
-            }
-
+            
             var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
 
             if (!result.Succeeded)

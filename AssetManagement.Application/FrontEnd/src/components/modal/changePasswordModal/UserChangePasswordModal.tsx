@@ -7,37 +7,19 @@ import {
   Button,
   DialogContentText,
 } from "@mui/material";
-import { Form, PasswordInput, SaveButton, useNotify } from "react-admin";
+import {
+  Form,
+  maxLength,
+  minLength,
+  PasswordInput,
+  required,
+  SaveButton,
+} from "react-admin";
 import userService from "../../../services/users";
 
 const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
-  const requiredInput = (values) => {
-    let errors = {
-      currentPassword: "",
-      newPassword: "",
-    };
-    if (!values.newPassword || !values.currentPassword) {
-      if (!values.currentPassword && !values.newPassword) {
-        errors.currentPassword = "This is required";
-        errors.newPassword = "This is required";
-      }
-      if (!values.currentPassword) errors.newPassword = "This is required";
-      else if (!values.newPassword) errors.currentPassword = "This is required";
-      else errors.newPassword = error;
-    } else {
-      if (values.currentPassword.length < 6) {
-        errors.currentPassword = "Must be more than 6 leters";
-      }
-      if (values.newPassword.length < 6) {
-        errors.newPassword = "Must be more than 6 leters";
-      } else return {};
-    }
-    if (error) errors.currentPassword = error;
-    return errors;
-  };
 
   const handleChangePassword = (data) => {
     const newPassword = data.newPassword;
@@ -66,11 +48,18 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
       });
   };
 
+  const validateChangePassword = [
+    required("This is required"),
+    minLength(6, "Must be more than 6 leters"),
+    maxLength(50, "Must be less than 50 letters"),
+  ];
+
   const style = {
     bgcolor: "#EFF0F4",
     color: "#CE2339",
     borderBottom: "0.5px solid gray",
     wordWeight: 900,
+    fontWeight: "bold",
   };
 
   const buttonSaveStyle = {
@@ -91,7 +80,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
             sx={{ maxWidth: "410px" }}
           >
             <br />
-            <Form onSubmit={handleChangePassword} validate={requiredInput}>
+            <Form onSubmit={handleChangePassword}>
               <Grid container alignItems="center">
                 <Grid container>
                   <Grid item sm={4} xs={12}>
@@ -103,7 +92,10 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                       label={false}
                       source="currentPassword"
                       InputLabelProps={{ shrink: false }}
-                      helperText={error ? <p style={{color: "#d32f2f", margin: "0"}}>{error}</p> : ""} 
+                      validate={validateChangePassword}
+                      helperText={
+                        error ? (
+                          <p style={{ color: "#d32f2f", margin: "0" }}>{error}</p>) : ("")}
                     />
                   </Grid>
                 </Grid>
@@ -117,6 +109,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                       label={false}
                       InputLabelProps={{ shrink: false }}
                       source="newPassword"
+                      validate={validateChangePassword}
                     />
                   </Grid>
                 </Grid>
