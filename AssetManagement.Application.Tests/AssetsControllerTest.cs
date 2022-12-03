@@ -70,23 +70,13 @@ namespace AssetManagement.Application.Tests
 
             //ACT
             var response = await controller.CreateAssetAsync(request);
-            string result = ConvertOkObject<CreateAssetResponse>(response);
+            var result = response as OkObjectResult;
+            CreateAssetResponse expected = result.Value as CreateAssetResponse;
             Asset newAsset = _context.Assets.LastOrDefault();
-            var expected = JsonConvert.SerializeObject(
-                new CreateAssetResponse 
-                { 
-                    Id = newAsset.Id, 
-                    AssetCode = newAsset.AssetCode, 
-                    Name = newAsset.Name, 
-                    CategoryName = newAsset.Category.Name, 
-                    State = newAsset.State.ToString() 
-                });
 
             //ASSERT
             Assert.NotNull(response);
-            Assert.Equal(expected, result);
-            Assert.Equal(newAsset.Name, request.Name);
-            Assert.Equal("MO000001", newAsset.AssetCode);
+            Assert.Equal(expected.Name, newAsset.Name);
             Assert.Equal(user.Location, newAsset.Location);
 
             //Re-create context for other tests
