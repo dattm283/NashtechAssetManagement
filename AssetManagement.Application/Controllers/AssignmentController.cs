@@ -37,7 +37,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet("assets/{assetCodeId}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
         {
             var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId).ToList();
@@ -243,6 +243,11 @@ namespace AssetManagement.Application.Controllers
                         list = list.OrderBy(x => x.State);
                         break;
                     }
+                default:
+                    {
+                        list = list.OrderBy(x => x.Id);
+                        break;
+                    }
             }
 
             if (order == "DESC")
@@ -252,9 +257,16 @@ namespace AssetManagement.Application.Controllers
 
             if (!string.IsNullOrEmpty(createdId))
             {
-                var newList = list.Where(item => item.Id == int.Parse(createdId));
+                ViewListAssignmentResponse recentlyCreatedItem = list.Where(item => item.Id == int.Parse(createdId)).AsNoTracking().FirstOrDefault();
                 list = list.Where(item => item.Id != int.Parse(createdId));
-                list = newList.Concat(list);
+
+                var sortedResultWithCreatedIdParam = StaticFunctions<ViewListAssignmentResponse>.Paging(list, start, end - 1);
+
+                sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
+
+                // var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssignmentResponse>>(sortedResultWithCreatedIdParam);
+
+                return Ok(new ViewListPageResult<ViewListAssignmentResponse> { Data = sortedResultWithCreatedIdParam, Total = list.Count() + 1 });
             }
 
             var sortedResult = StaticFunctions<ViewListAssignmentResponse>.Paging(list, start, end);
@@ -282,7 +294,7 @@ namespace AssetManagement.Application.Controllers
         public async Task<IActionResult> DeleteAsync(int id)
         {
             Assignment? assignment = await _dbContext.Assignments.FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
-            if(assignment != null)
+            if (assignment != null)
             {
                 try
                 {
@@ -296,18 +308,18 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateAssignmentRequest requestData)
         {
             var currentUsername = User.Claims.First(x => x.Type == ClaimTypes.Name).Value;
             var currentUser = await _userManager.FindByNameAsync(currentUsername);
             var assignment = _mapper.Map<Assignment>(requestData);
             var staffId = _dbContext.AppUsers.First(x => x.StaffCode == requestData.AssignToAppUserStaffCode).Id;
-            var assetId = _dbContext.Assets.First(x=>x.AssetCode == requestData.AssetCode).Id;
+            var assetId = _dbContext.Assets.First(x => x.AssetCode == requestData.AssetCode).Id;
 
             var isUnique = _dbContext.Assignments
-                .FirstOrDefault(x => 
-                x.AssetId == assetId && 
+                .FirstOrDefault(x =>
+                x.AssetId == assetId &&
                 x.AssignedTo == staffId) == null;
             if (!isUnique)
             {

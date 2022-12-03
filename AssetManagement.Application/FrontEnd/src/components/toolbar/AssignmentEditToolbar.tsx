@@ -18,7 +18,7 @@ const AssignmentEditToolbar = ({ isEnable }) => {
                         label="Save"
                         mutationOptions={{
                             onSuccess: () => {
-                                localStorage.setItem("RaStore.assets.listParams",
+                                localStorage.setItem("RaStore.assignments.listParams",
                                     `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"noNumber"}`)
                                 notify('Element updated');
                                 navigate("/assignments")

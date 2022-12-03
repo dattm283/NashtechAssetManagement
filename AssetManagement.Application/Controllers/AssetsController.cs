@@ -232,7 +232,7 @@ namespace AssetManagement.Application.Controllers
 
                 var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssetsResponse>>(sortedResultWithCreatedIdParam);
 
-                return Ok(new ViewListPageResult<ViewListAssetsResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() });
+                return Ok(new ViewListPageResult<ViewListAssetsResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() + 1});
             }
 
             var sortedResult = StaticFunctions<Asset>.Paging(list, start, end);
