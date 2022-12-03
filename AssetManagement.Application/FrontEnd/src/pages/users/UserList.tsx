@@ -25,29 +25,29 @@ import { listStyle } from "../../styles/listStyle";
 
 
 export default () => {
-    const [openDetail, setOpenDetail] = useState({ status:false, data:{} });
+    const [openDetail, setOpenDetail] = useState({ status: false, data: {} });
     const refresh = useRefresh();
 
     const usersFilter = [
         <StateFilterSelect
             source="type"
             label="Type"
-            sx={{ width:"250px" }}
+            sx={{ width: "250px" }}
             statesList={[
                 { value: "Admin", text: "Admin" },
                 { value: "Staff", text: "Staff" },
             ]}
             alwaysOn
         />,
-        <SearchInput 
-            InputLabelProps={{ shrink: false }} 
-            source="searchString" 
-            alwaysOn 
+        <SearchInput
+            InputLabelProps={{ shrink: false }}
+            source="searchString"
+            alwaysOn
         />
     ];
 
     return (
-        <Container component="main" sx={{padding:"20px 10px"}}>
+        <Container component="main" sx={{ padding: "20px 10px" }}>
             <Title title="Manage User" />
             <ListBase
                 perPage={5}
@@ -56,15 +56,16 @@ export default () => {
             >
                 <h2 style={{ color: "#cf2338" }}>User List</h2>
                 <Stack direction="row" justifyContent="start" alignContent="center">
-                    <Typography 
-                    sx={{ flexGrow: 1,
-                        "form" : {
-                            "div:nth-of-type(2)": {
-                                paddingRight: "20px",
-                                marginLeft: "auto"
+                    <Typography
+                        sx={{
+                            flexGrow: 1,
+                            "form": {
+                                "div:nth-of-type(2)": {
+                                    paddingRight: "20px",
+                                    marginLeft: "auto"
+                                }
                             }
-                        }
-                     }}>
+                        }}>
                         <FilterForm style={{ justifyContent: "space-between" }} filters={usersFilter} />
                     </Typography>
                     <div style={{ display: "flex", alignItems: "end" }}>
@@ -80,8 +81,8 @@ export default () => {
 
                 <Datagrid
                     rowClick={(id, resource, record) => {
-                        assetProvider.getOne('user', { id:record.staffCode }).then(res => {
-                            setOpenDetail({ status:true, data:res.data.result })
+                        assetProvider.getOne('user', { id: record.staffCode }).then(res => {
+                            setOpenDetail({ status: true, data: res.data.result })
                         })
                         return "";
                     }}
@@ -91,19 +92,19 @@ export default () => {
                     <TextField label="Staff Code" source="staffCode" />
                     <TextField label="Full Name" source="fullName" />
                     <TextField label="Username" source="userName" />
-                    <FunctionField label="Joined Date" source="joinedDate" render={ data => {
+                    <FunctionField label="Joined Date" source="joinedDate" render={data => {
                         var [yyyy, mm, dd] = data.joinedDate.split('T')[0].split('-');
                         return `${dd}/${mm}/${yyyy}`
                     }} />
-                    <FunctionField label="Type" source="type" render={ data => data.type == "Admin" ? "Admin" : "Staff"} />
+                    <FunctionField label="Type" source="type" render={data => data.type == "Admin" ? "Admin" : "Staff"} />
 
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
-                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                         <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
-                            confirmTitle="Are you sure, bro?"
-                            confirmContent="Do you want to disable this user, bro?"
+                            confirmTitle="Are you sure?"
+                            confirmContent="Do you want to disable this user?"
                             mutationOptions={{ onSuccess: (data) => refresh() }}
                         />
                     </ButtonGroup>
@@ -111,10 +112,10 @@ export default () => {
                 </Datagrid>
                 <AssetsPagination />
             </ListBase>
-            
-            <UserShow 
-                openDetail={openDetail} 
-                setOpenDetail={setOpenDetail} 
+
+            <UserShow
+                openDetail={openDetail}
+                setOpenDetail={setOpenDetail}
                 label="Detailed User Information"
             />
         </Container>
