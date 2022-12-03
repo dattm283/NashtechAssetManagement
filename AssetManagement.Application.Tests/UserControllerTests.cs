@@ -133,42 +133,7 @@ namespace AssetManagement.Application.Tests
             //ASSERT
             Assert.NotNull(result);
             Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Password doesn't match", message);
-        }
-        #endregion
-
-        #region NewPassword Is Old Password
-        [Theory]
-        [InlineData("12345678", "12345678")]
-        public async Task UserChangePassword_NewPasswordIsOldPassword_ReturnBadRequest(string currentpassword, string newpassword)
-        {
-            UserChangePasswordRequest request = new() { CurrentPassword = currentpassword, NewPassword = newpassword };
-            UserController userController = new UserController(_context, _userManager.Object, _mapper);
-            List<AppUser> listUsers = _context.AppUsers.ToList();
-            AppUser currentUser = listUsers.ElementAt(0);
-
-            //Set up UserManager
-            _userManager.Setup(um => um.FindByNameAsync(It.IsAny<string>())).ReturnsAsync(currentUser);
-            _userManager.Setup(um => um.CheckPasswordAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
-                    .Returns(Task.FromResult(true));
-
-            UserController controller = new UserController(_context, _userManager.Object, _mapper);
-            controller.ControllerContext = new ControllerContext()
-            {
-                HttpContext = new DefaultHttpContext
-                {
-                    User = new GenericPrincipal(new GenericIdentity(currentUser.UserName), null)
-                }
-            };
-
-            //ACT
-            IActionResult result = controller.ChangePassword(request).Result;
-            string message = ((ErrorResponseResult<string>)((ObjectResult)result).Value).Message;
-
-            //ASSERT
-            Assert.NotNull(result);
-            Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("New password must be different", message);
+            Assert.Equal("Password is incorrect", message);
         }
         #endregion
 
