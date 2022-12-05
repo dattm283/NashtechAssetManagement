@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, Grid } from "@mui/material";
 import styled from "styled-components";
 import { Datagrid, FilterForm, FunctionField, ListBase, SearchInput, TextField, useListContext } from 'react-admin';
@@ -6,6 +6,7 @@ import { useFormContext } from "react-hook-form";
 import RadioChoice from '../../buttons/RadioChoice';
 import ChooseListPagination from '../../pagination/ChooseListPagination';
 import ChooseListBotToolbar from '../../toolbar/ChooseListBotToolbar';
+// import RootRef from '@material-ui/core/RootRef';
 
 const StyledDialog = styled(Dialog)`
 .MuiBackdrop-root {
@@ -80,16 +81,18 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
             maxWidth="sm"
             disableEnforceFocus
         >
-            <Grid sx={{
-                position: "fixed",
-                top: (pos.top + 5) + "px",
-                left: (pos.left + 5) + "px",
-                width: "45%",
-                borderRadius: "10px",
-                border: "1px solid",
-                maxHeight: "50vh",
-                overflow: "scroll",
-            }}>
+            <Grid item xs={0}
+                sx={{
+                    position: "fixed",
+                    top: (pos.top + 5) + "px",
+                    left: (pos.left + 5) + "px",
+                    width: "45%",
+                    borderRadius: "10px",
+                    border: "1px solid",
+                    maxHeight: "50vh",
+                    overflow: "scroll",
+                }}
+            >
                 <StyledDialogContent>
                     <ListBase
                         perPage={5}
@@ -128,4 +131,4 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
     );
 }
 
-export default SelectUserModal;
+export default forwardRef(SelectUserModal);
