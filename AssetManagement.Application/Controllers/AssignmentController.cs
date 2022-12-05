@@ -333,7 +333,6 @@ namespace AssetManagement.Application.Controllers
                 assignment.AssetId = assetId;
                 _dbContext.Assignments.Add(assignment);
                 var asset = _dbContext.Assets.First(x => x.AssetCode == requestData.AssetCode);
-                asset.State = Domain.Enums.Asset.State.Assigned;
                 _dbContext.Assets.Update(asset);
             }
             catch (Exception e)

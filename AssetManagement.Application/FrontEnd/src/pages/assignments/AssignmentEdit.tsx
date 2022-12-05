@@ -14,6 +14,8 @@ import { formStyle } from "../../styles/formStyle";
 import SelectAssetModal from "../../components/modal/selectAssetModal/SelectAssetModal";
 import SelectUserModal from "../../components/modal/selectUserModal/SelectUserModal";
 import SearchIcon from '@mui/icons-material/Search';
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
 
 const AssignmentEdit = () => {
     const [isInvalid, setIsInvalid] = useState(false);
@@ -124,39 +126,30 @@ const AssignmentEdit = () => {
                         >
                             <Grid container>
                                 <Box sx={formStyle.boxStyle}>
-                                    <Grid item xs={4}>
-                                        <Typography
-                                            variant="h6"
-                                            sx={formStyle.typographyStyle}
-                                        >
-                                            User *
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={7}>
-                                        <TextInput
-                                            id="edit_assignment_user_choice"
-                                            fullWidth
-                                            label={false}
-                                            name="assignToAppUserStaffCode"
-                                            source="assignToAppUserStaffCode"
-                                            disabled
-                                            helperText={false}
-                                            InputLabelProps={{ shrink: false }}
-                                        />
-                                    </Grid>
-                                    <Grid item>
-                                        <Button
-                                            onClick={() => { toggleUserChoice() }}
-                                            sx={{
-                                                color: "black",
-                                                border: "1px solid",
-                                                borderColor: "gray",
-                                                height: assetChoicePos.height
-                                            }}
-                                        >
-                                            <SearchIcon />
-                                        </Button>
-                                    </Grid>
+                                    <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        User *
+                                    </Typography>
+                                    <TextInput
+                                        id="edit_assignment_user_choice"
+                                        fullWidth
+                                        label={false}
+                                        name="assignToAppUserStaffCode"
+                                        source="assignToAppUserStaffCode"
+                                        disabled
+                                        helperText={false}
+                                        InputLabelProps={{ shrink: false }}
+                                        InputProps={{
+                                            endAdornment:
+                                                <InputAdornment position="end">
+                                                    <IconButton>
+                                                        <SearchIcon onClick={() => { toggleUserChoice() }} />
+                                                    </IconButton>
+                                                </InputAdornment>,
+                                        }}
+                                    />
 
                                     <SelectUserModal
                                         setSelectedUser={setSelectedUser}
@@ -166,41 +159,31 @@ const AssignmentEdit = () => {
                                         pos={userChoicePos} />
                                 </Box>
                                 <Box sx={formStyle.boxStyle}>
-                                    <Grid item xs={4}>
-                                        <Typography
-                                            variant="h6"
-                                            sx={formStyle.typographyStyle}
-                                        >
-                                            Asset *
-                                        </Typography>
-                                    </Grid>
-
-                                    <Grid item xs={7}>
-                                        <TextInput
-                                            id="edit_assignment_asset_choice"
-                                            fullWidth
-                                            label={false}
-                                            name="assetCode"
-                                            source="assetCode"
-                                            disabled
-                                            onClick={() => { toggleAssetChoice() }}
-                                            helperText={false}
-                                            InputLabelProps={{ shrink: false }}
-                                        />
-                                    </Grid>
-                                    <Grid item>
-                                        <Button
-                                            onClick={() => { toggleAssetChoice() }}
-                                            sx={{
-                                                color: "black",
-                                                border: "1px solid",
-                                                borderColor: "gray",
-                                                height: assetChoicePos.height
-                                            }}
-                                        >
-                                            <SearchIcon />
-                                        </Button>
-                                    </Grid>
+                                    <Typography
+                                        variant="h6"
+                                        sx={formStyle.typographyStyle}
+                                    >
+                                        Asset *
+                                    </Typography>
+                                    <TextInput
+                                        id="edit_assignment_asset_choice"
+                                        fullWidth
+                                        label={false}
+                                        name="assetCode"
+                                        source="assetCode"
+                                        disabled
+                                        onClick={() => { toggleAssetChoice() }}
+                                        helperText={false}
+                                        InputLabelProps={{ shrink: false }}
+                                        InputProps={{
+                                            endAdornment:
+                                                <InputAdornment position="end">
+                                                    <IconButton>
+                                                        <SearchIcon onClick={() => { toggleAssetChoice() }} />
+                                                    </IconButton>
+                                                </InputAdornment>,
+                                        }}
+                                    />
 
                                     <SelectAssetModal
                                         setSelectedAsset={setSelectedAsset}

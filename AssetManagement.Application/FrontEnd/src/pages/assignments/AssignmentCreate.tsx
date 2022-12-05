@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, CreateBase, useListContext, SearchInput } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, CreateBase, useListContext, SearchInput, Button } from "react-admin";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Container } from "@mui/material";
 import {
@@ -13,6 +13,9 @@ import SelectUserModal from "../../components/modal/selectUserModal/SelectUserMo
 import AssignmentEditToolbar from "../../components/toolbar/AssignmentEditToolbar";
 import SelectAssetModal from "../../components/modal/selectAssetModal/SelectAssetModal";
 import { theme } from "../../theme";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from '@mui/icons-material/Search';
+import IconButton from "@mui/material/IconButton";
 
 const AssignmentCreate = () => {
    const [asset, setAsset] = useState("")
@@ -80,11 +83,11 @@ const AssignmentCreate = () => {
    }, []);
 
    const requiredInput = (values) => {
-      console.log(values);
       const errors: Record<string, any> = {};
       let today = new Date();
       today.setDate(today.getDate() - 1);
       let yesterday = today.toISOString();
+      console.log(values.assignedDate < yesterday);
       if (!values.note) {
          errors.note = "This is required";
       }
@@ -105,6 +108,7 @@ const AssignmentCreate = () => {
       } else {
          setIsInvalid(true);
       }
+      console.log(errors);
       return errors;
    };
 
@@ -142,11 +146,18 @@ const AssignmentCreate = () => {
                            label={false}
                            name="assignToAppUserStaffCode"
                            source="assignToAppUserStaffCode"
-                           onClick={() => { toggleUserChoice() }}
                            sx={formStyle.textInputStyle}
                            helperText={false}
                            InputLabelProps={{ shrink: false }}
                            resettable={false}
+                           InputProps={{
+                              endAdornment:
+                                 <InputAdornment position="end">
+                                    <IconButton>
+                                       <SearchIcon onClick={() => { toggleUserChoice() }} />
+                                    </IconButton>
+                                 </InputAdornment>,
+                           }}
                         />
 
                         <SelectUserModal
@@ -169,13 +180,20 @@ const AssignmentCreate = () => {
                            label={false}
                            name="assetCode"
                            source="assetCode"
-                           onClick={() => { toggleAssetChoice() }}
                            sx={formStyle.textInputStyle}
                            helperText={false}
                            InputLabelProps={{ shrink: false }}
                            defaultValue={selectedAsset}
                            value={selectedAsset}
                            resettable={false}
+                           InputProps={{
+                              endAdornment:
+                                 <InputAdornment position="end">
+                                    <IconButton>
+                                       <SearchIcon onClick={() => { toggleAssetChoice() }} />
+                                    </IconButton>
+                                 </InputAdornment>,
+                           }}
                         />
 
                         <SelectAssetModal
