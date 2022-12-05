@@ -160,7 +160,7 @@ namespace AssetManagement.Application.Tests
             //ASSERT
             Assert.NotNull(result);
             Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Account does not exist.", message);
+            Assert.Equal("Username or password is incorrect. Please try again", message);
         }
 
         [Theory]
@@ -186,7 +186,7 @@ namespace AssetManagement.Application.Tests
             //ASSERT
             Assert.NotNull(result);
             Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("No match for username and/or password.", message);
+            Assert.Equal("Username or password is incorrect. Please try again", message);
         }
 
         [Theory]

@@ -37,72 +37,64 @@ function UserCreate() {
 
     if (!values.firstname) {
       errors.firstname = "This is required";
-      setIsValid(true);
     }
 
-    if(values.firstname) {
-      if(values.firstname.length > 50) {
+    if (values.firstname) {
+      if (values.firstname.length > 50) {
         errors.firstname = "First name must be between 1 and 50 characters!";
-        setIsValid(true);
       }
     }
 
     if (!values.lastname) {
       errors.lastname = "This is required";
-      setIsValid(true);
     }
 
-    if(values.lastname) {
-      if(values.lastname.length > 50) {
+    if (values.lastname) {
+      if (values.lastname.length > 50) {
         errors.lastname = "Last name must be between 1 and 50 characters!";
-        setIsValid(true);
       }
     }
 
     if (!values.dob) {
       errors.dob = "This is required";
-      setIsValid(true);
     }
 
     let ageDob = getAge(values.dob);
     if (values.dob) {
       if (ageDob < 18) {
         errors.dob = "User is under 18. Please select a different date";
-        setIsValid(true);
       }
     }
 
     if (!values.joinedDate) {
       errors.joinedDate = "This is required";
-      setIsValid(true);
     }
 
     if (values.joinedDate) {
       if (!values.dob) {
         errors.joinedDate = "Please Select Date of Birth";
-        setIsValid(true);
       }
 
       let condition = new Date(values.dob);
       condition.setFullYear(condition.getFullYear() + 18);
       let joinedDate = new Date(values.joinedDate);
-      if(joinedDate < condition) {
-        errors.joinedDate = "User under the age of 18 may not join company. Please select a different date";
-        setIsValid(true);
-      } else if(isWeekend(values.joinedDate)) {
-        errors.joinedDate = "Joined date is Saturday or Sunday. Please select a different date";
-        setIsValid(true);
+      if (joinedDate < condition) {
+        errors.joinedDate =
+          "User under the age of 18 may not join company. Please select a different date";
+      } else if (isWeekend(values.joinedDate)) {
+        errors.joinedDate =
+          "Joined date is Saturday or Sunday. Please select a different date";
       }
     }
 
     if (!values.role) {
       errors.role = "This is required";
-      setIsValid(true);
     }
 
-    if (errors.firstname == "" && errors.lastname == "" && errors.role == "" && errors.dob == "" && errors.joinedDate == "") {
+    if (Object.keys(errors).length === 0) {
       setIsValid(false);
-      return {};
+    } else {
+      setIsValid(true);
     }
 
     return errors;
@@ -126,7 +118,7 @@ function UserCreate() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Title title="Manage Asset > Create Asset" />
+      <Title title="Manage Asset > Create User" />
       <Container component="main">
         {/* <CssBaseline /> */}
         <Box sx={formStyle.boxTitleStyle}>
@@ -200,7 +192,6 @@ function UserCreate() {
                     {
                       gender_id: "1",
                       gender: "Female",
-
                     },
                     {
                       gender_id: "0",
