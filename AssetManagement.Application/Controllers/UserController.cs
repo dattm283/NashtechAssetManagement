@@ -122,6 +122,7 @@ namespace AssetManagement.Application.Controllers
                 StaffCode = staffCode,
                 FirstName = userRequest.FirstName,
                 LastName = userRequest.LastName,
+                IsLoginFirstTime = true,
                 Dob = userRequest.Dob,
                 CreatedDate = userRequest.JoinedDate,
                 Gender = Enum.Parse<UserGender>(userRequest.Gender),
