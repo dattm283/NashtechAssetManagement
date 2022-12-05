@@ -33,14 +33,7 @@ function UserCreate() {
   theme = unstable_createMuiStrictModeTheme(theme);
 
   const requiredInput = (values) => {
-    const errors = {
-      firstname: "",
-      lastname: "",
-      role: "",
-      gender: "",
-      dob: "",
-      joinedDate: "",
-    };
+    const errors: Record<string, any> = {};
 
     if (!values.firstname) {
       errors.firstname = "This is required";
@@ -148,7 +141,7 @@ function UserCreate() {
             >
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  First Name
+                  First Name *
                 </Typography>
                 <TextInput
                   inputProps={{ maxLength: 50 }}
@@ -205,12 +198,13 @@ function UserCreate() {
                   source="gender"
                   choices={[
                     {
-                      gender_id: "0",
-                      gender: "Male",
-                    },
-                    {
                       gender_id: "1",
                       gender: "Female",
+
+                    },
+                    {
+                      gender_id: "0",
+                      gender: "Male",
                     },
                   ]}
                   row={true}

@@ -810,7 +810,7 @@ namespace AssetManagement.Application.Tests
                 FirstName = "Trong",
                 LastName = "Nghia",
                 Dob = new DateTime(1995, 12, 12),
-                JoinedDate = today.Add(new TimeSpan(157680, 0, 0, 0)),
+                JoinedDate = new DateTime(2022, 12, 12),
                 Gender = "0",
                 Role = "admin"
             };
