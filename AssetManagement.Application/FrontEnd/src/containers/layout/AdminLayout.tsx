@@ -30,6 +30,7 @@ import SelectAssetModal from '../../components/modal/selectAssetModal/SelectAsse
 import EditUser from '../../pages/users/UserEdit';
 import { Route } from 'react-router-dom';
 import AssignmentCreate from '../../pages/assignments/AssignmentCreate';
+import ReportList from '../../pages/report/ReportList'
 
 // You will fix this API-URL
 const authProvider = AuthProvider(config.api.base);
@@ -102,6 +103,7 @@ const App = () => {
                 {permissions == 'Admin' ? <Resource name="assets" list={AssetList} edit={AssetEdit} create={AssetCreate} options={{ label: 'Manage Asset' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="assignments" list={AssignmentList} edit={AssignmentEdit} create={AssignmentCreate} options={{ label: 'Manage Assignments' }} /> : null}
                 {permissions == 'Admin' ? <Resource name="user" list={UserList} create={UserCreate} edit={EditUser} options={{ label: 'Manage User' }} /> : null}
+                {permissions == 'Admin' ? <Resource name="report" list={ReportList} /> : null}
             </Admin>
 
             <ChangePasswordModal
