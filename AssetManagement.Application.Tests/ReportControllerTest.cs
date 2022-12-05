@@ -41,16 +41,16 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport();
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult< ViewReportResponse>> data = okResult.Value 
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
+            ViewListPageResult<ViewReportResponse> data = okResult.Value 
+                as ViewListPageResult<ViewReportResponse>;
 
 
             // Assert
             Assert.NotNull(data);
             Assert.Equal(200, okResult.StatusCode);
-            Assert.Equal(5, data.Result.Data.Where(x => x.Category == "Laptop")
+            Assert.Equal(5, data.Data.Where(x => x.Category == "Laptop")
                     .ToList().ElementAt(0).Total);
-            Assert.Equal(5, data.Result.Data.Where(x => x.Category == "Monitor")
+            Assert.Equal(5, data.Data.Where(x => x.Category == "Monitor")
                     .ToList().ElementAt(0).Total);
         }
 
@@ -65,9 +65,9 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "DESC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
@@ -89,9 +89,9 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
@@ -112,9 +112,9 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
@@ -135,9 +135,9 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
@@ -158,9 +158,9 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
@@ -181,9 +181,9 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
@@ -204,9 +204,9 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
@@ -227,17 +227,17 @@ namespace AssetManagement.Application.Tests
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
             var okResult = result.Result as OkObjectResult;
-            SuccessResponseResult<ViewListPageResult<ViewReportResponse>> data = okResult.Value
-                as SuccessResponseResult<ViewListPageResult<ViewReportResponse>>;
-            var sortedData = data.Result.Data.ToList();
+            ViewListPageResult<ViewReportResponse> data = okResult.Value
+                as ViewListPageResult<ViewReportResponse>;
+            var sortedData = data.Data.ToList();
 
 
             // Assert
             Assert.NotNull(data);
             Assert.Equal(200, okResult.StatusCode);
-            Assert.Equal(sortedData.ElementAt(0).Category, "Monitor");
-            Assert.Equal(sortedData.ElementAt(1).Category, "Laptop");
             Assert.Equal(sortedData.ElementAt(2).Category, "Personal Computer");
+            Assert.Equal(sortedData.ElementAt(1).Category, "Laptop");
+            Assert.Equal(sortedData.ElementAt(0).Category, "Monitor");
         }
         #endregion
 

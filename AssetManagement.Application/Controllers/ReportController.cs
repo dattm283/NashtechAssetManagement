@@ -23,7 +23,7 @@ namespace AssetManagement.Application.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<SuccessResponseResult<ViewListPageResult<ViewReportResponse>>>> GetReport(
+        public async Task<ActionResult<ViewListPageResult<ViewReportResponse>>> GetReport(
             [FromQuery] string? sort = "category",
             [FromQuery] string? order = "ASC")
         {
@@ -32,6 +32,7 @@ namespace AssetManagement.Application.Controllers
                                                                   group asset by asset.CategoryId into grAsset
                                                                   select new ViewReportResponse
                                                                   {
+                                                                      ID = grAsset.FirstOrDefault().Category.Name,
                                                                       Category = grAsset.FirstOrDefault().Category.Name,
                                                                       Total = grAsset.Count(),
                                                                       Assigned = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Assigned),
@@ -49,6 +50,7 @@ namespace AssetManagement.Application.Controllers
                 {
                     result.Add(new ViewReportResponse
                     {
+                        ID = category.Name,
                         Category = category.Name,
                         Total = 0,
                         Assigned = 0,
@@ -109,15 +111,11 @@ namespace AssetManagement.Application.Controllers
                 result.Reverse();
             }
 
-            return Ok(new SuccessResponseResult<ViewListPageResult<ViewReportResponse>>
-            {
-                IsSuccessed = true,
-                Result = new ViewListPageResult<ViewReportResponse>
+            return Ok(new ViewListPageResult<ViewReportResponse>
                 {
                     Data = result,
                     Total = result.Count
-                }
-            });
+                });
         }
     }
 }
