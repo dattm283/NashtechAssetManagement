@@ -18,10 +18,10 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
 import UserShow from './UserShow';
-import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import { assetProvider } from '../../providers/assetProvider/assetProvider'
 import { useLocation } from "react-router-dom";
 import { listStyle } from "../../styles/listStyle";
+import { CustomDisableWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDisableWithConfirm";
 
 
 export default () => {
@@ -101,7 +101,7 @@ export default () => {
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
                         <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
-                        <CustomDeleteWithConfirmButton
+                        <CustomDisableWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure?"
                             confirmContent="Do you want to disable this user?"
