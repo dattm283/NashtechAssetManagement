@@ -34,7 +34,7 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
             })
             .catch((error) => {
                 console.log(error);
-                notify("Username or password is incorrect. Please try again");
+                notify(error.response.data.message);
             });
     };
 
@@ -120,50 +120,50 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Box>
-                                    <Grid container>
-                                        <Grid item xs={12} sm={3}>
-                                            <Typography variant="h6">
-                                                Username *
-                                            </Typography>
+                                        <Grid container>
+                                            <Grid item xs={12} sm={3}>
+                                                <Typography variant="h6">
+                                                    Username *
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={12} sm={9}>
+                                                <TextInput
+                                                    fullWidth
+                                                    id="userName"
+                                                    label={false}
+                                                    name="userName"
+                                                    autoComplete="current-userName"
+                                                    autoFocus
+                                                    inputProps={{
+                                                        maxLength: "50",
+                                                    }}
+                                                    source="username"
+                                                    InputLabelProps={{ shrink: false }}
+                                                />
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={12} sm={9}>
-                                            <TextInput
-                                                fullWidth
-                                                id="userName"
-                                                label={false}
-                                                name="userName"
-                                                autoComplete="current-userName"
-                                                autoFocus
-                                                inputProps={{
-                                                    maxLength: "50",
-                                                }}
-                                                source="username"
-                                                InputLabelProps={{ shrink: false }}
-                                            />
-                                        </Grid>
-                                    </Grid>
                                     </Box>
                                     <Box>
                                         <Grid container>
-                                        <Grid item xs={12} sm={3}>
-                                            <Typography variant="h6">
-                                                Password *
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={12} sm={9}>
-                                            <PasswordInput
-                                                fullWidth
-                                                id="password"
-                                                label={false}
-                                                name="password"
-                                                autoComplete="current-password"
-                                                inputProps={{
-                                                    maxLength: "50",
-                                                }}
-                                                source="password"
-                                                InputLabelProps={{ shrink: false }}
-                                            />
-                                        </Grid>
+                                            <Grid item xs={12} sm={3}>
+                                                <Typography variant="h6">
+                                                    Password *
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={12} sm={9}>
+                                                <PasswordInput
+                                                    fullWidth
+                                                    id="password"
+                                                    label={false}
+                                                    name="password"
+                                                    autoComplete="current-password"
+                                                    inputProps={{
+                                                        maxLength: "50",
+                                                    }}
+                                                    source="password"
+                                                    InputLabelProps={{ shrink: false }}
+                                                />
+                                            </Grid>
                                         </Grid>
                                     </Box>
                                 </Grid>

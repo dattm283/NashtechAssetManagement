@@ -45,17 +45,17 @@ namespace AssetManagement.Application.Controllers
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
             {
-                return BadRequest(new ErrorResponseResult<string>("Account does not exist."));
+                return BadRequest(new ErrorResponseResult<string>("Username or password is incorrect. Please try again"));
             }
             else if(user.IsDeleted)
             {
-                return BadRequest(new ErrorResponseResult<string>("Account has been banned."));
+                return BadRequest(new ErrorResponseResult<string>("Your account is disabled. Please contact with IT Team"));
             }
 
             var result = await _userManager.CheckPasswordAsync(user, request.Password);
             if (!result)
             {
-                return BadRequest(new ErrorResponseResult<string>("No match for username and/or password."));
+                return BadRequest(new ErrorResponseResult<string>("Username or password is incorrect. Please try again"));
             }
 
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
