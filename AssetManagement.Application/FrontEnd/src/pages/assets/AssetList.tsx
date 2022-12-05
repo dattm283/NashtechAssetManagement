@@ -130,13 +130,43 @@ export default () => {
                         }
                     />
                     <ButtonGroup sx={{ border: null }}>
-                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
-                        <CustomDeleteWithConfirmButton
-                            icon={<HighlightOffIcon />}
-                            confirmTitle="Are you sure?"
-                            confirmContent="Do you want to delete this asset?"
-                            mutationOptions={{ onSuccess: (data) => refresh() }}
-                        />
+                        <FunctionField render={(record) => {
+                            if (!(record.state == "WaitingForRecycling" || record.state == "Assigned")) {
+                                return (
+                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                                )
+                            }
+                            else {
+                                return (
+                                    <EditButton disabled variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                                )
+                            }
+                        }} />
+                        
+                        <FunctionField render={(record) => {
+                            if (!(record.state == "Assigned")) {
+                                return (
+                                    <CustomDeleteWithConfirmButton
+                                        icon={<HighlightOffIcon />}
+                                        confirmTitle="Are you sure?"
+                                        confirmContent="Do you want to delete this asset?"
+                                        mutationOptions={{ onSuccess: (data) => refresh() }}
+                                    />
+                                )
+                            }
+                            else {
+                                return (
+                                    <CustomDeleteWithConfirmButton
+                                        icon={<HighlightOffIcon />}
+                                        confirmTitle="Are you sure?"
+                                        confirmContent="Do you want to delete this asset?"
+                                        mutationOptions={{ onSuccess: (data) => refresh() }}
+                                        disabled={true}
+                                    />
+                                )
+                            }
+                        }} />
+                        
                     </ButtonGroup>
                 </Datagrid>
                 <AssetsPagination />

@@ -99,7 +99,7 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
     return (
         <Fragment>
             <StyledButton
-            variant="text"
+                variant="text"
                 onClick={handleDialogOpen}
                 label={label}
                 className={clsx('ra-delete-button', className)}
@@ -108,6 +108,7 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
                 sx={{"span": { 
                     margin: 0
                 }}}
+                disabled={props.disabled}
             >
                 {icon}
             </StyledButton>
