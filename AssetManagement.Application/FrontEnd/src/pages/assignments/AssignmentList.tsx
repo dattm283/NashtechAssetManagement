@@ -109,7 +109,7 @@ export default () => {
                     <TextField label="Asset Name" source="assetName" />
                     <TextField label="Assigned to" source="assignedTo" />
                     <TextField label="Assigned by" source="assignedBy" />
-                    <DateField label="Assigned Date" source="assignedDate" />
+                    <DateField label="Assigned Date" source="assignedDate" locales="en-GB" />
                     <FunctionField source="state" render={(record) => record.state == "0" ? "Accepted" : "Waiting for acceptance"} />
                     <ButtonGroup sx={{ border: null }}>
                         <FunctionField render={(record) => {

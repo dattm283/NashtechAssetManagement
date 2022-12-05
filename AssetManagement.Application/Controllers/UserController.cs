@@ -250,7 +250,7 @@ namespace AssetManagement.Application.Controllers
                 }
                 mapResultWithCreatedIdParam.Reverse();
 
-                return Ok(new ViewListPageResult<ViewListUser_UserResponse> { Data = mapResultWithCreatedIdParam, Total = users.Count() });
+                return Ok(new ViewListPageResult<ViewListUser_UserResponse> { Data = mapResultWithCreatedIdParam, Total = users.Count() + 1 });
             }
 
             List<AppUser> sortedUsers = StaticFunctions<AppUser>.Paging(users, start, end);
