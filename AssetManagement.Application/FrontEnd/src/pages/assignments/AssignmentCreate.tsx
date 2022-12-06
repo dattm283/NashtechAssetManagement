@@ -222,6 +222,7 @@ const AssignmentCreate = () => {
                                         onBlur={(e) => e.stopPropagation()}
                                         sx={formStyle.textInputStyle}
                                         helperText={false}
+                                        defaultValue={currentDay}
                                     />
                                 </Box>
                                 <Box sx={formStyle.boxStyle}>
