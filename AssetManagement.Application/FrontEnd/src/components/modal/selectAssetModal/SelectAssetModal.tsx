@@ -26,7 +26,7 @@ const StyledDialogContent = styled(DialogContent)`
 }
 `;
 
-const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAsset }) => {
+const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAsset, setChanged }) => {
     const [tempChoice, setTempChoice] = useState(selectedAsset);
     const postRowClick = (id, resource, record) => {
         setTempChoice(record.assetCode);
@@ -41,6 +41,9 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
 
     const handleSave = () => {
         setSelectedAsset(tempChoice);
+        if (tempChoice != selectedAsset) {
+            setChanged(true);
+        }
         toggle();
     }
 

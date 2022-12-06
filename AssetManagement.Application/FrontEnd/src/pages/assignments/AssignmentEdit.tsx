@@ -38,6 +38,7 @@ const AssignmentEdit = () => {
     let appTheme = createTheme(theme);
     appTheme = unstable_createMuiStrictModeTheme(appTheme);
     const navigate = useNavigate();
+    const [changed, setChanged] = useState(false);
 
     const toggleUserChoice = () => {
         setUserChoiceOpen(!userChoiceOpen);
@@ -95,7 +96,7 @@ const AssignmentEdit = () => {
             setIsInvalid(true);
         } else if (values.assignedDate < yesterday) {
             errors.assignedDate = "Please select only current or future date";
-            setIsInvalid(true);
+            setIsInvalid(false);
         } else {
             setIsInvalid(false);
             return {};
@@ -124,7 +125,7 @@ const AssignmentEdit = () => {
                             mode="onChange"
                             validate={requiredInput}
                             reValidateMode="onChange"
-                            toolbar={<AssignmentEditToolbar isEnable={!isInvalid} />}
+                            toolbar={<AssignmentEditToolbar changed={changed} isEnable={!isInvalid} />}
                         >
                             <FunctionField render={(record) => {
                                 console.log(record);
@@ -162,6 +163,7 @@ const AssignmentEdit = () => {
                                         isOpened={userChoiceOpen}
                                         toggle={toggleUserChoice}
                                         pos={userChoicePos}
+                                        setChanged={setChanged}
                                     />
                                 </Box>
                                 <Box sx={formStyle.boxStyle}>
@@ -186,6 +188,7 @@ const AssignmentEdit = () => {
                                         isOpened={assetChoiceOpen}
                                         toggle={toggleAssetChoice}
                                         pos={assetChoicePos}
+                                        setChanged={setChanged}
                                     />
                                 </Box>
                                 <Box sx={formStyle.boxStyle}>
@@ -199,6 +202,7 @@ const AssignmentEdit = () => {
                                     </Grid>
                                     <Grid item xs={8}>
                                         <DateInput
+                                            onChange={() => { setChanged(true); }}
                                             fullWidth
                                             label=""
                                             name="assignedDate"
@@ -222,6 +226,7 @@ const AssignmentEdit = () => {
                                     </Grid>
                                     <Grid item xs={8}>
                                         <TextInput
+                                            onChange={() => { setChanged(true) }}
                                             fullWidth
                                             label={false}
                                             multiline

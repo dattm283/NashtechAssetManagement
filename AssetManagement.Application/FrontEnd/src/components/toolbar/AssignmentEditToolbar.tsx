@@ -5,48 +5,31 @@ import { useNavigate } from 'react-router-dom';
 import { theme } from '../../theme';
 import { formToolbarStyle } from "../../styles/formToolbarStyle";
 
-const AssignmentEditToolbar = ({ isEnable }) => {
+const AssignmentEditToolbar = ({ isEnable, changed }) => {
     const notify = useNotify();
     const navigate = useNavigate();
 
     return (
         <ThemeProvider theme={theme}>
             <Toolbar sx={formToolbarStyle.toolbarStyle}>
-                {isEnable ? (
-                    <SaveButton
-                        alwaysEnable
-                        label="Save"
-                        mutationOptions={{
-                            onSuccess: () => {
-                                localStorage.setItem("RaStore.assignments.listParams",
-                                    `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"noNumber"}`)
-                                notify('Element updated');
-                                navigate("/assignments")
-                            }
+                <SaveButton
+                    alwaysEnable={isEnable ? changed : false}
+                    disabled={!isEnable}
+                    label="Save"
+                    mutationOptions={{
+                        onSuccess: () => {
+                            localStorage.setItem("RaStore.assignments.listParams",
+                                `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"noNumber"}`)
+                            notify('Element updated');
+                            navigate("/assignments")
                         }
-                        }
-                        type="button"
-                        variant="contained"
-                        icon={<></>}
-                        color="secondary"
-                    />
-                ) : (
-                    <SaveButton
-                        disabled
-                        label="Save"
-                        mutationOptions={{
-                            onSuccess: () => {
-                                notify('Element updated');
-                                navigate("/assignments")
-                            }
-                        }
-                        }
-                        type="button"
-                        variant="contained"
-                        icon={<></>}
-                        color="secondary"
-                    />
-                )}
+                    }
+                    }
+                    type="button"
+                    variant="contained"
+                    icon={<></>}
+                    color="secondary"
+                />
 
                 <Button
                     variant="outlined"
