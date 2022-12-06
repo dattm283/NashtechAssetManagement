@@ -40,6 +40,8 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
         redirect = 'list',
         translateOptions = {},
         mutationOptions,
+        isOpen,
+        setDeleting,
         ...rest
     } = props;
     const translate = useTranslate();
@@ -96,11 +98,26 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
         borderRadius: 1,
     }
 
+    const handleOpen = (e) => {
+        setDeleting(true);
+        handleDialogOpen(e);
+    } 
+
+    const handleClose = (e) => {
+        setDeleting(false);
+        handleDialogClose(e);
+    }
+
+    const customHandleDelete = (e) => {
+        setDeleting(false);
+        handleDelete(e);
+    }
+
     return (
         <Fragment>
             <StyledButton
                 variant="text"
-                onClick={handleDialogOpen}
+                onClick={handleOpen}
                 label={label}
                 className={clsx('ra-delete-button', className)}
                 key="button"
@@ -114,7 +131,7 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
             </StyledButton>
             <Dialog
                 open={open}
-                onClose={handleDialogClose}
+                onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
@@ -131,8 +148,8 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
                         </DialogContentText>
                     </DialogContentText>
                     <DialogActions>
-                        <MUIButton onClick={handleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
-                        <MUIButton sx={confirmButtonStyle} onClick={handleDialogClose}>Cancel</MUIButton>
+                        <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
+                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
                         <div style={{ flex: '1 0 0' }} />
                     </DialogActions>
                 </DialogContent>
@@ -162,6 +179,8 @@ export interface DeleteWithConfirmButtonProps<
     record?: RecordType;
     redirect?: RedirectionSideEffect;
     resource?: string;
+    isOpen: boolean;
+    setDeleting: Function;
 }
 
 CustomDeleteWithConfirmButton.propTypes = {

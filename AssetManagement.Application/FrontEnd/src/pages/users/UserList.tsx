@@ -26,6 +26,7 @@ import { CustomDisableWithConfirmButton } from "../../components/modal/confirmDe
 
 export default () => {
     const [openDetail, setOpenDetail] = useState({ status: false, data: {} });
+    const [deleting, setDeleting] = useState(false);
     const refresh = useRefresh();
 
     const usersFilter = [
@@ -80,12 +81,12 @@ export default () => {
                 </Stack>
 
                 <Datagrid
-                    rowClick={(id, resource, record) => {
+                    rowClick={!deleting ? (id, resource, record) => {
                         assetProvider.getOne('user', { id: record.staffCode }).then(res => {
                             setOpenDetail({ status: true, data: res.data.result })
                         })
                         return "";
-                    }}
+                    } : (id, resource) => ""}
                     empty={<h2>No User found</h2>}
                     bulkActionButtons={false}
                 >
@@ -106,6 +107,8 @@ export default () => {
                             confirmTitle="Are you sure?"
                             confirmContent="Do you want to disable this user?"
                             mutationOptions={{ onSuccess: (data) => refresh() }}
+                            isOpen={deleting}
+                            setDeleting={setDeleting}
                         />
                     </ButtonGroup>
 

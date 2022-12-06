@@ -44,6 +44,8 @@ export const CustomDeleteAssetWithConfirmButton = <RecordType extends RaRecord =
         redirect = 'list',
         translateOptions = {},
         mutationOptions,
+        isOpen,
+        setDeleting,
         ...rest
     } = props;
     const translate = useTranslate();
@@ -115,11 +117,27 @@ export const CustomDeleteAssetWithConfirmButton = <RecordType extends RaRecord =
         },
     }
 
+    const handleOpen = (e) => {
+        getCount();
+        setDeleting(true);
+        handleDialogOpen(e);
+    } 
+
+    const handleClose = (e) => {
+        setDeleting(false);
+        handleDialogClose(e);
+    }
+
+    const customHandleDelete = (e) => {
+        setDeleting(false);
+        handleDelete(e);
+    }
+
     return (
         <Fragment>
             <StyledButton
                 variant="text"
-                onClick={(e) => { getCount(); handleDialogOpen(e)}}
+                onClick={handleOpen}
                 label={label}
                 className={clsx('ra-delete-button', className)}
                 key="button"
@@ -133,7 +151,7 @@ export const CustomDeleteAssetWithConfirmButton = <RecordType extends RaRecord =
             </StyledButton>
                 <Dialog
                     open={open}
-                    onClose={handleDialogClose}
+                    onClose={handleClose}
                     aria-labelledby="alert-dialog-title"
                     aria-describedby="alert-dialog-description"
                 >
@@ -142,7 +160,7 @@ export const CustomDeleteAssetWithConfirmButton = <RecordType extends RaRecord =
                         {!(assignementsCount > 0) ? confirmTitle : 
                         <>Cannot Delete Asset <IconButton
                             aria-label="close"
-                            onClick={handleDialogClose}
+                            onClick={handleClose}
                             sx={{
                                 position: "absolute",
                                 right: 8,
@@ -165,8 +183,8 @@ export const CustomDeleteAssetWithConfirmButton = <RecordType extends RaRecord =
                                 </DialogContentText>
                             </DialogContentText>
                             <DialogActions>
-                                <MUIButton onClick={handleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
-                                <MUIButton sx={confirmButtonStyle} onClick={handleDialogClose}>Cancel</MUIButton>
+                                <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
+                                <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
                                 <div style={{ flex: '1 0 0' }} />
                             </DialogActions>
                             </> : <>
@@ -210,6 +228,8 @@ export interface DeleteWithConfirmButtonProps<
     record?: RecordType;
     redirect?: RedirectionSideEffect;
     resource?: string;
+    isOpen: boolean;
+    setDeleting: Function;
 }
 
 CustomDeleteAssetWithConfirmButton.propTypes = {
