@@ -15,8 +15,8 @@ const UserCreateToolbar = ({ disable }) => {
                 label="Save"
                 mutationOptions={{
                     onSuccess: () => {
-                        localStorage.setItem("RaStore.user.listParams", 
-                        `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"fullName"}`)
+                        localStorage.removeItem("RaStore.user.listParams")
+                        notify('User created successfully!');
                         navigate("/user")
                     }}
                 }
@@ -28,7 +28,10 @@ const UserCreateToolbar = ({ disable }) => {
             />
             <Button
                 variant="outlined"
-                onClick={(e) => navigate("/user")}
+                onClick={(e) => {
+                    localStorage.removeItem("RaStore.user.listParams")
+                    navigate("/user")
+                }}
                 color="secondary"
             >Cancel</Button>
         </Toolbar>

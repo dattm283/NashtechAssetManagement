@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Datagrid,
     List,
@@ -34,6 +34,11 @@ export default () => {
     const [record, setRecord] = useState();
     const [assignment, setAssignment] = useState();
     const [deleting, setDeleting] = useState(false);
+
+    useEffect(() => {
+        window.addEventListener("beforeunload", () => localStorage.removeItem("item"));
+        window.addEventListener("click", () => localStorage.removeItem("item"));
+    }, [])
 
     const toggle = () => {
         setIsOpened(!isOpened);

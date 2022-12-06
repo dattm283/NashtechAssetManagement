@@ -42,7 +42,8 @@ export default () => {
         .then((res) => res.data);
 
     useEffect(() => {
-        localStorage.removeItem("RaStore.assets.listParams");
+        window.addEventListener("beforeunload", () => localStorage.removeItem("item"));
+        window.addEventListener("click", () => localStorage.removeItem("item"));
     }, [])
 
     const toggle = () => {

@@ -81,9 +81,9 @@ export const assetProvider: DataProvider = {
             userName: localStorage.getItem("userName") ? localStorage.getItem("userName") : null
         };
         const url = `/api/${resource}?${stringify(query)}`;
-        if (localStorage.getItem("item") != null && query.end != '99') {
-            localStorage.removeItem("item");
-        }
+        // if (localStorage.getItem("item") != null && query.end != '99') {
+        //     localStorage.removeItem("item");
+        // }
 
         return axiosInstance(url).then(res => {
             return Promise.resolve({ data: res.data.data, total: res.data.total });

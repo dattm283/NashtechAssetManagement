@@ -18,9 +18,8 @@ export default ({ isEnable }) => {
                         label="Save"
                         mutationOptions={{
                             onSuccess: () => {
-                                localStorage.setItem("RaStore.assignments.listParams",
-                                    `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"noNumber"}`)
-                                notify('Element updated');
+                                localStorage.removeItem("RaStore.assignments.listParams");
+                                notify('Assignment created successfully!');
                                 navigate("/assignments")
                             }
                         }
@@ -36,7 +35,8 @@ export default ({ isEnable }) => {
                         label="Save"
                         mutationOptions={{
                             onSuccess: () => {
-                                notify('Element updated');
+                                localStorage.removeItem("RaStore.assignments.listParams");
+                                notify('Assignment created successfully!');
                                 navigate("/assignments")
                             }
                         }
@@ -50,7 +50,10 @@ export default ({ isEnable }) => {
 
                 <Button
                     variant="outlined"
-                    onClick={(e) => navigate("/assignments")}
+                    onClick={(e) => {
+                        localStorage.removeItem("RaStore.assignments.listParams");
+                        navigate("/assignments")
+                    }}
                     color="secondary"
                 >Cancel</Button>
             </Toolbar>
