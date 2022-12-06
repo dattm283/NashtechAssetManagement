@@ -56,7 +56,9 @@ export default (props) => {
 
    useEffect(() => {
       setPerPage(5);
-      console.log(props.defaultSelect)
+      console.log(props.defaultSelect);
+      setStates(props.defaultSelect);
+      var tmp = filterValues.categories;
    }, [])
 
    const handleSelectAll = () => {
