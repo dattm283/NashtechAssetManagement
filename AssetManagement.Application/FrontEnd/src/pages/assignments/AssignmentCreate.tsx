@@ -223,6 +223,7 @@ const AssignmentCreate = () => {
                                         sx={formStyle.textInputStyle}
                                         helperText={false}
                                         defaultValue={currentDay}
+                                        inputProps={{ min: currentDay }}
                                     />
                                 </Box>
                                 <Box sx={formStyle.boxStyle}>
