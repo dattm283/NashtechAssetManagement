@@ -16,6 +16,7 @@ using Xunit;
 using AssetManagement.Contracts.Common;
 using Microsoft.AspNetCore.Http;
 using System.Security.Principal;
+using System.Security.Claims;
 
 #nullable disable
 namespace AssetManagement.Application.Tests
@@ -160,6 +161,11 @@ namespace AssetManagement.Application.Tests
             // Arrange 
             AssetsController assetController = new AssetsController(_context, _mapper);
 
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(1, 2);
 
@@ -189,6 +195,12 @@ namespace AssetManagement.Application.Tests
         {
             // Arrange 
             AssetsController assetController = new AssetsController(_context, _mapper);
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
             var searchString = "top 1";
 
@@ -221,6 +233,12 @@ namespace AssetManagement.Application.Tests
         {
             // Arrange 
             AssetsController assetController = new AssetsController(_context, _mapper);
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
 
             var searchString = "Nash 1";
 
@@ -255,6 +273,12 @@ namespace AssetManagement.Application.Tests
             // Arrange 
             AssetsController assetController = new AssetsController(_context, _mapper);
             var state = (int)AssetManagement.Domain.Enums.Asset.State.Available;
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(1, 2, "", "", state.ToString());
 
@@ -285,6 +309,12 @@ namespace AssetManagement.Application.Tests
             // Arrange 
             AssetsController assetController = new AssetsController(_context, _mapper);
             var createdId = "3";
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(0, 3, "", "", "", "name", "ASC", createdId);
 
@@ -320,6 +350,12 @@ namespace AssetManagement.Application.Tests
             AssetsController assetController = new AssetsController(_context, _mapper);
 
             var sortType = "id";
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(1, 2, "", "", "", sortType);
 
@@ -351,6 +387,12 @@ namespace AssetManagement.Application.Tests
             AssetsController assetController = new AssetsController(_context, _mapper);
 
             var sortType = "assetCode";
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(1, 2, "", "", "", sortType);
 
@@ -382,6 +424,12 @@ namespace AssetManagement.Application.Tests
             AssetsController assetController = new AssetsController(_context, _mapper);
 
             var sortType = "state";
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(1, 2, "", "", "", sortType);
 
@@ -413,6 +461,12 @@ namespace AssetManagement.Application.Tests
             AssetsController assetController = new AssetsController(_context, _mapper);
 
             var sortType = "name";
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(1, 2, "", "", "", sortType);
 
@@ -444,6 +498,12 @@ namespace AssetManagement.Application.Tests
             AssetsController assetController = new AssetsController(_context, _mapper);
 
             var sortType = "id";
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(1, 2, "", "", "", sortType, "DESC");
 
@@ -474,6 +534,12 @@ namespace AssetManagement.Application.Tests
             // Arrange 
             AssetsController assetController = new AssetsController(_context, _mapper);
 
+
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            assetController.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
+            assetController.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
             // Act 
             var result = await assetController.Get(-1, 2);
 
