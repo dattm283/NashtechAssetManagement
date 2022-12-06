@@ -40,6 +40,8 @@ const ChangePasswordModal = ({
         };
         if (!values.newPassword) {
             errors.newPassword = "This is required";
+        } else if(values.newPassword.length < 6) {
+            errors.newPassword = "Password must have more than 5 character"
         } else {
             return {};
         }
