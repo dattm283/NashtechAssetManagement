@@ -6,7 +6,7 @@ namespace AssetManagement.Application
     {
         public static List<T> Paging(IQueryable<T> records, int start, int end)
         {
-            if(start < 0 || start > end)
+            if(start < 0 || start > end || start >= records.Count())
             {
                 start = 1;
             }
