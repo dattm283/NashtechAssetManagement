@@ -340,8 +340,8 @@ namespace AssetManagement.Application.Controllers
                         if(roleKey.RoleId != role.Id)
                         {
                             _dbContext.UserRoles.Remove(roleKey);
-                            roleKey = new() { UserId = user.Id, RoleId = role.Id };
-                            _dbContext.UserRoles.Add(roleKey);
+                            IdentityUserRole<Guid> newRoleKey = new() { UserId = user.Id, RoleId = role.Id };
+                            await _dbContext.UserRoles.AddAsync(newRoleKey);
                         }
 
                         await _dbContext.SaveChangesAsync();

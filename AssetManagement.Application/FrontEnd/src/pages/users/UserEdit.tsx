@@ -15,6 +15,7 @@ import {
   SimpleForm,
   TextInput,
   Title,
+  useNotify,
 } from "react-admin";
 import { useNavigate, useParams } from "react-router-dom";
 import { assetProvider } from "../../providers/assetProvider/assetProvider";
@@ -29,6 +30,7 @@ const UserEdit = () => {
   const params = useParams();
   const [isValid, setIsValid] = useState(false);
   const [minJd, setMinJd] = useState("");
+  const notify = useNotify();
   const [user, setUser] = useState({
     firstName: "",
     lastName: "",
@@ -58,7 +60,6 @@ const UserEdit = () => {
       form.type === null
     ) {
       setIsValid(false);
-      return {};
     }
 
     const dob = new Date(form.dob);
@@ -87,11 +88,21 @@ const UserEdit = () => {
       jdE = "Joined date is Saturday or Sunday. Please select a different date";
     }
 
+    if (
+      form.dob === user.dateOfBirth &&
+      form.joinedDate === user.joinedDate &&
+      form.Gender === user.gender &&
+      form.type === user.type
+    ) {
+      setIsValid(false);
+      return {};
+    }
+
     if (dobE === "" && jdE === "") {
       setIsValid(true);
       return {};
     }
-    setIsValid(false);
+
     if (dobE !== "") err = { ...err, dob: dobE };
     if (jdE != "") err = { ...err, joinedDate: jdE };
     return err;
@@ -107,8 +118,11 @@ const UserEdit = () => {
     assetProvider
       .update("user", { id: user.staffCode, data: changes, previousData: user })
       .then((response) => {
-        console.log(response.data);
-        navigate("/user", { state: { user } });
+        localStorage.setItem("RaStore.user.listParams", 
+                        `{"displayedFilters":{},"filter":{},"order":"ASC","page":1,"perPage":5,"sort":"staffCode"}`)
+        localStorage.setItem("item", JSON.stringify(response.data));
+        navigate("/user");
+        notify("User edited successfully!");
       })
       .catch((error) => console.log(error));
   }
@@ -172,6 +186,7 @@ const UserEdit = () => {
                   name="dob"
                   source="dob"
                   sx={formStyle.textInputStyle}
+                  helperText={false}
                   InputLabelProps={{ shrink: false }}
                   defaultValue={user.dateOfBirth.toString()}
                   fullWidth
@@ -182,8 +197,9 @@ const UserEdit = () => {
                   Gender *
                 </Typography>
                 <RadioButtonGroup
-                  label=""
+                  label={false}
                   sx={formStyle.textInputStyle}
+                  helperText={false}
                   source="gender"
                   choices={[
                     { id: 1, name: "Female" },
@@ -199,11 +215,12 @@ const UserEdit = () => {
                   Joined Date *
                 </Typography>
                 <DateInput
-                  label=""
+                  label={false}
                   name="joinedDate"
                   source="joinedDate"
                   InputLabelProps={{ shrink: false }}
                   sx={formStyle.textInputStyle}
+                  helperText={false}
                   inputProps={{ min: minJd ? minJd.split("T")[0] : "" }}
                   defaultValue={user.joinedDate.toString()}
                   fullWidth
@@ -215,10 +232,11 @@ const UserEdit = () => {
                 </Typography>
 
                 <SelectInput
-                  label=""
+                  label={false}
                   validate={required()}
                   InputLabelProps={{ shrink: false }}
                   sx={formStyle.textInputStyle}
+                  helperText={false}
                   source="type"
                   name="type"
                   choices={[

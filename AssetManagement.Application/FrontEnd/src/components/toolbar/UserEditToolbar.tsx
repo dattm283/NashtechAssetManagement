@@ -3,6 +3,7 @@ import {
     Toolbar,
     useNotify,
     ThemeProvider,
+    SaveButton,
 } from "react-admin";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -14,21 +15,19 @@ const UserEditToolbar = ({disabled}) => {
     return (
         <ThemeProvider theme={theme}>
             <Toolbar sx={formToolbarStyle.toolbarStyle}>
-                <Button
-                    // type="button"
-                    variant="contained"
+                <SaveButton
+                    label="Save"
                     type="submit"
+                    variant="contained"
+                    icon={<></>}
                     color="secondary"
-                    id="editAssetSaveButton"
-                    disabled = {disabled}
-                >
-                    Save
-                </Button>
+                    disabled={disabled}
+                />
                 <Button
                     variant="outlined"
                     onClick={(e) => navigate("/user")}
                     color="secondary"
-                    id="editAssetCancelButton"
+                    id="editUserCancelButton"
                 >
                     Cancel
                 </Button>
