@@ -28,19 +28,20 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? order = "ASC")
         {
             List<Category> categories = await _dbContext.Categories.ToListAsync();
-            IQueryable<ViewReportResponse> viewReportResponses = (from asset in _dbContext.Assets
-                                                                  group asset by asset.CategoryId into grAsset
-                                                                  select new ViewReportResponse
-                                                                  {
-                                                                      ID = grAsset.FirstOrDefault().Category.Name,
-                                                                      Category = grAsset.FirstOrDefault().Category.Name,
-                                                                      Total = grAsset.Count(),
-                                                                      Assigned = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Assigned),
-                                                                      Available = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Available),
-                                                                      NotAvailable = grAsset.Count(x => x.State == Domain.Enums.Asset.State.NotAvailable),
-                                                                      WaitingForRecycling = grAsset.Count(x => x.State == Domain.Enums.Asset.State.WaitingForRecycling),
-                                                                      Recycled = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Recycled)
-                                                                  }).AsNoTracking();
+
+            IQueryable<ViewReportResponse> viewReportResponses = _dbContext.Assets
+                .GroupBy(x => x.CategoryId)
+                .Select(grAsset => new ViewReportResponse
+                {
+                    ID = grAsset.FirstOrDefault().Category.Name,
+                    Category = grAsset.FirstOrDefault().Category.Name,
+                    Total = grAsset.Count(),
+                    Assigned = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Assigned),
+                    Available = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Available),
+                    NotAvailable = grAsset.Count(x => x.State == Domain.Enums.Asset.State.NotAvailable),
+                    WaitingForRecycling = grAsset.Count(x => x.State == Domain.Enums.Asset.State.WaitingForRecycling),
+                    Recycled = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Recycled)
+                });
 
             List<ViewReportResponse> result = await viewReportResponses.ToListAsync();
 
