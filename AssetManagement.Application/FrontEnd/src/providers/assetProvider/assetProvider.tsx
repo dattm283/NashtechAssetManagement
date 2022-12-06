@@ -52,7 +52,6 @@ export const assetProvider: DataProvider = {
         const { states, searchString, categories, assignedDateFilter, noNumber } = params.filter;
         const { field, order } = params.sort;
         let tmp = "";
-        console.log(resource, field);
         for (const key in states) {
             if (Object.prototype.hasOwnProperty.call(states, key)) {
                 const element = states[key];
@@ -76,8 +75,8 @@ export const assetProvider: DataProvider = {
             searchString: searchString,
             assignedDateFilter: assignedDateFilter,
             categoryFilter: tmp1 ? tmp1 : null,
-            createdId: localStorage.getItem("item")!=null ? 
-                JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) : 
+            createdId: localStorage.getItem("item") != null ?
+                JSON.stringify(JSON.parse(localStorage.getItem("item") as string)["id"]) :
                 null,
             userName: localStorage.getItem("userName") ? localStorage.getItem("userName") : null
         };

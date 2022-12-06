@@ -20,14 +20,14 @@ export default (props) => {
       PaperProps: {
          style: {
             // maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: props.sx.width!=null ? props.sx.width : ITEM_WIDTH,
+            width: props.sx.width != null ? props.sx.width : ITEM_WIDTH,
          },
       },
    };
 
    const { setFilters, displayedFilters, setPerPage, filterValues } = useListContext();
 
-   const [states, setStates] = useState<string[]>([]);
+   const [states, setStates] = useState<string[]>(props.defaultSelect);
 
    const handleChange = (event: SelectChangeEvent<typeof states>) => {
       const {
@@ -52,13 +52,11 @@ export default (props) => {
    useEffect(() => {
       var tmp = filterValues.categories;
       setFilters({ states: states, categories: tmp }, displayedFilters);
-      console.log(states);
    }, [states])
 
    useEffect(() => {
       setPerPage(5);
-      setStates(filterValues.states ? filterValues.states : []);
-      var tmp = filterValues.categories;
+      console.log(props.defaultSelect)
    }, [])
 
    const handleSelectAll = () => {
@@ -69,8 +67,8 @@ export default (props) => {
       setStates(arr);
    }
    return (
-      <FormControl variant='standard' sx={{ m: 1, width: props.sx.width!=null ? props.sx.width:ITEM_WIDTH }}>
-         <InputLabel id="demo-multiple-name-label" sx={{ pl:"-12px" }} shrink={false}>{props.label}</InputLabel>
+      <FormControl variant='standard' sx={{ m: 1, width: props.sx.width != null ? props.sx.width : ITEM_WIDTH }}>
+         <InputLabel id="demo-multiple-name-label" sx={{ pl: "-12px" }} shrink={false}>{props.label}</InputLabel>
          <Select
             labelId="demo-multiple-name-label"
             {...field}
