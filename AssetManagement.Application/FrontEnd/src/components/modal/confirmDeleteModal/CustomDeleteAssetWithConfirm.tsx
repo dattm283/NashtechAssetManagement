@@ -1,4 +1,4 @@
-import React, { Fragment, ReactEventHandler, ReactElement } from 'react';
+import React, { Fragment, ReactEventHandler, ReactElement, useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
@@ -24,8 +24,12 @@ import { Button as MUIButton, ButtonGroup } from '@mui/material';
 import { Confirm, DeleteButton } from 'react-admin';
 import { Button, ButtonProps } from 'react-admin';
 import { Padding } from '@mui/icons-material';
+import { getHistoricalAssignmentsCount } from "../../../services/assets";
+import axios, { AxiosResponse } from "axios";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
-export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any>(
+export const CustomDeleteAssetWithConfirmButton = <RecordType extends RaRecord = any>(
     props: DeleteWithConfirmButtonProps<RecordType>
 ) => {
     const {
@@ -47,7 +51,17 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     const translate = useTranslate();
     const record = useRecordContext(props);
     const resource = useResourceContext(props);
-
+    const [assignementsCount, setAssignementsCount] = useState({});
+    function getCount() {
+        if (record) {
+            getHistoricalAssignmentsCount(record.id)
+            .then((response) => {
+                setAssignementsCount(response.data);
+                console.log(response.data);
+            })
+            .catch(() => {});
+        }
+    }
     const {
         open,
         isLoading,
@@ -66,7 +80,6 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     const titleStype = {
         bgcolor: '#F0EBEB',
         color: "#E80E0E",
-        border: "1px solid #000",
         // borderRadius: "1px 1px 0px 0px"
         borderTopLeftRadius: "4px",
         borderTopRightRadius: "4px",
@@ -74,7 +87,6 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     }
 
     const contentStyle = {
-        border: "1px solid #000",
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
         color: "#000"
@@ -83,22 +95,30 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     const deleteButtonStyle = {
         bgcolor: "#E80E0E",
         color: "#FFFFFF",
-        border: "1px solid #000",
+        border: "1px solid #E80E0E",
         borderRadius: 1,
 
         "&:hover": {
-            color: "#000"
+            color: "#fff",
+            bgcolor: "#424242",
+            border: "1px solid #424242",
         },
     }
 
     const confirmButtonStyle = {
         bgcolor: "#F0EBEB",
         color: "#000",
-        border: "1px solid #000",
+        border: "1px solid #424242",
         borderRadius: 1,
+        "&:hover": {
+            color: "#fff",
+            bgcolor: "#424242",
+            border: "1px solid #424242",
+        },
     }
 
     const handleOpen = (e) => {
+        getCount();
         setDeleting(true);
         handleDialogOpen(e);
     } 
@@ -122,39 +142,67 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
                 className={clsx('ra-delete-button', className)}
                 key="button"
                 {...rest}
-                sx={{
-                    "span": {
-                        margin: 0
-                    }
-                }}
+                sx={{"span": { 
+                    margin: 0
+                }}}
+                disabled={props.disabled}
             >
                 {icon}
             </StyledButton>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title" sx={titleStype}>
-                    {confirmTitle}
-                </DialogTitle>
-                <DialogContent sx={contentStyle}>
-                    <DialogContentText component={"div"} id="alert-dialog-description">
-                        <DialogContentText sx={{
-                            padding: 3,
-                            paddingRight: 20
-                        }}>
-                            {confirmContent}
-                        </DialogContentText>
-                    </DialogContentText>
-                    <DialogActions>
-                        <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Disable</MUIButton>
-                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
-                        <div style={{ flex: '1 0 0' }} />
-                    </DialogActions>
-                </DialogContent>
-            </Dialog>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title" sx={titleStype}>
+                        
+                        {!(assignementsCount > 0) ? confirmTitle : 
+                        <>Cannot Delete Asset <IconButton
+                            aria-label="close"
+                            onClick={handleClose}
+                            sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "#CF2338",
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton></>}
+                    </DialogTitle>
+                    <DialogContent sx={contentStyle}>
+                        { !(assignementsCount > 0) ?
+                            <>
+                            <DialogContentText component={"div"} id="alert-dialog-description">
+                                <DialogContentText sx={{
+                                    padding: 3,
+                                    paddingRight: 20
+                                }}>
+                                    {confirmContent}
+                                </DialogContentText>
+                            </DialogContentText>
+                            <DialogActions>
+                                <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
+                                <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
+                                <div style={{ flex: '1 0 0' }} />
+                            </DialogActions>
+                            </> : <>
+                            <DialogContentText component={"div"} id="alert-dialog-description">
+                                <DialogContentText sx={{
+                                    padding: 3,
+                                    paddingRight: 20
+                                }}>
+                                    Cannot delete the asset because it belongs to one or more historical assignments.
+                                    <br/>
+                                    If the asset is not able to be used anymore, please update its state in <a href={"assets/"+record.id + "/edit"}>Edit Asset page</a>
+                                </DialogContentText>
+                            </DialogContentText>
+                            </> 
+                        }
+                        
+                    </DialogContent>
+                </Dialog>
         </Fragment>
     );
 };
@@ -184,7 +232,7 @@ export interface DeleteWithConfirmButtonProps<
     setDeleting: Function;
 }
 
-CustomDisableWithConfirmButton.propTypes = {
+CustomDeleteAssetWithConfirmButton.propTypes = {
     className: PropTypes.string,
     confirmTitle: PropTypes.string,
     confirmContent: PropTypes.string,

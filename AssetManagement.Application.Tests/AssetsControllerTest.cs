@@ -78,10 +78,6 @@ namespace AssetManagement.Application.Tests
             Assert.NotNull(response);
             Assert.Equal(expected.Name, newAsset.Name);
             Assert.Equal(user.Location, newAsset.Location);
-
-            //Re-create context for other tests
-            await _context.Database.EnsureDeletedAsync();
-            await _context.Database.EnsureCreatedAsync();
         }
 
         [Fact]
@@ -595,6 +591,27 @@ namespace AssetManagement.Application.Tests
             // Assert
             result.Should().BeOfType<BadRequestResult>();
 
+        }
+        #endregion
+
+        #region GetHistoricalAssignmentsCount
+        [Fact]
+        public async Task GetHistoricalAssignmentsCount_Success()
+        {
+            // Arrange 
+            AssetsController assetController = new AssetsController(_context, _mapper);
+            var asset = _context.Assets
+                .Where(a => !a.IsDeleted && a.Id == 0)
+                .SelectMany(a => a.Assignments)
+                .Count();
+
+            // Act 
+            var result = await assetController.GetHistoricalAssignmentsCount(0);
+            string resultObject = ConvertOkObject<int>(result);
+            string expectedObject = JsonConvert.SerializeObject(asset);
+
+            // Assert
+            Assert.Equal(resultObject, expectedObject);
         }
         #endregion
 

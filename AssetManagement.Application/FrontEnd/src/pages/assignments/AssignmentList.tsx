@@ -33,6 +33,7 @@ export default () => {
     const [isOpened, setIsOpened] = useState(false);
     const [record, setRecord] = useState();
     const [assignment, setAssignment] = useState();
+    const [deleting, setDeleting] = useState(false);
 
     const toggle = () => {
         setIsOpened(!isOpened);
@@ -62,7 +63,7 @@ export default () => {
             ]}
             alwaysOn
         />,
-        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn id="DateAssignedFilterAssignment"/>,
+        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn id="DateAssignedFilterAssignment" />,
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
 
@@ -75,14 +76,15 @@ export default () => {
             >
                 <h2 style={{ color: "#cf2338" }}>Assignment List</h2>
                 <Stack direction="row" justifyContent="end" alignContent="center">
-                    <Typography 
-                    sx={{ flexGrow: 1,
-                        "form" : {
-                            "div:nth-of-type(2)": {
-                                marginRight: "auto"
+                    <Typography
+                        sx={{
+                            flexGrow: 1,
+                            "form": {
+                                "div:nth-of-type(2)": {
+                                    marginRight: "auto"
+                                }
                             }
-                        }
-                     }}><FilterForm filters={assignmentsFilter}/></Typography>
+                        }}><FilterForm filters={assignmentsFilter} /></Typography>
                     <div style={{ display: "flex", alignItems: "end" }}>
                         <CreateButton
                             size="large"
@@ -96,7 +98,7 @@ export default () => {
                 </Stack>
 
                 <Datagrid
-                    rowClick={postRowClick}
+                    rowClick={!deleting ? postRowClick : (id, resource) => ""}
                     empty={
                         <p>
                             <h2>No Data found</h2>
@@ -115,30 +117,33 @@ export default () => {
                         <FunctionField render={(record) => {
                             if (record.state === 1) {
                                 return (
-                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                                 )
                             }
                             else {
                                 return (
-                                    <EditButton disabled variant="text" size="small" label="" 
-                                    sx={listStyle.buttonToolbar}/>
+                                    <EditButton disabled variant="text" size="small" label=""
+                                        sx={listStyle.buttonToolbar} />
                                 )
                             }
                         }} />
                         <CustomDeleteWithConfirmButton
                             icon={<HighlightOffIcon />}
                             confirmTitle="Are you sure?"
-                            confirmContent="Do you want to delete this asset?"
+                            confirmContent="Do you want to delete this assignment?"
                             mutationOptions={{ onSuccess: (data) => refresh() }}
+                            isOpen={deleting}
+                            setDeleting={setDeleting}
                         />
-                        <Button variant="text" size="small" 
-                        sx={listStyle.returningButtonToolbar}>
-                            <ReplayIcon/>
+                        <Button variant="text" size="small"
+                            sx={listStyle.returningButtonToolbar}>
+                            <ReplayIcon />
                         </Button>
                     </ButtonGroup>
                 </Datagrid>
                 <AssetsPagination />
             </ListBase>
+
             <AssignmentShow isOpened={isOpened} toggle={toggle} assignment={assignment} />
         </Container>
     );

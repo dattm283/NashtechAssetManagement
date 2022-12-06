@@ -39,12 +39,20 @@ const deleteAsset = async(id) => {
     return reponse.data;
 }
 
+const getHistoricalAssignmentsCount = async (assetCodeId) => {
+    let url = `${baseUrl}/${assetCodeId}/assignmentCount`;
+    const response = await axiosInstance.get(url);
+
+    return response;
+} 
+
 export {
     getAsset,
     getAssetById,
     createAsset,
     updateAsset,
-    deleteAsset
+    deleteAsset,
+    getHistoricalAssignmentsCount
 }
 
 

@@ -135,36 +135,6 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? order = "ASC",
             [FromQuery] string? createdId = "")
         {
-            // var listDefault = _dbContext.Assignments
-            //     .Include(x => x.Asset)
-            //     .Include(x => x.AssignedToAppUser)
-            //     .Include(x => x.AssignedByToAppUser)
-            //     .Where(x => !x.IsDeleted)
-            //     .Select(x => new ViewListAssignmentResponse
-            //     {
-            //         Id = x.Id,
-            //         AssetCode = x.Asset.AssetCode,
-            //         AssetName = x.Asset.Name,
-            //         AssignedTo = x.AssignedToAppUser.UserName,
-            //         AssignedBy = x.AssignedByToAppUser.UserName,
-            //         AssignedDate = x.AssignedDate,
-            //         State = x.State,
-            //     }).ToList();
-
-
-
-            // var list = listDefault.Select((x, index) => new ViewListAssignmentResponse
-            // {
-            //     Id = x.Id,
-            //     NoNumber = index + 1,
-            //     AssetCode = x.AssetCode,
-            //     AssetName = x.AssetName,
-            //     AssignedTo = x.AssignedTo,
-            //     AssignedBy = x.AssignedBy,
-            //     AssignedDate = x.AssignedDate,
-            //     State = x.State,
-            // }).AsQueryable<ViewListAssignmentResponse>();
-
             var list = _dbContext.Assignments
                 .Where(x => !x.IsDeleted)
                 .Select(x => new ViewListAssignmentResponse
@@ -264,17 +234,12 @@ namespace AssetManagement.Application.Controllers
 
                 sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
 
-                // var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssignmentResponse>>(sortedResultWithCreatedIdParam);
-
                 return Ok(new ViewListPageResult<ViewListAssignmentResponse> { Data = sortedResultWithCreatedIdParam, Total = list.Count() + 1 });
             }
 
             var sortedResult = StaticFunctions<ViewListAssignmentResponse>.Paging(list, start, end);
 
-            // var mappedResult = _mapper.Map<List<ViewListAssignmentResponse>>(list);
-
             return Ok(new ViewListPageResult<ViewListAssignmentResponse> { Data = sortedResult, Total = list.Count() });
-            // return Ok(listWithIndex);
         }
 
         private bool AssignmentChanged(Assignment updatingAssignment, UpdateAssignmentRequest updateRequest)

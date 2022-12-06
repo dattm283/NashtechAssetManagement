@@ -336,8 +336,13 @@ namespace AssetManagement.Application.Controllers
                         user.CreatedDate = request.JoinedDate;
                         user.Gender = (Domain.Enums.AppUser.UserGender)request.Gender;
                         user.ModifiedDate = DateTime.Now;
-                        roleKey.UserId = user.Id;
-                        roleKey.RoleId = role.Id;
+
+                        if(roleKey.RoleId != role.Id)
+                        {
+                            _dbContext.UserRoles.Remove(roleKey);
+                            roleKey = new() { UserId = user.Id, RoleId = role.Id };
+                            _dbContext.UserRoles.Add(roleKey);
+                        }
 
                         await _dbContext.SaveChangesAsync();
                         UpdateUserResponse response = _mapper.Map<UpdateUserResponse>(user);

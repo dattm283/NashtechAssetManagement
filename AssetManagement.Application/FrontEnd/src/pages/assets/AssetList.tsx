@@ -15,7 +15,7 @@ import {
     Button,
     SearchInput,
 } from "react-admin";
-import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
+import { CustomDeleteAssetWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteAssetWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
@@ -29,6 +29,7 @@ import { listStyle } from "../../styles/listStyle";
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
+    const [deleting, setDeleting] = useState(false);
     const [record, setRecord] = useState();
     // const { data } = useGetList("category", { pagination: { page: 1, perPage: 99 } })
     const dataProvider = useDataProvider();
@@ -107,7 +108,7 @@ export default () => {
                 </Stack>
 
                 <Datagrid
-                    rowClick={postRowClick}
+                    rowClick={!deleting ? postRowClick : (id, resource) => ""}
                     empty={
                         <p>
                             <h2>No Data found</h2>
@@ -124,49 +125,53 @@ export default () => {
                         render={(record) =>
                             record.state == "NotAvailable"
                                 ? "Not available"
-                                : record.state == "WaitingForRecycling" 
-                                ? "Waiting for recycling" 
-                                : record.state
+                                : record.state == "WaitingForRecycling"
+                                    ? "Waiting for recycling"
+                                    : record.state
                         }
                     />
                     <ButtonGroup sx={{ border: null }}>
                         <FunctionField render={(record) => {
                             if (!(record.state == "WaitingForRecycling" || record.state == "Assigned")) {
                                 return (
-                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                                 )
                             }
                             else {
                                 return (
-                                    <EditButton disabled variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                                    <EditButton disabled variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                                 )
                             }
                         }} />
-                        
+
                         <FunctionField render={(record) => {
                             if (!(record.state == "Assigned")) {
                                 return (
-                                    <CustomDeleteWithConfirmButton
+                                    <CustomDeleteAssetWithConfirmButton
                                         icon={<HighlightOffIcon />}
                                         confirmTitle="Are you sure?"
                                         confirmContent="Do you want to delete this asset?"
                                         mutationOptions={{ onSuccess: (data) => refresh() }}
+                                        isOpen={deleting}
+                                        setDeleting={setDeleting}
                                     />
                                 )
                             }
                             else {
                                 return (
-                                    <CustomDeleteWithConfirmButton
+                                    <CustomDeleteAssetWithConfirmButton
                                         icon={<HighlightOffIcon />}
                                         confirmTitle="Are you sure?"
                                         confirmContent="Do you want to delete this asset?"
                                         mutationOptions={{ onSuccess: (data) => refresh() }}
                                         disabled={true}
+                                        isOpen={deleting}
+                                        setDeleting={setDeleting}
                                     />
                                 )
                             }
                         }} />
-                        
+
                     </ButtonGroup>
                 </Datagrid>
                 <AssetsPagination />
