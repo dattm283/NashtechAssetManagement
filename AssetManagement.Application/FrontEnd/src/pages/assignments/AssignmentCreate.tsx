@@ -16,6 +16,7 @@ import { theme } from "../../theme";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from '@mui/icons-material/Search';
 import IconButton from "@mui/material/IconButton";
+import AssignmentCreateToolbar from "../../components/toolbar/AssignmentCreateToolbar";
 
 const AssignmentCreate = () => {
     const userChoiceRef = useRef<HTMLElement>(null);
@@ -133,7 +134,7 @@ const AssignmentCreate = () => {
                     >
                         <SimpleForm
                             validate={requiredInput}
-                            toolbar={<AssignmentEditToolbar isEnable={!isInvalid} />}
+                            toolbar={<AssignmentCreateToolbar isEnable={!isInvalid} />}
                         >
                             <Box sx={formStyle.boxStyle}>
                                 <Typography
@@ -168,6 +169,7 @@ const AssignmentCreate = () => {
                                     isOpened={userChoiceOpen}
                                     toggle={toggleUserChoice}
                                     pos={userChoicePos}
+                                    setChanged={() => {}}
                                 />
                             </Box>
                             <Box sx={formStyle.boxStyle}>
@@ -205,6 +207,7 @@ const AssignmentCreate = () => {
                                     isOpened={assetChoiceOpen}
                                     toggle={toggleAssetChoice}
                                     pos={assetChoicePos}
+                                    setChanged={() => {}}
                                 />
                             </Box>
                             <Box sx={formStyle.boxStyle}>

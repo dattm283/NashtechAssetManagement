@@ -27,7 +27,7 @@ const StyledDialogContent = styled(DialogContent)`
 }
 `;
 
-const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser }) => {
+const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser, setChanged }) => {
     const [tempChoice, setTempChoice] = useState(selectedUser);
     const postRowClick = (id, resource, record) => {
         setTempChoice(record.staffCode);
@@ -44,6 +44,9 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser 
 
     const handleSave = () => {
         setSelectedUser(tempChoice);
+        if (tempChoice !== selectedUser) {
+            setChanged(true);
+        }
         toggle();
     }
 
