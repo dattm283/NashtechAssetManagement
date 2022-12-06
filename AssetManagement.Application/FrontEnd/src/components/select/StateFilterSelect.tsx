@@ -20,7 +20,7 @@ export default (props) => {
       PaperProps: {
          style: {
             // maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: props.sx.width!=null ? props.sx.width : ITEM_WIDTH,
+            width: props.sx.width != null ? props.sx.width : ITEM_WIDTH,
          },
       },
    };
@@ -57,7 +57,8 @@ export default (props) => {
 
    useEffect(() => {
       setPerPage(5);
-      setStates(filterValues.states ? filterValues.states : []);
+      console.log(props.defaultSelect);
+      setStates(props.defaultSelect);
       var tmp = filterValues.categories;
    }, [])
 
@@ -69,8 +70,8 @@ export default (props) => {
       setStates(arr);
    }
    return (
-      <FormControl variant='standard' sx={{ m: 1, width: props.sx.width!=null ? props.sx.width:ITEM_WIDTH }}>
-         <InputLabel id="demo-multiple-name-label" sx={{ pl:"-12px" }} shrink={false}>{props.label}</InputLabel>
+      <FormControl variant='standard' sx={{ m: 1, width: props.sx.width != null ? props.sx.width : ITEM_WIDTH }}>
+         <InputLabel id="demo-multiple-name-label" sx={{ pl: "-12px" }} shrink={false}>{props.label}</InputLabel>
          <Select
             labelId="demo-multiple-name-label"
             {...field}

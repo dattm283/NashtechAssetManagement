@@ -69,6 +69,7 @@ export default () => {
                 { value: "3", text: "Recycled" },
 
             ]}
+            defaultSelect={["0", "1", "4"]}
             alwaysOn
         />,
         <CategoryFilterSelect source="categories" statesList={data} alwaysOn />,

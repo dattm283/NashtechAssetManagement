@@ -39,6 +39,7 @@ export default () => {
                 { value: "Staff", text: "Staff" },
             ]}
             alwaysOn
+            defaultSelect={["Admin", "Staff"]}
         />,
         <SearchInput
             InputLabelProps={{ shrink: false }}
