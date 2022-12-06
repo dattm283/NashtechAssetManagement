@@ -85,6 +85,7 @@ const AssignmentEdit = () => {
             note: "",
             assignedDate: ""
         };
+        let displayErrors = {}
         let today = new Date();
         today.setDate(today.getDate() - 1);
         let yesterday = today.toISOString();
@@ -101,7 +102,13 @@ const AssignmentEdit = () => {
             setIsInvalid(false);
             return {};
         }
-        return errors;
+        if (errors.note) {
+            displayErrors = {...displayErrors, note: errors.note}
+        }
+        if (errors.assignedDate) {
+            displayErrors = {...displayErrors, assignedDate: errors.assignedDate}
+        }
+        return displayErrors;
     };
 
     return (

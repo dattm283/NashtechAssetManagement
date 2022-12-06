@@ -54,6 +54,10 @@ export default (props) => {
 
    useEffect(() => {
       setPerPage(5)
+      props.statesList.then(res => {
+         var mappedId = res.map(s => s.id);
+         setStates(mappedId);
+      })
    }, [])
 
    const handleSelectAll = (list) => {
@@ -67,7 +71,6 @@ export default (props) => {
       props.statesList.then(res => {
          setCategoriesList(res);
 
-
          var tmp = (<FormControl variant='standard' sx={{ m: 1, width: 250 }}>
             <InputLabel id="demo-multiple-name" shrink={false}>Category</InputLabel>
             <Select
@@ -76,7 +79,7 @@ export default (props) => {
                {...field}
                multiple
                value={states}
-               renderValue={(selected) => "Categories"}
+               renderValue={(selected) => ""}
                onChange={(e) => handleChange(e, res)}
                MenuProps={MenuProps}
                IconComponent={() => <FilterAltIcon />}

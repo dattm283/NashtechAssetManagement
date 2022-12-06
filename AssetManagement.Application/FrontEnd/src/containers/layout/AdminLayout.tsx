@@ -53,15 +53,15 @@ const App = () => {
     console.log("permissionsAdminlayout", permissions)
     const checkIsLoginFirstTime = (currentPassword) => {
         authService.getUserProfile()
-        .then(data => {
-            if (data.isLoginFirstTime) {
-                setLoginFirstTime(true);
-                localStorage.setItem("currentPassword", encrypt(currentPassword))
-                localStorage.setItem('loginFirstTime', "new");
-            } else {
-                setPermissions(localStorage.getItem("permissions") || '')
-                refresh();
-            }
+            .then(data => {
+                if (data.isLoginFirstTime) {
+                    setLoginFirstTime(true);
+                    localStorage.setItem("currentPassword", encrypt(currentPassword))
+                    localStorage.setItem('loginFirstTime', "new");
+                } else {
+                    setPermissions(localStorage.getItem("permissions") || '')
+                    refresh();
+                }
             })
             .catch(error => {
                 console.log(error)

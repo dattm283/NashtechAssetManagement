@@ -52,7 +52,7 @@ export default () => {
             <Title title="Manage User" />
             <ListBase
                 perPage={5}
-                sort={{ field: "fullName", order: "DESC" }}
+                sort={{ field: "staffCode", order: "ASC" }}
                 filterDefaultValues={{ states: ["Staff", "Admin"] }}
             >
                 <h2 style={{ color: "#cf2338" }}>User List</h2>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Datagrid,
     List,
@@ -41,7 +41,10 @@ export default () => {
         })
         .then((res) => res.data);
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        localStorage.removeItem("RaStore.assets.listParams");
+    }, [])
+
     const toggle = () => {
         setIsOpened(!isOpened);
     };
@@ -81,7 +84,7 @@ export default () => {
             <Title title="Manage Asset" />
             <ListBase
                 perPage={5}
-                sort={{ field: "name", order: "DESC" }}
+                sort={{ field: "assetCode", order: "ASC" }}
                 filterDefaultValues={{ states: ["0", "1", "4"] }}
             >
                 <h2 style={{ color: "#cf2338" }}>Asset List</h2>
@@ -132,7 +135,7 @@ export default () => {
                     />
                     <ButtonGroup sx={{ border: null }}>
                         <FunctionField render={(record) => {
-                            if (!(record.state == "WaitingForRecycling" || record.state == "Assigned")) {
+                            if (!(record.state == "Assigned")) {
                                 return (
                                     <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                                 )
