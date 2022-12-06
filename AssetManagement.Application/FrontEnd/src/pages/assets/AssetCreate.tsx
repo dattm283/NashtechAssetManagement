@@ -164,7 +164,6 @@ function NewCategoryCreate() {
                                         label=""
                                         name="installedDate"
                                         source="installedDate"
-                                        defaultValue={currentDay}
                                         InputLabelProps={{ shrink: false }}
                                         validate={minValue(currentDay)}
                                         onBlur={(e) => e.stopPropagation()}
