@@ -19,19 +19,19 @@ import { getAssignementByAssetCodeId } from "../../services/assignment";
 
 // Style for Modal
 const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    m: "0px",
-    package: "0px",
-    transform: "translate(-50%, -50%)",
-    display: "flex",
-    flexDirection: "column",
-    width: 650,
-    bgcolor: "background.paper",
-    border: "0px solid white",
-    borderRadius: "10px",
-    boxShadow: 24,
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  m: "0px",
+  package: "0px",
+  transform: "translate(-50%, -50%)",
+  display: "flex",
+  flexDirection: "column",
+  width: 750,
+  bgcolor: "background.paper",
+  border: "0px solid white",
+  borderRadius: "10px",
+  boxShadow: 24,
 };
 
 const StyledModal = styled(Modal)`

@@ -598,6 +598,27 @@ namespace AssetManagement.Application.Tests
         }
         #endregion
 
+        #region GetHistoricalAssignmentsCount
+        [Fact]
+        public async Task GetHistoricalAssignmentsCount_Success()
+        {
+            // Arrange 
+            AssetsController assetController = new AssetsController(_context, _mapper);
+            var asset = _context.Assets
+                .Where(a => !a.IsDeleted && a.Id == 0)
+                .SelectMany(a => a.Assignments)
+                .Count();
+
+            // Act 
+            var result = await assetController.GetHistoricalAssignmentsCount(0);
+            string resultObject = ConvertOkObject<int>(result);
+            string expectedObject = JsonConvert.SerializeObject(asset);
+
+            // Assert
+            Assert.Equal(resultObject, expectedObject);
+        }
+        #endregion
+
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
             await _context.Database.EnsureDeletedAsync();
