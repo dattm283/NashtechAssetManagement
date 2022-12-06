@@ -72,7 +72,7 @@ export default () => {
             <Title title="Manage Assignment" />
             <ListBase
                 perPage={5}
-                sort={{ field: "noNumber", order: "DESC" }}
+                sort={{ field: "noNumber", order: "ASC" }}
             >
                 <h2 style={{ color: "#cf2338" }}>Assignment List</h2>
                 <Stack direction="row" justifyContent="end" alignContent="center">

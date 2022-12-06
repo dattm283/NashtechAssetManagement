@@ -137,7 +137,7 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? searchString = "",
             [FromQuery] string? categoryFilter = "",
             [FromQuery] string? stateFilter = "0&1&4&",
-            [FromQuery] string? sort = "name",
+            [FromQuery] string? sort = "assetCode",
             [FromQuery] string? order = "ASC",
             [FromQuery] string? createdId = "")
         {
