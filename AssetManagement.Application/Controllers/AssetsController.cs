@@ -142,7 +142,7 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? createdId = "")
         {
             var username = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
-            var user = _dbContext.Users.First(x => x.UserName == username);
+            var user = _dbContext.Users.FirstOrDefault(x => x.UserName == username);
             var list = _dbContext.Assets
                 .Include(x => x.Category)
                 .Where(x => !x.IsDeleted && x.Location == user.Location);
