@@ -15,7 +15,8 @@ import {
     CreateButton,
     Button,
     SearchInput,
-    useRecordContext
+    useRecordContext,
+    DeleteButton
 } from "react-admin";
 import { CustomDeleteWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteWithConfirm";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -117,27 +118,32 @@ export default () => {
                         <FunctionField render={(record) => {
                             if (record.state === 1) {
                                 return (
-                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
+                                    <ButtonGroup>
+                                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                                        <CustomDeleteWithConfirmButton
+                                            icon={<HighlightOffIcon />}
+                                            confirmTitle="Are you sure?"
+                                            confirmContent="Do you want to delete this asset?"
+                                            mutationOptions={{ onSuccess: () => refresh() }} isOpen={deleting} setDeleting={setDeleting}/>
+                                    </ButtonGroup>
+                                    
                                 )
                             }
                             else {
                                 return (
-                                    <EditButton disabled variant="text" size="small" label=""
-                                        sx={listStyle.buttonToolbar} />
+                                    <ButtonGroup>
+                                        <EditButton disabled variant="text" size="small" label="" 
+                                        sx={listStyle.buttonToolbar}/>
+                                        <DeleteButton icon={<HighlightOffIcon />} disabled variant="text" size="small" label="" 
+                                        sx={listStyle.buttonToolbar}/>
+                                    </ButtonGroup>
                                 )
                             }
                         }} />
-                        <CustomDeleteWithConfirmButton
-                            icon={<HighlightOffIcon />}
-                            confirmTitle="Are you sure?"
-                            confirmContent="Do you want to delete this assignment?"
-                            mutationOptions={{ onSuccess: (data) => refresh() }}
-                            isOpen={deleting}
-                            setDeleting={setDeleting}
-                        />
-                        <Button variant="text" size="small"
-                            sx={listStyle.returningButtonToolbar}>
-                            <ReplayIcon />
+                        
+                        <Button variant="text" size="small" 
+                        sx={listStyle.returningButtonToolbar}>
+                            <ReplayIcon/>
                         </Button>
                     </ButtonGroup>
                 </Datagrid>

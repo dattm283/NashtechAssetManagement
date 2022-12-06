@@ -261,13 +261,18 @@ namespace AssetManagement.Application.Controllers
             Assignment? assignment = await _dbContext.Assignments.FirstOrDefaultAsync(a => a.Id == id && !a.IsDeleted);
             if (assignment != null)
             {
-                try
+                if (assignment.State == State.WaitingForAcceptance)
                 {
-                    assignment.IsDeleted = true;
-                    await _dbContext.SaveChangesAsync();
-                    return Ok(_mapper.Map<AssignmentResponse>(assignment));
+                    try
+                    {
+                        assignment.IsDeleted = true;
+                        await _dbContext.SaveChangesAsync();
+                        return Ok(_mapper.Map<AssignmentResponse>(assignment));
+                    }
+                    catch (Exception e) { return BadRequest(e.Message); }
                 }
-                catch (Exception e) { return BadRequest(e.Message); }
+
+                else return BadRequest("Assignment is Accepted and cannot be deleted");
             }
             return NotFound("Assignment does not exist");
         }

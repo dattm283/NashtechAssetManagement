@@ -620,11 +620,10 @@ namespace AssetManagement.Application.Tests
         #region DeleteSuccess
         [Theory]
         [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(4)]
+        [InlineData(3)]
         [InlineData(5)]
+        [InlineData(7)]
         [InlineData(9)]
-        [InlineData(10)]
         public async Task Delete_SuccessAsync(int id)
         {
             //ARRANGE
@@ -640,6 +639,27 @@ namespace AssetManagement.Application.Tests
             Assert.IsType<OkObjectResult>(result);
             Assert.True(deleted.IsDeleted);
             Assert.Equal(JsonConvert.SerializeObject(expected), data);
+        }
+        #endregion
+
+        #region Delete_Accepted
+        [Theory]
+        [InlineData(2)]
+        [InlineData(4)]
+        [InlineData(6)]
+        public async Task Delete_AcceptedAsync(int id)
+        {
+            //ARRANGE
+            AssignmentsController controller = new(_context, _userManager, _mapper);
+
+            //ACT
+            IActionResult result = await controller.DeleteAsync(id);
+            string data = ConvertStatusCode(result);
+
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("\"Assignment is Accepted and cannot be deleted\"", data);
         }
         #endregion
 
@@ -688,6 +708,7 @@ namespace AssetManagement.Application.Tests
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
+            await _context.Database.EnsureDeletedAsync();
             await _context.DisposeAsync();
         }
     }
