@@ -13,7 +13,6 @@ const InputWithSelectModal = ({ handleClick, source, innerRef }) => {
             }}
         >
             <TextInput
-                id="edit_assignment_user_choice"
                 fullWidth
                 label={false}
                 name={source}
