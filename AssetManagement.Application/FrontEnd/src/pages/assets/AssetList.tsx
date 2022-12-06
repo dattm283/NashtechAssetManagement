@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Datagrid,
     List,
@@ -41,7 +41,10 @@ export default () => {
         })
         .then((res) => res.data);
 
-    const navigate = useNavigate();
+    useEffect(() => {
+        localStorage.removeItem("RaStore.assets.listParams");
+    }, [])
+
     const toggle = () => {
         setIsOpened(!isOpened);
     };
