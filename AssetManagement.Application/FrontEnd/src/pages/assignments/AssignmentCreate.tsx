@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, CreateBase, useListContext, SearchInput, Button } from "react-admin";
+import { TextInput, DateInput, SimpleForm, Title, EditBase, useRefresh, Edit, CreateBase, useListContext, SearchInput, Button, minValue } from "react-admin";
 import { useParams } from "react-router-dom";
 import { Box, Typography, Container } from "@mui/material";
 import {
@@ -38,6 +38,11 @@ const AssignmentCreate = () => {
     const { id } = useParams();
     let appTheme = createTheme(theme);
     appTheme = unstable_createMuiStrictModeTheme(appTheme);
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    var yyyy = String(today.getFullYear());
+    var currentDay = yyyy + "-" + mm + "-" + dd;
     const { setSort } = useListContext();
     const toggleAssetChoice = () => {
         setAssetChoiceOpen(!assetChoiceOpen);
@@ -90,7 +95,6 @@ const AssignmentCreate = () => {
         let today = new Date();
         today.setDate(today.getDate() - 1);
         let yesterday = today.toISOString();
-        console.log(values.assignedDate < yesterday);
         if (!values.note) {
             errors.note = "This is required";
         }
@@ -161,6 +165,7 @@ const AssignmentCreate = () => {
                                                 </IconButton>
                                             </InputAdornment>,
                                     }}
+                                    disabled
                                 />
 
                                 <SelectUserModal
@@ -169,7 +174,7 @@ const AssignmentCreate = () => {
                                     isOpened={userChoiceOpen}
                                     toggle={toggleUserChoice}
                                     pos={userChoicePos}
-                                    setChanged={() => {}}
+                                    setChanged={() => { }}
                                 />
                             </Box>
                             <Box sx={formStyle.boxStyle}>
@@ -199,6 +204,7 @@ const AssignmentCreate = () => {
                                                 </IconButton>
                                             </InputAdornment>,
                                     }}
+                                    disabled
                                 />
 
                                 <SelectAssetModal
@@ -207,7 +213,7 @@ const AssignmentCreate = () => {
                                     isOpened={assetChoiceOpen}
                                     toggle={toggleAssetChoice}
                                     pos={assetChoicePos}
-                                    setChanged={() => {}}
+                                    setChanged={() => { }}
                                 />
                             </Box>
                             <Box sx={formStyle.boxStyle}>
@@ -226,6 +232,7 @@ const AssignmentCreate = () => {
                                     onBlur={(e) => e.stopPropagation()}
                                     sx={formStyle.textInputStyle}
                                     helperText={false}
+                                    inputProps={{ min: currentDay }}
                                 />
                             </Box>
                             <Box sx={formStyle.boxStyle}>
