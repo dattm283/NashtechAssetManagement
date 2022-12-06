@@ -108,14 +108,19 @@ export default () => {
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
                         <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
-                        <CustomDisableWithConfirmButton
-                            icon={<HighlightOffIcon />}
-                            confirmTitle="Are you sure?"
-                            confirmContent="Do you want to disable this user?"
-                            mutationOptions={{ onSuccess: (data) => refresh() }}
-                            isOpen={deleting}
-                            setDeleting={setDeleting}
-                        />
+                        <FunctionField source="userName" render={data => {
+                            if (data.userName != localStorage.getItem("userName")) {
+                                return <CustomDisableWithConfirmButton
+                                    icon={<HighlightOffIcon />}
+                                    confirmTitle="Are you sure?"
+                                    confirmContent="Do you want to disable this user?"
+                                    mutationOptions={{ onSuccess: (data) => refresh() }}
+                                    isOpen={deleting}
+                                    setDeleting={setDeleting}
+                                />
+                            }
+                        }} />
+
                     </ButtonGroup>
 
                 </Datagrid>

@@ -111,9 +111,10 @@ const AssignmentCreate = () => {
 
     const requiredInput = (values) => {
         const errors: Record<string, any> = {};
-        let today = new Date();
+        let today = new Date(currentDay);
         today.setDate(today.getDate() - 1);
         let yesterday = today.toISOString();
+        console.log(values.assignedDate < yesterday);
         if (!values.note) {
             errors.note = "This is required";
         }
@@ -131,8 +132,12 @@ const AssignmentCreate = () => {
         }
         if (Object.keys(errors).length === 0) {
             setIsInvalid(false);
+        } else if (errors.assignedDate) {
+            setIsInvalid(true);
+            return { assignedDate: errors.assignedDate };
         } else {
             setIsInvalid(true);
+            return {};
         }
         console.log(errors);
         return errors;
@@ -156,6 +161,7 @@ const AssignmentCreate = () => {
                     // mutationMode="pessimistic"
                     >
                         <SimpleForm
+                            mode="onChange"
                             validate={requiredInput}
                             toolbar={<AssignmentCreateToolbar isEnable={!isInvalid} />}
                         >
