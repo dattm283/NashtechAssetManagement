@@ -117,7 +117,7 @@ namespace AssetManagement.Application.Controllers
 
             //auto generate password
             string dateOfBirth = userRequest.Dob.ToString("ddMMyyyy");
-            string password = $"{username}@{dateOfBirth}";
+            string password = $"{newUsername}@{dateOfBirth}";
 
             var user = new AppUser
             {
