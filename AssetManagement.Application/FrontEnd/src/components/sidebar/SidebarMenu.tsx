@@ -8,13 +8,21 @@ import { sidebarMenuStyle } from '../../styles/sidebarMenuStyle';
 // import 
 const SidebarMenu = () => {
     const { isLoading, permissions } = usePermissions();
-    const [currentPage, setCurrentPage] = useState("home");
 
-    useEffect(() => {
-        if (localStorage.getItem(`RaStore.${currentPage}.listParams`)) {
-            localStorage.removeItem(`RaStore.${currentPage}.listParams`);
-        }
-    })
+    const removeItems = (currentPage) => {
+        var listResource = ["home", "user", "assets", "assignments"];
+        var mappedResource = listResource.map((resource) => {
+            if (resource != currentPage) {
+                return resource;
+            }
+        });
+
+        mappedResource.forEach((resource) => {
+            if (localStorage.getItem(`RaStore.${resource}.listParams`)) {
+                localStorage.removeItem(`RaStore.${resource}.listParams`);
+            }
+        })
+    }
     return (
         <Menu
             sx={sidebarMenuStyle.menuStyle}
@@ -28,9 +36,9 @@ const SidebarMenu = () => {
             />
             <Typography variant="h3" component="h2" color="secondary" fontSize='1rem' fontWeight="bold" className="appTitleMenuBar" mb={3}>Online Asset Management</Typography>
             <li><Menu.Item to="/home" primaryText="Home" /></li>
-            {permissions === 'Admin' ? <li onClick={() => setCurrentPage("user")}><Menu.Item to="/user" primaryText="Manage User" /></li> : null}
-            {permissions === 'Admin' ? <li onClick={() => setCurrentPage("assets")}><Menu.Item to="/assets" primaryText="Manage Asset" /></li> : null}
-            {permissions === 'Admin' ? <li onClick={() => setCurrentPage("assignments")}><Menu.Item to="/assignments" primaryText="Manage Assignment" /></li> : null}
+            {permissions === 'Admin' ? <li onClick={() => removeItems("user")}><Menu.Item to="/user" primaryText="Manage User" /></li> : null}
+            {permissions === 'Admin' ? <li onClick={() => removeItems("assets")}><Menu.Item to="/assets" primaryText="Manage Asset" /></li> : null}
+            {permissions === 'Admin' ? <li onClick={() => removeItems("assignments")}><Menu.Item to="/assignments" primaryText="Manage Assignment" /></li> : null}
             {permissions === 'Admin' ? <li><Menu.Item to="/returning" primaryText="Request for Returning" /></li> : null}
             {permissions === 'Admin' ? <li><Menu.Item to="/report" primaryText="Report" /></li> : null}
         </Menu >

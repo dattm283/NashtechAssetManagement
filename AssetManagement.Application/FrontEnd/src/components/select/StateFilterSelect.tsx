@@ -27,7 +27,7 @@ export default (props) => {
 
    const { setFilters, displayedFilters, setPerPage, filterValues } = useListContext();
 
-   const [states, setStates] = useState<string[]>([]);
+   const [states, setStates] = useState<string[]>(props.defaultSelect);
 
    const handleChange = (event: SelectChangeEvent<typeof states>) => {
       const {
@@ -52,7 +52,6 @@ export default (props) => {
    useEffect(() => {
       var tmp = filterValues.categories;
       setFilters({ states: states, categories: tmp }, displayedFilters);
-      console.log(states);
    }, [states])
 
    useEffect(() => {

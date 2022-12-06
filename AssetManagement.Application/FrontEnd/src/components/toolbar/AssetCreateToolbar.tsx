@@ -15,9 +15,8 @@ const AssetCreateToolbar = ({ disable }) => {
                 label="Save"
                 mutationOptions={{
                     onSuccess: () => {
-                        // notify('Element updated');
-                        localStorage.setItem("RaStore.assets.listParams", 
-                        `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"name"}`)
+                        localStorage.removeItem("RaStore.assets.listParams");
+                        notify('Asset created successfully!');
                         navigate("/assets")
                     }}
                 }
@@ -29,7 +28,10 @@ const AssetCreateToolbar = ({ disable }) => {
             />
             <Button
                 variant="outlined"
-                onClick={(e) => navigate("/assets")}
+                onClick={(e) => {
+                    localStorage.removeItem("RaStore.assets.listParams");
+                    navigate("/assets")
+                }}
                 color="secondary"
             >Cancel</Button>
         </Toolbar>

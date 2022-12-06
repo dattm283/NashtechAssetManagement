@@ -18,9 +18,8 @@ const AssignmentEditToolbar = ({ isEnable, changed }) => {
                     label="Save"
                     mutationOptions={{
                         onSuccess: () => {
-                            localStorage.setItem("RaStore.assignments.listParams",
-                                `{"displayedFilters":{},"filter":{},"order":"DESC","page":1,"perPage":5,"sort":"noNumber"}`)
-                            notify('Element updated');
+                            localStorage.removeItem("RaStore.assignments.listParams")
+                            notify('Assignment edited successfully!');
                             navigate("/assignments")
                         }
                     }
@@ -33,7 +32,10 @@ const AssignmentEditToolbar = ({ isEnable, changed }) => {
 
                 <Button
                     variant="outlined"
-                    onClick={(e) => navigate("/assignments")}
+                    onClick={(e) => {
+                        localStorage.removeItem("RaStore.assignments.listParams")
+                        navigate("/assignments")
+                    }}
                     color="secondary"
                 >Cancel</Button>
             </Toolbar>
