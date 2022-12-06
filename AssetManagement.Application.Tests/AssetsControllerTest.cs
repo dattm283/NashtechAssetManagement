@@ -78,10 +78,6 @@ namespace AssetManagement.Application.Tests
             Assert.NotNull(response);
             Assert.Equal(expected.Name, newAsset.Name);
             Assert.Equal(user.Location, newAsset.Location);
-
-            //Re-create context for other tests
-            await _context.Database.EnsureDeletedAsync();
-            await _context.Database.EnsureCreatedAsync();
         }
 
         [Fact]

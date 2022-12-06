@@ -875,10 +875,12 @@ namespace AssetManagement.Application.Tests
         #endregion
 
         #region EditUser
-#nullable disable
+        #nullable disable
         [Theory]
         [InlineData(0)]
         [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
         public async Task EditUser_SuccessAsync(int index)
         {
             //ARRANGE
@@ -1061,12 +1063,6 @@ namespace AssetManagement.Application.Tests
             Assert.Equal(((ErrorResponseResult<string>)expected.Value).Message, ((ErrorResponseResult<string>)result).Message);
         }
         #endregion
-
-        public void Dispose()
-        {
-            _context.Database.EnsureDeleted();
-            _context.Dispose();
-        }
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
