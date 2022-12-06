@@ -166,7 +166,6 @@ function NewCategoryCreate() {
                                         source="installedDate"
                                         defaultValue={currentDay}
                                         InputLabelProps={{ shrink: false }}
-                                        inputProps={{ min: currentDay }}
                                         validate={minValue(currentDay)}
                                         onBlur={(e) => e.stopPropagation()}
                                         sx={formStyle.textInputStyle}
