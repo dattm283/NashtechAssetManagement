@@ -40,9 +40,12 @@ const ChangePasswordModal = ({
         };
         if (!values.newPassword) {
             errors.newPassword = "This is required";
-        } else if(values.newPassword.length < 6) {
-            errors.newPassword = "Password must have more than 5 character"
-        } else {
+        } else if (values.newPassword.length < 6) {
+            errors.newPassword = "Password must have more than 5 characters"
+        } else if (values.newPassword.length > 50) {
+            errors.newPassword = "Password must have least than 50 characters"
+        }
+        else {
             return {};
         }
         return errors;
@@ -103,51 +106,51 @@ const ChangePasswordModal = ({
 
     return (
         <ThemeProvider theme={theme}>
-        <Dialog
-            open={loginFirstTime}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title" sx={style}>
-                {"Change Password"}
-            </DialogTitle>
-            <DialogContent>
-                <DialogContentText component={"div"} id="alert-dialog-description" sx={container}>
-                    <DialogContentText sx={dialogContentTextStyle}>
-                        This is the first time you login. <br />
-                        You have to change the password to continue
-                    </DialogContentText>
+            <Dialog
+                open={loginFirstTime}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title" sx={style}>
+                    {"Change Password"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText component={"div"} id="alert-dialog-description" sx={container}>
+                        <DialogContentText sx={dialogContentTextStyle}>
+                            This is the first time you login. <br />
+                            You have to change the password to continue
+                        </DialogContentText>
 
-                    <Form onSubmit={handleChangePassword} validate={requiredInput}>
-                        <Grid container>
+                        <Form onSubmit={handleChangePassword} validate={requiredInput}>
                             <Grid container>
-                                <Grid item sm={4} xs={12}>
-                                <Typography
-                                    sx={typographyStyle}
-                                >New password:</Typography>
+                                <Grid container>
+                                    <Grid item sm={4} xs={12}>
+                                        <Typography
+                                            sx={typographyStyle}
+                                        >New password:</Typography>
+                                    </Grid>
+                                    <Grid item sm={8} xs={12}>
+                                        <PasswordInput
+                                            fullWidth
+                                            label={false}
+                                            InputLabelProps={{ shrink: false }}
+                                            source="newPassword"
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid item sm={8} xs={12}>
-                                    <PasswordInput 
-                                        fullWidth
-                                        label={false}
-                                        InputLabelProps={{ shrink: false }}
-                                        source="newPassword" 
-                                    />
+                                <Grid container columnSpacing={2} justifyContent="flex-end">
+                                    <Grid item sm={2.5} xs={6}>
+                                        <SaveButton label='Save' color="secondary" sx={buttonStyle} type="submit" icon={<></>} />
+                                    </Grid>
+                                    <Grid item sm={2.5} xs={6}>
+                                        <Button type="button" color="primary" onClick={handleLogout} sx={logoutButtonStyle}>Logout</Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid container columnSpacing={2} justifyContent="flex-end">
-                                <Grid item sm={2.5} xs={6}>
-                                    <SaveButton label='Save' color="secondary" sx={buttonStyle} type="submit" icon={<></>}/>
-                                </Grid>
-                                <Grid item sm={2.5} xs={6}>
-                                    <Button type="button" color="primary" onClick={handleLogout} sx={logoutButtonStyle}>Logout</Button>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Form>
-                </DialogContentText>
-            </DialogContent>
-        </Dialog>
+                        </Form>
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
         </ThemeProvider>
     )
 }
