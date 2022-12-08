@@ -125,7 +125,7 @@ namespace AssetManagement.Application.Controllers
             {
                 if (slice.Length > 0)
                 {
-                    fullFirstName += slice.ToString();
+                    fullFirstName += slice.ToString() + " ";
                 }
             }
 
@@ -134,14 +134,14 @@ namespace AssetManagement.Application.Controllers
             {
                 if (slice.Length > 0)
                 {
-                    fullLastName += slice.ToString();
+                    fullLastName += slice.ToString() + " ";
                 }
             }
             var user = new AppUser
             {
                 StaffCode = staffCode,
-                FirstName = fullFirstName,
-                LastName = fullLastName,
+                FirstName = fullFirstName.Trim(),
+                LastName = fullLastName.Trim(),
                 IsLoginFirstTime = true,
                 Dob = userRequest.Dob,
                 CreatedDate = userRequest.JoinedDate,
