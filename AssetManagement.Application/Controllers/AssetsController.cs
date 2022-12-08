@@ -225,15 +225,18 @@ namespace AssetManagement.Application.Controllers
             if (!string.IsNullOrEmpty(createdId))
             {
                 Asset recentlyCreatedItem = list.Where(item => item.Id == int.Parse(createdId)).AsNoTracking().FirstOrDefault();
-                list = list.Where(item => item.Id != int.Parse(createdId));
+                if(recentlyCreatedItem != null)
+                {
+                    list = list.Where(item => item.Id != int.Parse(createdId));
 
-                var sortedResultWithCreatedIdParam = StaticFunctions<Asset>.Paging(list, start, end-1);
+                    var sortedResultWithCreatedIdParam = StaticFunctions<Asset>.Paging(list, start, end - 1);
 
-                sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
+                    sortedResultWithCreatedIdParam.Insert(0, recentlyCreatedItem);
 
-                var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssetsResponse>>(sortedResultWithCreatedIdParam);
+                    var mappedResultWithCreatedIdParam = _mapper.Map<List<ViewListAssetsResponse>>(sortedResultWithCreatedIdParam);
 
-                return Ok(new ViewListPageResult<ViewListAssetsResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() + 1});
+                    return Ok(new ViewListPageResult<ViewListAssetsResponse> { Data = mappedResultWithCreatedIdParam, Total = list.Count() + 1 });
+                }
             }
 
             var sortedResult = StaticFunctions<Asset>.Paging(list, start, end);
