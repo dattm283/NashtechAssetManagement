@@ -48,8 +48,10 @@ export default (props) => {
    };
 
    useEffect(() => {
-      var tmp = filterValues.states;
-      setFilters({ categories: states, states: tmp }, displayedFilters);
+      var states = filterValues.states;
+      var searchString = filterValues.searchString;
+      console.log(filterValues);
+      setFilters({ categories: states, states: states, searchString: searchString }, displayedFilters);
    }, [states])
 
    useEffect(() => {
