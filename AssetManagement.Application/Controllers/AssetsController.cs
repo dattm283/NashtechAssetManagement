@@ -25,7 +25,7 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
         [HttpGet("{id}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAssetById(int id)
         {
             Asset gettingAsset = await _dbContext.Assets
@@ -144,6 +144,7 @@ namespace AssetManagement.Application.Controllers
             var user = _dbContext.Users.FirstOrDefault(x => x.UserName == username);
             var list = _dbContext.Assets
                 .Include(x => x.Category)
+                .Include(x => x.Assignments)
                 .Where(x => !x.IsDeleted && x.Location == user.Location);
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -225,7 +226,7 @@ namespace AssetManagement.Application.Controllers
             if (!string.IsNullOrEmpty(createdId))
             {
                 Asset recentlyCreatedItem = list.Where(item => item.Id == int.Parse(createdId)).AsNoTracking().FirstOrDefault();
-                if(recentlyCreatedItem != null)
+                if (recentlyCreatedItem != null)
                 {
                     list = list.Where(item => item.Id != int.Parse(createdId));
 
@@ -248,7 +249,8 @@ namespace AssetManagement.Application.Controllers
 
         [HttpGet("{id}/assignmentCount")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetHistoricalAssignmentsCount(int id) {
+        public async Task<IActionResult> GetHistoricalAssignmentsCount(int id)
+        {
             var historicalAssignmentsCount = _dbContext.Assets
                 .Where(a => !a.IsDeleted && a.Id == id)
                 .SelectMany(a => a.Assignments)
