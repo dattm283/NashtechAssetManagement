@@ -44,33 +44,40 @@ function NewCategoryCreate() {
     }, []);
 
     const requiredInput = (values) => {
-        const errors = {
-            name: "",
-            categoryId: "",
-            specification: "",
-            installedDate: "",
-            state: "",
-        };
+        const errors: Record<string, any> = {};
         if (!values.name || values.name.trim().length === 0) {
             errors.name = "This is required";
-            setIsValid(true);
-        } else if (!values.categoryId) {
+        } else if (values.name.trim().length > 100) {
+            errors.name = "This field must be least than 100 characters";
+        }
+
+        if (!values.categoryId) {
             errors.categoryId = "This is required";
-            setIsValid(true);
-        } else if (values.installedDate == null) {
+        }
+        if (values.installedDate == null) {
             errors.installedDate = "This is required";
-            setIsValid(true);
-        } else if (!values.specification || values.specification.trim().length === 0) {
+        }
+        if (!values.specification || values.specification.trim().length === 0) {
             errors.specification = "This is required";
-            setIsValid(true);
-        } else if (!values.state) {
+        } else if (values.specification.trim().length > 500) {
+            errors.specification = "This field must be least than 500 characters";
+        }
+
+        if (!values.state) {
             errors.state = "This is required";
-            setIsValid(true);
-        } else {
+        }
+        if (Object.keys(errors).length === 0) {
             setIsValid(false);
+        } else {
+            setIsValid(true);
+        }
+        if (errors.name == "This field must be least than 100 characters") {
+            return { name: "This field must be least than 100 characters" };
+        } else if (errors.specification == "This field must be least than 500 characters") {
+            return { specification: "This field must be least than 500 characters" }
+        } else {
             return {};
         }
-        return errors;
     };
 
     return (
@@ -89,6 +96,7 @@ function NewCategoryCreate() {
                     <CreateBase
                         redirect="show">
                         <SimpleForm
+                            mode="onBlur"
                             validate={requiredInput}
                             toolbar={<AssetCreateToolbar disable={isValid} />}
                         >

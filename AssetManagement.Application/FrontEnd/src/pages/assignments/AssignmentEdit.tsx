@@ -92,7 +92,10 @@ const AssignmentEdit = () => {
         if (!values.note || values.note.trim().length === 0) {
             errors.note = "This is required";
             setIsInvalid(true);
-        } else if (!values.assignedDate) {
+        } else if (values.note.trim().length > 500) {
+            errors.note = "This is field must be least than 500 characters";
+        }
+        else if (!values.assignedDate) {
             errors.assignedDate = "This is required";
             setIsInvalid(true);
         } else if (values.assignedDate < yesterday) {

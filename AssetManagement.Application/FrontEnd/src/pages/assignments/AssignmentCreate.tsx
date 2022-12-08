@@ -116,6 +116,8 @@ const AssignmentCreate = () => {
         let yesterday = today.toISOString();
         if (!values.note || values.note.trim().length === 0) {
             errors.note = "This is required";
+        } else if (values.note.trim().length > 500) {
+            errors.note = "This field must be least than 500 characters";
         }
         if (!values.assignedDate) {
             errors.assignedDate = "This is required";
@@ -134,11 +136,15 @@ const AssignmentCreate = () => {
         } else if (errors.assignedDate) {
             setIsInvalid(true);
             return { assignedDate: errors.assignedDate };
-        } else {
+        } else if (errors.note == "This field must be least than 500 characters") {
+            setIsInvalid(true);
+            return { note: "This field must be least than 500 characters" };
+        }
+        else {
             setIsInvalid(true);
             return {};
         }
-        console.log(errors);
+
         return errors;
     };
 
