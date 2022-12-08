@@ -11,5 +11,6 @@ namespace AssetManagement.Contracts.User.Response
         public Domain.Enums.AppUser.UserGender Gender { get; set; }
         public DateTime CreatedDate { get; set; }
         public string Type { get; set; }
+        public string Username { get; set; }
     }
 }
