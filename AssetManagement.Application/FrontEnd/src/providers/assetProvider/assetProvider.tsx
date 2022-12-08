@@ -36,8 +36,9 @@ export const assetProvider: DataProvider = {
     create: function <RecordType extends RaRecord = any>(resource: string, params: CreateParams<any>): Promise<CreateResult<RecordType>> {
         return axiosInstance.post(`/api/${resource}`, params.data).then(res => {
             localStorage.setItem("item", JSON.stringify(res.data));
+            console.log(res);
             return res;
-        });
+        }, err => Promise.reject(err.response.data.message));
     },
     delete: async (resource, params) => {
         const url = `/api/${resource}/${params.id}`;

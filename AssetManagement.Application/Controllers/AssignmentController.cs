@@ -296,7 +296,7 @@ namespace AssetManagement.Application.Controllers
                 x.AssignedTo == staffId) == null;
             if (!isUnique)
             {
-                return BadRequest(new ErrorResponseResult<string>("Try again."));
+                return BadRequest(new ErrorResponseResult<string>("Create Assignment unsuccessfully. Existed an assignment with selected User and Asset"));
             }
             try
             {
