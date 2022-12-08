@@ -11,7 +11,7 @@ namespace AssetManagement.Contracts.AutoMapper
             CreateMap<Domain.Models.Asset, ViewListAssetsResponse>()
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.IsEditable,
-                    opt => opt.MapFrom(src => !src.Assignments.Any(x => (x.State == State.Assigned || x.State == State.WaitingForAcceptance))));
+                    opt => opt.MapFrom(src => !(src.Assignments.Any(x => (x.State == State.Accepted || x.State == State.WaitingForAcceptance)) || src.State == AssetManagement.Domain.Enums.Asset.State.Assigned)));
             CreateMap<Domain.Models.Asset, DeleteAssetReponse>();
             CreateMap<CreateAssetRequest, Domain.Models.Asset>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Trim()))
