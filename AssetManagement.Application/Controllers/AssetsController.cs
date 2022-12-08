@@ -64,7 +64,6 @@ namespace AssetManagement.Application.Controllers
             asset.AssetCode = category.Prefix + (countAsset + 1).ToString().PadLeft(6, '0');
             asset.Category = category;
             asset.Location = user.Location;
-
             await _dbContext.Assets.AddAsync(asset);
             await _dbContext.SaveChangesAsync();
             return Ok(new CreateAssetResponse { Id = asset.Id, AssetCode = asset.AssetCode, Name = asset.Name, CategoryName = asset.Category.Name, State = asset.State.ToString() });
@@ -82,8 +81,8 @@ namespace AssetManagement.Application.Controllers
             {
                 if (updatingAsset != null)
                 {
-                    updatingAsset.Name = request.Name;
-                    updatingAsset.Specification = request.Specification;
+                    updatingAsset.Name = request.Name.Trim();
+                    updatingAsset.Specification = request.Specification.Trim();
                     updatingAsset.InstalledDate = request.InstalledDate;
                     updatingAsset.State = (State)request.State;
                     await _dbContext.SaveChangesAsync();

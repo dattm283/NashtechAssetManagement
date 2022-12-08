@@ -101,7 +101,7 @@ namespace AssetManagement.Application.Controllers
                             updatingAssignment.AssignedTo = assignedToUser.Id;
                             updatingAssignment.AssetId = asset.Id;
                             updatingAssignment.AssignedDate = request.AssignedDate;
-                            updatingAssignment.Note = request.Note;
+                            updatingAssignment.Note = request.Note.Trim();
                             await _dbContext.SaveChangesAsync();
                         }
                         else

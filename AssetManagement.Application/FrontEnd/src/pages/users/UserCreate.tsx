@@ -35,7 +35,7 @@ function UserCreate() {
   const requiredInput = (values) => {
     const errors: Record<string, any> = {};
 
-    if (!values.firstname) {
+    if (!values.firstname || values.firstname.trim().length === 0) {
       errors.firstname = "This is required";
     }
 
@@ -45,7 +45,7 @@ function UserCreate() {
       }
     }
 
-    if (!values.lastname) {
+    if (!values.lastname || values.lastname.trim().length === 0) {
       errors.lastname = "This is required";
     }
 
@@ -226,6 +226,7 @@ function UserCreate() {
                   Type *
                 </Typography>
                 <SelectInput
+                  validate={required()}
                   label=""
                   InputLabelProps={{ shrink: false }}
                   source="role"

@@ -19,17 +19,17 @@ namespace AssetManagement.Contracts.AutoMapper
     {
         public AssignmentProfile()
         {
-            CreateMap<AssetManagement.Domain.Models.Assignment, ViewListAssignmentResponse>()
+            CreateMap<Domain.Models.Assignment, ViewListAssignmentResponse>()
                 .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))
                 .ForMember(dest => dest.AssetName, opt => opt.MapFrom(src => src.Asset.Name))
                 .ForMember(dest => dest.AssignedTo, opt => opt.MapFrom(src => src.AssignedToAppUser.UserName))
                 .ForMember(dest => dest.AssignedBy, opt => opt.MapFrom(src => src.AssignedByAppUser.UserName));
-            CreateMap<AssetManagement.Domain.Models.Assignment, AssignmentResponse>()
+            CreateMap<Domain.Models.Assignment, AssignmentResponse>()
                 .ForMember(dest => dest.AssignedDate, opt => opt.MapFrom(src => src.AssignedDate.ToShortDateString()))
                 .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.ToShortDateString()));
-            CreateMap<AssetManagement.Domain.Models.Assignment, AssignmentDetailResponse>()
+            CreateMap<Domain.Models.Assignment, AssignmentDetailResponse>()
                .ForMember(dest => dest.StateName, opt => opt.MapFrom(src =>
-                   ((AssetManagement.Domain.Enums.Assignment.State)src.State).ToString()))
+                   (src.State).ToString()))
                .ForMember(dest => dest.AssignToAppUserStaffCode, opt => opt.MapFrom(src =>
                    src.AssignedToAppUser.StaffCode))
                .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))
@@ -37,18 +37,19 @@ namespace AssetManagement.Contracts.AutoMapper
                .ForMember(dest => dest.Specification, opt => opt.MapFrom(src => src.Asset.Specification))
                .ForMember(dest => dest.AssignToAppUser, opt => opt.MapFrom(src => src.AssignedToAppUser.UserName))
                .ForMember(dest => dest.AssignByAppUser, opt => opt.MapFrom(src => src.AssignedByAppUser.UserName));
-            CreateMap<AssetManagement.Domain.Models.Assignment, UpdateAssignmentResponse>();
-            CreateMap<AssetManagement.Domain.Models.Assignment, ViewListAssignmentResponse>()
+            CreateMap<Domain.Models.Assignment, UpdateAssignmentResponse>();
+            CreateMap<Domain.Models.Assignment, ViewListAssignmentResponse>()
                 .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))
                 .ForMember(dest => dest.AssetName, opt => opt.MapFrom(src => src.Asset.Name))
                 .ForMember(dest => dest.AssignedTo, opt => opt.MapFrom(src => src.AssignedToAppUser.UserName))
                 .ForMember(dest => dest.AssignedBy, opt => opt.MapFrom(src => src.AssignedByAppUser.UserName));
-            CreateMap<AssetManagement.Domain.Models.Assignment, AssignmentResponse>()
+            CreateMap<Domain.Models.Assignment, AssignmentResponse>()
                 .ForMember(dest => dest.AssignedDate, opt => opt.MapFrom(src => src.AssignedDate.ToShortDateString()))
                 .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.ToShortDateString()));
 
-            CreateMap<CreateAssignmentRequest, AssetManagement.Domain.Models.Assignment>();
-            CreateMap<AssetManagement.Domain.Models.Assignment, CreateAssignmentResponse>();
+            CreateMap<CreateAssignmentRequest, Domain.Models.Assignment>()
+                .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note.Trim()));
+            CreateMap<Domain.Models.Assignment, CreateAssignmentResponse>();
 
             CreateMap<AssetManagement.Domain.Models.Assignment, ViewListReturnRequestResponse>()
                 .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))

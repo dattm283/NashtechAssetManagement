@@ -114,8 +114,7 @@ const AssignmentCreate = () => {
         let today = new Date(currentDay);
         today.setDate(today.getDate() - 1);
         let yesterday = today.toISOString();
-        console.log(values.assignedDate < yesterday);
-        if (!values.note) {
+        if (!values.note || values.note.trim().length === 0) {
             errors.note = "This is required";
         }
         if (!values.assignedDate) {
@@ -244,6 +243,8 @@ const AssignmentCreate = () => {
                                         label={false}
                                         name="note"
                                         source="note"
+                                        multiline
+                                        rows={3}
                                         sx={formStyle.textInputStyle}
                                         helperText={false}
                                         InputLabelProps={{ shrink: false }}

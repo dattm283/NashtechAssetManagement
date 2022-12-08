@@ -82,7 +82,7 @@ namespace AssetManagement.Application.Controllers
             }
 
             //auto generate username
-            string[] splitFirstName = userRequest.FirstName.Split(' ');
+            string[] splitFirstName = userRequest.FirstName.Trim().Split(' ');
             string fullFirstName = "";
             foreach (string slice in splitFirstName)
             {
@@ -91,7 +91,7 @@ namespace AssetManagement.Application.Controllers
                     fullFirstName += slice.ToString().ToLower();
                 }
             }
-            string[] splitlastname = userRequest.LastName.Split(' ');
+            string[] splitlastname = userRequest.LastName.Trim().Split(' ');
             string fullLastName = "";
             foreach (string slice in splitlastname)
             {

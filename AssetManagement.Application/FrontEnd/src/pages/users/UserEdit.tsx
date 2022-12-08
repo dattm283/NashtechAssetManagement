@@ -57,7 +57,9 @@ const UserEdit = () => {
       form.dob === null ||
       form.joinedDate === null ||
       form.Gender === null ||
-      form.type === null
+      form.type === null ||
+      form.firstName.trim().length === 0 ||
+      form.lastName.trim().length === 0
     ) {
       setIsValid(false);
     }
@@ -118,8 +120,8 @@ const UserEdit = () => {
     assetProvider
       .update("user", { id: user.staffCode, data: changes, previousData: user })
       .then((response) => {
-        localStorage.setItem("RaStore.user.listParams", 
-                        `{"displayedFilters":{},"filter":{},"order":"ASC","page":1,"perPage":5,"sort":"staffCode"}`)
+        localStorage.setItem("RaStore.user.listParams",
+          `{"displayedFilters":{},"filter":{},"order":"ASC","page":1,"perPage":5,"sort":"staffCode"}`)
         localStorage.setItem("item", JSON.stringify(response.data));
         navigate("/user");
         notify("User edited successfully!");

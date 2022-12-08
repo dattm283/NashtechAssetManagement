@@ -40,10 +40,10 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
 
     const requiredInput = (values) => {
         const errors: Record<string, any> = {};
-        if (!values.userName) {
+        if (!values.userName || values.userName.trim().length === 0) {
             errors.userName = "This is required";
             setIsValid(true);
-        } else if (!values.password) {
+        } else if (!values.password || values.password.trim().length === 0) {
             errors.password = "This is required";
             setIsValid(true);
         } else {

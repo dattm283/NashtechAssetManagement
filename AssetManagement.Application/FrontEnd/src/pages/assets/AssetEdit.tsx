@@ -48,7 +48,7 @@ function EditAssetInformations() {
             installedDate: "",
             state: "",
         };
-        if (!values.name) {
+        if (!values.name || values.name.trim().length === 0) {
             errors.name = "This is required";
             setIsValid(true);
         } else if (!values.categoryId) {
@@ -57,7 +57,7 @@ function EditAssetInformations() {
         } else if (values.installedDate == null) {
             errors.installedDate = "This is required";
             setIsValid(true);
-        } else if (!values.specification) {
+        } else if (!values.specification || values.specification.trim().length === 0) {
             errors.specification = "This is required";
             setIsValid(true);
         } else {
