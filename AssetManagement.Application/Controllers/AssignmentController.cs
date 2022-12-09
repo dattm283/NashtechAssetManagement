@@ -40,7 +40,7 @@ namespace AssetManagement.Application.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult GetAssignmentsByAssetCodeId(int assetCodeId)
         {
-            var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId).ToList();
+            var result = _dbContext.Assignments.Where(x => x.AssetId == assetCodeId && !x.IsDeleted).ToList();
             var assignmentResponse = _mapper.Map<List<AssignmentResponse>>(result);
 
             foreach (var item in assignmentResponse)
