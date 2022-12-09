@@ -293,7 +293,8 @@ namespace AssetManagement.Application.Controllers
             var isUnique = _dbContext.Assignments
                 .FirstOrDefault(x =>
                 x.AssetId == assetId &&
-                x.AssignedTo == staffId) == null;
+                x.AssignedTo == staffId &&
+                x.IsDeleted == false) == null;
             if (!isUnique)
             {
                 return BadRequest(new ErrorResponseResult<string>("Create Assignment unsuccessfully. Existed an assignment with selected User and Asset"));

@@ -46,7 +46,9 @@ const Header = () => {
   const MyUserMenu = (props) => (
     <UserMenu {...props}>
       <ChangePassswordMenu />
-      <Logout />
+      <Logout id="logoutButton" sx={{
+        color: "black"
+      }} />
     </UserMenu>
   );
 

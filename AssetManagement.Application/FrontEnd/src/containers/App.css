@@ -71,3 +71,11 @@
 .MuiPaper-root {
   min-width: 240px;
 }
+
+/* .logout {
+  font-weight: bold;
+} */
+
+th > span {
+  font-weight: bold;
+}
