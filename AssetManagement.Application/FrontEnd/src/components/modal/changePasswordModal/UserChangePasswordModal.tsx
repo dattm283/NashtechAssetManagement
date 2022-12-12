@@ -20,6 +20,8 @@ import userService from "../../../services/users";
 const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
 
   const handleChangePassword = (data) => {
     const newPassword = data.newPassword;
@@ -80,7 +82,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
             sx={{ maxWidth: "410px" }}
           >
             <br />
-            <Form onSubmit={handleChangePassword}>
+            <Form onSubmit={handleChangePassword} mode="onBlur" reValidateMode="onBlur">
               <Grid container alignItems="center">
                 <Grid container>
                   <Grid item sm={4} xs={12}>
@@ -93,6 +95,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                       source="currentPassword"
                       InputLabelProps={{ shrink: false }}
                       validate={validateChangePassword}
+                      onChange={(e) => setOldPassword(e.target.value)}
                       helperText={
                         error ? (
                           <p style={{ color: "#d32f2f", margin: "0" }}>{error}</p>) : ("")}
@@ -110,6 +113,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                       InputLabelProps={{ shrink: false }}
                       source="newPassword"
                       validate={validateChangePassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
                     />
                   </Grid>
                 </Grid>
@@ -120,6 +124,7 @@ const UserChangePasswordModal = ({ stateChanger, ...rest }) => {
                       sx={buttonSaveStyle}
                       type="submit"
                       icon={<></>}
+                      disabled={oldPassword.length > 0 && newPassword.length > 0 ? false : true}
                     />
                   </Grid>
                   <Grid item sm={2.5} xs={6}>
