@@ -9,5 +9,6 @@ namespace AssetManagement.Contracts.User.Response
     public class DeleteUserResponse
     {
         public Guid Id { get; set; }
+        public string StaffCode { get; set; }
     }
 }
