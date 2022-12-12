@@ -1,4 +1,5 @@
-﻿using AssetManagement.Contracts.Common;
+﻿using AssetManagement.Application.Filters;
+using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.Report.Response;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
@@ -13,6 +14,7 @@ namespace AssetManagement.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [FilterCheckIsChangeRole]
     public class ReportController : ControllerBase
     {
         private readonly AssetManagementDbContext _dbContext;

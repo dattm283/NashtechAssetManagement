@@ -1,4 +1,5 @@
-﻿using AssetManagement.Contracts.Asset.Response;
+﻿using AssetManagement.Application.Filters;
+using AssetManagement.Contracts.Asset.Response;
 using AssetManagement.Contracts.Category.Request;
 using AssetManagement.Contracts.Category.Response;
 using AssetManagement.Contracts.Common;
@@ -15,6 +16,7 @@ namespace AssetManagement.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [FilterCheckIsChangeRole]
     public class CategoryController : ControllerBase
     {
         private readonly IMapper _mapper;
