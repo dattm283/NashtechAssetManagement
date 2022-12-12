@@ -16,11 +16,13 @@ using System.Security.Claims;
 using AssetManagement.Domain.Enums.AppUser;
 using System.Collections.Generic;
 using Diacritics.Extensions;
+using AssetManagement.Application.Filters;
 
 namespace AssetManagement.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [FilterCheckIsChangeRole]
     public class UserController : ControllerBase
     {
         private readonly AssetManagementDbContext _dbContext;
@@ -365,6 +367,8 @@ namespace AssetManagement.Application.Controllers
                             IdentityUserRole<Guid> newRoleKey = new() { UserId = user.Id, RoleId = role.Id };
                             await _dbContext.UserRoles.AddAsync(newRoleKey);
                         }
+                        //remove username from static list
+                        StaticValues.Usernames.Remove(user.UserName);
 
                         await _dbContext.SaveChangesAsync();
                         UpdateUserResponse response = _mapper.Map<UpdateUserResponse>(user);

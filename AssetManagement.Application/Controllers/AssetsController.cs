@@ -9,11 +9,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using AssetManagement.Domain.Enums.Asset;
+using AssetManagement.Application.Filters;
 
 namespace AssetManagement.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [FilterCheckIsChangeRole]
     public class AssetsController : ControllerBase
     {
         private readonly AssetManagementDbContext _dbContext;

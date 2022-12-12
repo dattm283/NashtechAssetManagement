@@ -60,7 +60,7 @@ namespace AssetManagement.Application.Controllers
 
             var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
             //var role = await _dbContext.AppRoles.FindAsync(user.RoleId);
-
+            StaticValues.Usernames.Add(request.Username);
             return Ok(new SuccessResponseResult<LoginResponse>(new LoginResponse { Token = CreateToken(user, request.Username, role, user.Location.ToString()), Role = role }));
         }
 
