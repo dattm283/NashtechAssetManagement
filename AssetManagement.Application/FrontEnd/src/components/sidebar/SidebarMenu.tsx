@@ -35,7 +35,7 @@ const SidebarMenu = () => {
                 image={logo}
             />
             <Typography variant="h3" component="h2" color="secondary" fontSize='1rem' fontWeight="bold" className="appTitleMenuBar" mb={3}>Online Asset Management</Typography>
-            <li><Menu.Item to="/home" primaryText="Home" /></li>
+            <li><Menu.Item to="home" primaryText="Home" /></li>
             {permissions === 'Admin' ? <li onClick={() => removeItems("user")}><Menu.Item to="/user" primaryText="Manage User" /></li> : null}
             {permissions === 'Admin' ? <li onClick={() => removeItems("assets")}><Menu.Item to="/assets" primaryText="Manage Asset" /></li> : null}
             {permissions === 'Admin' ? <li onClick={() => removeItems("assignments")}><Menu.Item to="/assignments" primaryText="Manage Assignment" /></li> : null}

@@ -1,7 +1,6 @@
 import React, { Fragment, ReactEventHandler, ReactElement } from 'react';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import ActionDelete from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -21,11 +20,22 @@ import {
     RedirectionSideEffect,
 } from 'ra-core';
 import { Button as MUIButton, ButtonGroup } from '@mui/material';
-import { Confirm, DeleteButton } from 'react-admin';
-import { Button, ButtonProps } from 'react-admin';
-import { Padding } from '@mui/icons-material';
+import { Button, ButtonProps, useNotify } from 'react-admin';
+import { PutComplete } from '../../../services/returningRequest';
 
-export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any>(
+const StyledDialogContent = styled(DialogContent)`
+  &.MuiDialogContent-root {
+    background-color: #fafcfc;
+  }
+`;
+
+const StyledDialog = styled(Dialog)`
+  .MuiBackdrop-root {
+    background-color: transparent;
+  }
+`;
+
+export const CustomCompleteReturnRequestWithConfirm = <RecordType extends RaRecord = any>(
     props: DeleteWithConfirmButtonProps<RecordType>
 ) => {
     const {
@@ -41,19 +51,20 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
         translateOptions = {},
         mutationOptions,
         isOpen,
-        setDeleting,
+        setComplete,
+        onSuccess,
         ...rest
     } = props;
     const translate = useTranslate();
     const record = useRecordContext(props);
     const resource = useResourceContext(props);
+    const notify = useNotify();
 
     const {
         open,
         isLoading,
         handleDialogOpen,
         handleDialogClose,
-        handleDelete,
     } = useDeleteWithConfirmController({
         record,
         redirect,
@@ -66,6 +77,7 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     const titleStype = {
         bgcolor: '#F0EBEB',
         color: "#E80E0E",
+        border: "1px solid #000",
         // borderRadius: "1px 1px 0px 0px"
         borderTopLeftRadius: "4px",
         borderTopRightRadius: "4px",
@@ -73,6 +85,7 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     }
 
     const contentStyle = {
+        border: "1px solid #000",
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
         color: "#000"
@@ -81,41 +94,40 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     const deleteButtonStyle = {
         bgcolor: "#E80E0E",
         color: "#FFFFFF",
-        border: "1px solid #E80E0E",
+        border: "1px solid #000",
         borderRadius: 1,
 
         "&:hover": {
-            color: "#fff",
-            bgcolor: "#424242",
-            border: "1px solid #424242",
+            color: "#000"
         },
     }
 
     const confirmButtonStyle = {
         bgcolor: "#F0EBEB",
         color: "#000",
-        border: "1px solid #424242",
+        border: "1px solid #000",
         borderRadius: 1,
-        "&:hover": {
-            color: "#fff",
-            bgcolor: "#424242",
-            border: "1px solid #424242",
-        },
     }
 
     const handleOpen = (e) => {
-        setDeleting(true);
+        setComplete(true);
         handleDialogOpen(e);
     } 
 
     const handleClose = (e) => {
-        setDeleting(false);
+        setComplete(false);
         handleDialogClose(e);
     }
 
-    const customHandleDelete = (e) => {
-        setDeleting(false);
-        handleDelete(e);
+    const handleComplete = (e) => {
+        setComplete(false);
+        handleDialogClose(e);
+        PutComplete(record.id)
+        .then((response) => {
+            onSuccess();
+        }).catch((error) => {
+            notify(error.response.data.message);
+        });
     }
 
     return (
@@ -127,15 +139,14 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
                 className={clsx('ra-delete-button', className)}
                 key="button"
                 {...rest}
-                sx={{
-                    "span": {
-                        margin: 0
-                    }
-                }}
+                sx={{"span": { 
+                    margin: 0
+                }}}
+                disabled={props.disabled}
             >
                 {icon}
             </StyledButton>
-            <Dialog
+            <StyledDialog
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
@@ -144,22 +155,21 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
                 <DialogTitle id="alert-dialog-title" sx={titleStype}>
                     {confirmTitle}
                 </DialogTitle>
-                <DialogContent sx={contentStyle}>
+                <StyledDialogContent sx={contentStyle}>
                     <DialogContentText component={"div"} id="alert-dialog-description">
                         <DialogContentText sx={{
                             padding: 3,
-                            paddingRight: 20
                         }}>
                             {confirmContent}
                         </DialogContentText>
                     </DialogContentText>
                     <DialogActions>
-                        <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Disable</MUIButton>
-                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
+                        <MUIButton onClick={handleComplete} sx={deleteButtonStyle} >Yes</MUIButton>
+                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>No</MUIButton>
                         <div style={{ flex: '1 0 0' }} />
                     </DialogActions>
-                </DialogContent>
-            </Dialog>
+                </StyledDialogContent>
+            </StyledDialog>
         </Fragment>
     );
 };
@@ -186,10 +196,11 @@ export interface DeleteWithConfirmButtonProps<
     redirect?: RedirectionSideEffect;
     resource?: string;
     isOpen: boolean;
-    setDeleting: Function;
+    setComplete: Function;
+    onSuccess: Function;
 }
 
-CustomDisableWithConfirmButton.propTypes = {
+CustomCompleteReturnRequestWithConfirm.propTypes = {
     className: PropTypes.string,
     confirmTitle: PropTypes.string,
     confirmContent: PropTypes.string,

@@ -878,9 +878,7 @@ namespace AssetManagement.Application.Tests
         #nullable disable
         [Theory]
         [InlineData(0)]
-        [InlineData(1)]
         [InlineData(2)]
-        [InlineData(3)]
         public async Task EditUser_SuccessAsync(int index)
         {
             //ARRANGE
@@ -1010,6 +1008,7 @@ namespace AssetManagement.Application.Tests
         [Fact]
         public async Task DeleteUser_Failed_NotExistUser()
         {
+            //ARRANGE
             var store = new Mock<IUserStore<AppUser>>();
             //store.Setup(x => x.FindByIdAsync("123", CancellationToken.None)).ReturnsAsync(new AppUser()
             //    {
@@ -1026,18 +1025,19 @@ namespace AssetManagement.Application.Tests
             var user = new ClaimsPrincipal(claimsIdentity);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
-
+            //ACT
             var response = await controller.Delete(staffCode);
             var result = ((BadRequestObjectResult)response).Value;
 
             var expected = new BadRequestObjectResult(new ErrorResponseResult<string>("Can't find this user"));
-
+            //ASSERT
             Assert.Equal(((ErrorResponseResult<string>)expected.Value).Message, ((ErrorResponseResult<string>)result).Message);
         }
 
         [Fact]
         public async Task DeleteUser_Failed_DeleteSelf()
         {
+            //ARRANGE
             var store = new Mock<IUserStore<AppUser>>();
             //store.Setup(x => x.FindByIdAsync("123", CancellationToken.None)).ReturnsAsync(new AppUser()
             //    {
@@ -1054,18 +1054,86 @@ namespace AssetManagement.Application.Tests
             var user = new ClaimsPrincipal(claimsIdentity);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext();
             controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
-
+            //ACT
             var response = await controller.Delete(staffCode);
             var result = ((BadRequestObjectResult)response).Value;
 
             var expected = new BadRequestObjectResult(new ErrorResponseResult<string>("You can't delete yourself"));
-
+            //ASSERT
             Assert.Equal(((ErrorResponseResult<string>)expected.Value).Message, ((ErrorResponseResult<string>)result).Message);
+        }
+
+        [Fact]
+        public async Task DeleteUser_Failed_AvailableAssignment()
+        {
+            //ARRANGE
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+            string staffCode = "SD0003";
+            //Add login
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+            //ACT
+            IActionResult response = await controller.Delete(staffCode);
+            ErrorResponseResult<string> result = (ErrorResponseResult<string>)((ObjectResult) response).Value;
+            //ASSERT
+            Assert.IsType<BadRequestObjectResult>(response);
+            Assert.False(result.IsSuccessed);
+            Assert.Equal("There are valid assignments belonging to this user. Please close all assignments before disabling user.", result.Message);
+        }
+
+        [Fact]
+        public async Task DeleteUser_Success()
+        {
+            //ARRANGE
+            UserController controller = new UserController(_context, _userManager.Object, _mapper);
+            AppUser removable = new()
+            {
+                Id = new Guid("8DAAAAE2-9BBA-4CCD-BDD4-DFEF325FF3FF"),
+                UserName = "removable",
+                NormalizedUserName = "removable",
+                Email = "removable@gmail.com",
+                NormalizedEmail = "removable@gmail.com",
+                EmailConfirmed = true,
+                PasswordHash = "123abc",
+                SecurityStamp = string.Empty,
+                FirstName = "Toan",
+                LastName = "Bach",
+                Dob = new DateTime(2000, 11, 11),
+                IsLoginFirstTime = true,
+                CreatedDate = DateTime.Now,
+                Gender = Domain.Enums.AppUser.UserGender.Male,
+                Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
+                StaffCode = "SD9999"
+            };
+            await _context.AppUsers.AddAsync(removable);
+            await _context.UserRoles.AddAsync(new()
+            {
+                RoleId = new("12147FE0-4571-4AD2-B8F7-D2C863EB78A5"),
+                UserId = removable.Id
+            });
+            await _context.SaveChangesAsync();
+            string staffCode = "SD9999";
+            //Add login
+            var claimsIdentity = new ClaimsIdentity(authenticationType: "test");
+            claimsIdentity.AddClaim(new Claim(ClaimTypes.Name, "adminhcm"));
+            var user = new ClaimsPrincipal(claimsIdentity);
+            controller.ControllerContext = new ControllerContext();
+            controller.ControllerContext.HttpContext = new DefaultHttpContext { User = user };
+            //ACT
+            IActionResult response = await controller.Delete(staffCode);
+            DeleteUserResponse result = (DeleteUserResponse)((ObjectResult)response).Value;
+            //Assert
+            Assert.IsType<OkObjectResult>(response);
+            Asset.Equals(staffCode, result.StaffCode);
         }
         #endregion
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
+            await _context.Database.CloseConnectionAsync();
             await _context.Database.EnsureDeletedAsync();
             await _context.DisposeAsync();
         }

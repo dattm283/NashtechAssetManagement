@@ -3,7 +3,6 @@ using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.Report.Response;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
-using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -48,9 +47,9 @@ namespace AssetManagement.Application.Tests
             // Assert
             Assert.NotNull(data);
             Assert.Equal(200, okResult.StatusCode);
-            Assert.Equal(5, data.Data.Where(x => x.Category == "Laptop")
+            Assert.Equal(_context.Assets.Count(x => x.Category.Name == "Laptop"), data.Data.Where(x => x.Category == "Laptop")
                     .ToList().ElementAt(0).Total);
-            Assert.Equal(5, data.Data.Where(x => x.Category == "Monitor")
+            Assert.Equal(_context.Assets.Count(x => x.Category.Name == "Monitor"), data.Data.Where(x => x.Category == "Monitor")
                     .ToList().ElementAt(0).Total);
         }
 
@@ -121,8 +120,8 @@ namespace AssetManagement.Application.Tests
             Assert.NotNull(data);
             Assert.Equal(200, okResult.StatusCode);
             Assert.Equal(sortedData.ElementAt(0).Category, "Personal Computer");
-            Assert.Equal(sortedData.ElementAt(1).Category, "Monitor");
-            Assert.Equal(sortedData.ElementAt(2).Category, "Laptop");
+            Assert.Equal(sortedData.ElementAt(1).Category, "Laptop");
+            Assert.Equal(sortedData.ElementAt(2).Category, "Monitor");
         }
 
         [Fact]
@@ -144,8 +143,8 @@ namespace AssetManagement.Application.Tests
             Assert.NotNull(data);
             Assert.Equal(200, okResult.StatusCode);
             Assert.Equal(sortedData.ElementAt(0).Category, "Monitor");
-            Assert.Equal(sortedData.ElementAt(1).Category, "Laptop");
-            Assert.Equal(sortedData.ElementAt(2).Category, "Personal Computer");
+            Assert.Equal(sortedData.ElementAt(1).Category, "Personal Computer");
+            Assert.Equal(sortedData.ElementAt(2).Category, "Laptop");
         }
 
         [Fact]
@@ -243,6 +242,7 @@ namespace AssetManagement.Application.Tests
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
+            await _context.Database.CloseConnectionAsync();
             await _context.Database.EnsureDeletedAsync();
             await _context.DisposeAsync();
         }

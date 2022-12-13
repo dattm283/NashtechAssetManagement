@@ -11,9 +11,11 @@ import {
     CreateButton,
     SearchInput,
     DatagridRow,
-    useRecordContext
+    useRecordContext,
+    Button,
+    DeleteButton
 } from "react-admin";
-import { ButtonGroup, Stack, Container, Typography } from "@mui/material";
+import { ButtonGroup, Stack, Container, Typography, ButtonBase } from "@mui/material";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
@@ -22,6 +24,7 @@ import { assetProvider } from '../../providers/assetProvider/assetProvider'
 import { useLocation } from "react-router-dom";
 import { listStyle } from "../../styles/listStyle";
 import { CustomDisableWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDisableWithConfirm";
+import { CustomDeleteUserWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteUserWithConfirmationButton";
 
 
 export default () => {
@@ -110,11 +113,11 @@ export default () => {
                         <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                         <FunctionField source="userName" render={data => {
                             if (data.userName != localStorage.getItem("userName")) {
-                                return <CustomDisableWithConfirmButton
+                                return <CustomDeleteUserWithConfirmButton
                                     icon={<HighlightOffIcon />}
                                     confirmTitle="Are you sure?"
                                     confirmContent="Do you want to disable this user?"
-                                    mutationOptions={{ onSuccess: (data) => refresh() }}
+                                    mutationOptions={{ onSuccess: () => refresh() }}
                                     isOpen={deleting}
                                     setDeleting={setDeleting}
                                 />

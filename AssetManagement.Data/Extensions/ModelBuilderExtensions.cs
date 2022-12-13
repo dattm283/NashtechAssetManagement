@@ -210,6 +210,21 @@ namespace AssetManagement.Data.Extensions
                 });
             }
 
+            for (int i = 11; i <= 15; i++)
+            {
+                modelBuilder.Entity<Asset>().HasData(new Asset
+                {
+                    Id = i,
+                    Name = "Laptop " + i,
+                    AssetCode = "LA10000" + i,
+                    Specification = $"Core i{i}, {i}GB RAM, {i}50 GB HDD, Window {i}",
+                    CategoryId = i % 2 == 0 ? 1 : 2,
+                    InstalledDate = DateTime.Now,
+                    State = i % 2 == 0 ? State.Assigned : State.NotAvailable,
+                    IsDeleted = i % 2 == 0 ? true : false,
+                });
+            }
+
             for (int i = 1; i <= 10; i++)
             {
                 modelBuilder.Entity<Assignment>().HasData(new Assignment
@@ -222,6 +237,59 @@ namespace AssetManagement.Data.Extensions
                     State = i % 2 == 0 ? Domain.Enums.Assignment.State.Accepted : Domain.Enums.Assignment.State.WaitingForAcceptance,
                     AssignedTo = staffAbleId1,
                     AssignedBy = adminHcmId,
+                });
+            }
+
+            modelBuilder.Entity<Assignment>().HasData(new Assignment
+            {
+                Id = 11,
+                Note = $"Note for assignment {11}",
+                AssignedDate = DateTime.Today,
+                ReturnedDate = DateTime.Today.AddDays(11),
+                AssetId = 4,
+                State = Domain.Enums.Assignment.State.WaitingForAcceptance,
+                AssignedTo = staffAbleId1,
+                AssignedBy = adminHcmId,
+            });
+
+            for (int i = 12; i <= 15; i++)
+            {
+                modelBuilder.Entity<Assignment>().HasData(new Assignment
+                {
+                    Id = i,
+                    Note = $"Note for assignment {i}",
+                    AssignedDate = DateTime.Today,
+                    ReturnedDate = DateTime.Today.AddDays(i),
+                    AssetId = i,
+                    State = i % 2 == 0 ? Domain.Enums.Assignment.State.WaitingForReturning : Domain.Enums.Assignment.State.Returned,
+                    AssignedTo = staffAbleId1,
+                    AssignedBy = adminHcmId,
+                });
+            }
+
+            for (int i = 1; i <= 10; i++)
+            {
+                modelBuilder.Entity<ReturnRequest>().HasData(new ReturnRequest
+                {
+                    Id = i,
+                    AssignedBy = staffAbleId1,
+                    AssignedDate = DateTime.Today,
+                    ReturnedDate = DateTime.Today,
+                    State = Domain.Enums.ReturnRequest.State.WaitingForReturning,
+                    AssignmentId = i,
+                });
+            }
+
+            for (int i = 11; i <= 15; i++)
+            {
+                modelBuilder.Entity<ReturnRequest>().HasData(new ReturnRequest
+                {
+                    Id = i,
+                    AssignedBy = staffAbleId1,
+                    AssignedDate = DateTime.Today,
+                    ReturnedDate = DateTime.Today,
+                    State = Domain.Enums.ReturnRequest.State.WaitingForReturning,
+                    AssignmentId = i,
                 });
             }
         }

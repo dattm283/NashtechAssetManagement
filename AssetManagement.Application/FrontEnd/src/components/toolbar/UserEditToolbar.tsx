@@ -19,13 +19,19 @@ const UserEditToolbar = ({disabled}) => {
                     label="Save"
                     type="submit"
                     variant="contained"
+                    onClick={() => {
+                        localStorage.removeItem("RaStore.user.listParams");
+                    }}
                     icon={<></>}
                     color="secondary"
                     disabled={disabled}
                 />
                 <Button
                     variant="outlined"
-                    onClick={(e) => navigate("/user")}
+                    onClick={() => {
+                        localStorage.removeItem("RaStore.user.listParams");
+                        navigate("/user");
+                    }}
                     color="secondary"
                     id="editUserCancelButton"
                 >

@@ -120,8 +120,6 @@ const UserEdit = () => {
     assetProvider
       .update("user", { id: user.staffCode, data: changes, previousData: user })
       .then((response) => {
-        localStorage.setItem("RaStore.user.listParams",
-          `{"displayedFilters":{},"filter":{},"order":"ASC","page":1,"perPage":5,"sort":"staffCode"}`)
         localStorage.setItem("item", JSON.stringify(response.data));
         if (response.data.username == localStorage.getItem("userName")) {
           localStorage.clear();

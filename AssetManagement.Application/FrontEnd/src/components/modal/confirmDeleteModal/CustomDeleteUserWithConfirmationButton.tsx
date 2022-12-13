@@ -1,7 +1,6 @@
-import React, { Fragment, ReactEventHandler, ReactElement } from 'react';
+import React, { Fragment, ReactEventHandler, ReactElement, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import PropTypes from 'prop-types';
-import { alpha } from '@mui/material/styles';
 import ActionDelete from '@mui/icons-material/Delete';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -17,15 +16,14 @@ import {
     useDeleteWithConfirmController,
     useRecordContext,
     useResourceContext,
-    useTranslate,
     RedirectionSideEffect,
 } from 'ra-core';
-import { Button as MUIButton, ButtonGroup } from '@mui/material';
-import { Confirm, DeleteButton } from 'react-admin';
+import { Button as MUIButton } from '@mui/material';
 import { Button, ButtonProps } from 'react-admin';
-import { Padding } from '@mui/icons-material';
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
-export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any>(
+export const CustomDeleteUserWithConfirmButton = <RecordType extends RaRecord = any>(
     props: DeleteWithConfirmButtonProps<RecordType>
 ) => {
     const {
@@ -44,13 +42,16 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
         setDeleting,
         ...rest
     } = props;
-    const translate = useTranslate();
     const record = useRecordContext(props);
     const resource = useResourceContext(props);
-
+    const [assignementsCount, setAssignementsCount] = useState({});
+    function getCount() {
+        if (record) {
+            setAssignementsCount(record.validAssignments);
+        }
+    }
     const {
         open,
-        isLoading,
         handleDialogOpen,
         handleDialogClose,
         handleDelete,
@@ -104,6 +105,7 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     }
 
     const handleOpen = (e) => {
+        getCount();
         setDeleting(true);
         handleDialogOpen(e);
     } 
@@ -127,39 +129,64 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
                 className={clsx('ra-delete-button', className)}
                 key="button"
                 {...rest}
-                sx={{
-                    "span": {
-                        margin: 0
-                    }
-                }}
+                sx={{"span": { 
+                    margin: 0
+                }}}
+                disabled={props.disabled}
             >
                 {icon}
             </StyledButton>
-            <Dialog
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title" sx={titleStype}>
-                    {confirmTitle}
-                </DialogTitle>
-                <DialogContent sx={contentStyle}>
-                    <DialogContentText component={"div"} id="alert-dialog-description">
-                        <DialogContentText sx={{
-                            padding: 3,
-                            paddingRight: 20
-                        }}>
-                            {confirmContent}
-                        </DialogContentText>
-                    </DialogContentText>
-                    <DialogActions>
-                        <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Disable</MUIButton>
-                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
-                        <div style={{ flex: '1 0 0' }} />
-                    </DialogActions>
-                </DialogContent>
-            </Dialog>
+                <Dialog
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title" sx={titleStype}>
+                        {!(assignementsCount > 0) ? confirmTitle : 
+                        <>Can not disable user <IconButton
+                            aria-label="close"
+                            onClick={handleClose}
+                            sx={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                                color: "#CF2338",
+                            }}
+                        >
+                            <CloseIcon />
+                        </IconButton></>}
+                    </DialogTitle>
+                    <DialogContent sx={contentStyle}>
+                        { !(assignementsCount > 0) ?
+                            <>
+                            <DialogContentText component={"div"} id="alert-dialog-description">
+                                <DialogContentText sx={{
+                                    padding: 3,
+                                    paddingRight: 20
+                                }}>
+                                    {confirmContent}
+                                </DialogContentText>
+                            </DialogContentText>
+                            <DialogActions>
+                                <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
+                                <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
+                                <div style={{ flex: '1 0 0' }} />
+                            </DialogActions>
+                            </> : <>
+                            <DialogContentText component={"div"} id="alert-dialog-description">
+                                <DialogContentText sx={{
+                                    padding: 3
+                                }}>
+                                    There are valid assignments belonging to this user.
+                                    <br/>
+                                    Please close all assignments before disabling user.
+                                </DialogContentText>
+                            </DialogContentText>
+                            </> 
+                        }
+                    </DialogContent>
+                </Dialog>
         </Fragment>
     );
 };
@@ -189,7 +216,7 @@ export interface DeleteWithConfirmButtonProps<
     setDeleting: Function;
 }
 
-CustomDisableWithConfirmButton.propTypes = {
+CustomDeleteUserWithConfirmButton.propTypes = {
     className: PropTypes.string,
     confirmTitle: PropTypes.string,
     confirmContent: PropTypes.string,
@@ -210,14 +237,7 @@ const PREFIX = 'RaDeleteWithConfirmButton';
 
 const StyledButton = styled(Button, {
     name: PREFIX,
-    overridesResolver: (props, styles) => styles.root,
+    overridesResolver: (styles) => styles.root,
 })(({ theme }) => ({
-    color: theme.palette.error.main,
-    // '&:hover': {
-    //     backgroundColor: alpha(theme.palette.error.main, 0.12),
-    //     // Reset on mouse devices
-    //     '@media (hover: none)': {
-    //         backgroundColor: 'transparent',
-    //     },
-    // },
+    color: theme.palette.error.main
 }));

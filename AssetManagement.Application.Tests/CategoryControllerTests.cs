@@ -7,6 +7,9 @@ using Xunit;
 using AssetManagement.Contracts.Category.Request;
 using Microsoft.AspNetCore.Mvc;
 using AssetManagement.Application.Controllers;
+using AssetManagement.Contracts.Category.Response;
+using AssetManagement.Contracts.Common;
+using AssetManagement.Application.Tests.TestHelper;
 
 #nullable disable
 namespace AssetManagement.Application.Tests
@@ -31,20 +34,21 @@ namespace AssetManagement.Application.Tests
         }
 
         #region GetCategory
-        //[Fact]
-        //public async Task Get_SuccessAsync()
-        //{
-        //    //ARRANGE
-        //    CategoryController controller = new(_mapper, _context);
+        [Fact]
+        public async Task Get_SuccessAsync()
+        {
+            //ARRANGE
+            CategoryController controller = new(_mapper, _context);
 
-        //    //ACT
-        //    ViewList_ListResponse<GetCategoryResponse> result = await controller.GetAsync();
-
-        //    //ASSERT
-        //    Assert.NotNull(result);
-        //    Assert.NotEmpty(result);
-        //    Assert.Equivalent(_mapper.Map<List<GetCategoryResponse>>(_categories), result);
-        //}
+            //ACT
+            ActionResult<ViewListPageResult<GetCategoryResponse>> response = await controller.GetAsync();
+            IActionResult result = response.Result;
+            ViewListPageResult<GetCategoryResponse> data = (ViewListPageResult<GetCategoryResponse>)((OkObjectResult)result).Value;
+            //ASSERT
+            Assert.NotNull(result);
+            Assert.IsType<OkObjectResult>(result);
+            Assert.Equivalent(_mapper.Map<List<GetCategoryResponse>>(_categories), data.Data);
+        }
         #endregion
 
         #region CreateCategory
@@ -186,6 +190,8 @@ namespace AssetManagement.Application.Tests
         //Clean up after tests
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
+            await _context.Database.CloseConnectionAsync();
+            await _context.Database.EnsureDeletedAsync();
             await _context.DisposeAsync();
         }
     }

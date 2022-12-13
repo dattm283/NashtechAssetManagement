@@ -26,7 +26,7 @@ namespace AssetManagement.Contracts.AutoMapper
                 .ForMember(dest => dest.AssignedBy, opt => opt.MapFrom(src => src.AssignedByAppUser.UserName));
             CreateMap<Domain.Models.Assignment, AssignmentResponse>()
                 .ForMember(dest => dest.AssignedDate, opt => opt.MapFrom(src => src.AssignedDate.ToShortDateString()))
-                .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.ToShortDateString()));
+                .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.Value.ToShortDateString()));
             CreateMap<Domain.Models.Assignment, AssignmentDetailResponse>()
                .ForMember(dest => dest.StateName, opt => opt.MapFrom(src =>
                    (src.State).ToString()))
@@ -45,7 +45,7 @@ namespace AssetManagement.Contracts.AutoMapper
                 .ForMember(dest => dest.AssignedBy, opt => opt.MapFrom(src => src.AssignedByAppUser.UserName));
             CreateMap<Domain.Models.Assignment, AssignmentResponse>()
                 .ForMember(dest => dest.AssignedDate, opt => opt.MapFrom(src => src.AssignedDate.ToShortDateString()))
-                .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.ToShortDateString()));
+                .ForMember(dest => dest.ReturnedDate, opt => opt.MapFrom(src => src.ReturnedDate.Value.ToShortDateString()));
 
             CreateMap<CreateAssignmentRequest, Domain.Models.Assignment>()
                 .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note.Trim()));
@@ -56,6 +56,16 @@ namespace AssetManagement.Contracts.AutoMapper
                 .ForMember(dest => dest.AssetName, opt => opt.MapFrom(src => src.Asset.Name))
                 .ForMember(dest => dest.RequestedBy, opt => opt.MapFrom(src => src.AssignedToAppUser.UserName))
                 .ForMember(dest => dest.AcceptedBy, opt => opt.MapFrom(src => src.AssignedByAppUser.UserName));
+
+            CreateMap<AssetManagement.Domain.Models.Assignment, MyAssignmentResponse>()
+                .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))
+                .ForMember(dest => dest.AssetName, opt => opt.MapFrom(src => src.Asset.Name))
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Asset.Category.Name));
+            
+            CreateMap<Domain.Models.Assignment, AcceptAssignmentResponse>()
+                .ForMember(dest => dest.AssetState, opt => opt.MapFrom(src => src.Asset.State));
+            CreateMap<Domain.Models.Assignment, DeclineAssignmentResponse>()
+                .ForMember(dest => dest.AssetState, opt => opt.MapFrom(src => src.Asset.State));
         }
     }
 }

@@ -53,7 +53,6 @@ export default () => {
                     <TextField label="Waiting For Recycling" source="waitingForRecycling" />
                     <TextField label="Recycled" source="recycled" />
                 </Datagrid>
-                <AssetsPagination />
             </ListBase>
         </Container>
     );

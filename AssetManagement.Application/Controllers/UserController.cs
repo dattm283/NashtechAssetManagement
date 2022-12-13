@@ -176,8 +176,8 @@ namespace AssetManagement.Application.Controllers
         {
             string userName = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Name)?.Value;
             AppUser currentUser = await _dbContext.AppUsers.FirstAsync(x => x.UserName == userName);
-            IQueryable<AppUser> users = _dbContext.AppUsers
-                                            .Where(x => x.IsDeleted == false && x.Location == currentUser.Location);
+            IQueryable<AppUser> users = _dbContext.AppUsers.Include(u => u.AssignedToAssignments.Where(a => !a.IsDeleted && a.State != Domain.Enums.Assignment.State.Returned))
+                                                           .Where(x => x.IsDeleted == false && x.Location == currentUser.Location);
 
             if (!string.IsNullOrEmpty(stateFilter))
             {
@@ -389,13 +389,18 @@ namespace AssetManagement.Application.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string staffCode)
         {
-            var deletingUser = await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.StaffCode == staffCode);
+            var deletingUser = await _dbContext.AppUsers.Include(u => u.AssignedToAssignments.Where(a => a.State != Domain.Enums.Assignment.State.Returned))
+                                                        .FirstOrDefaultAsync(x => x.StaffCode == staffCode);
             var userName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name).Value;
             if (deletingUser != null)
             {
                 if (deletingUser.UserName == userName)
                 {
                     return BadRequest(new ErrorResponseResult<string>("You can't delete yourself"));
+                }
+                if (deletingUser.AssignedToAssignments.Count() > 0)
+                {
+                    return BadRequest(new ErrorResponseResult<string>("There are valid assignments belonging to this user. Please close all assignments before disabling user."));
                 }
                 deletingUser.IsDeleted = true;
                 await _dbContext.SaveChangesAsync();
