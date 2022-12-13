@@ -242,6 +242,7 @@ namespace AssetManagement.Application.Controllers
             
             returnRequest.State = Domain.Enums.ReturnRequest.State.Completed;
             returnRequest.ReturnedDate = DateTime.Now;
+            assignment.ReturnedDate = DateTime.Now;
             returnRequest.AcceptedBy = currentUserLogin.Id;
 
             if (assignment.State == Domain.Enums.Assignment.State.WaitingForReturning)
