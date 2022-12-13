@@ -31,7 +31,8 @@ import { useNavigate } from "react-router-dom";
 import { assetProvider } from "../../providers/assetProvider/assetProvider";
 import { listStyle } from "../../styles/listStyle";
 import AssignmentShow from "../assignments/AssignmentShow";
-import CustomDisableWithConfirm from '../../components/modal/confirmReturnModal/CustomDisableWithConfirm'
+// import CustomDisableWithConfirm from '../../components/modal/confirmReturnModal/CustomDisableWithConfirm'
+import { AdminCustomReturnAssetWithConfirm } from "../../components/modal/confirmReturnModal/AdminCustomReturnAssetWithConfirm";
 
 export default () => {
     const [isOpened, setIsOpened] = useState(false);
@@ -117,7 +118,7 @@ export default () => {
                                             confirmTitle="Are you sure?"
                                             confirmContent="Do you want to decline this assignment?"
                                             mutationOptions={{ onSuccess: () => refresh() }} isOpen={deleting} setDeleting={setDeleting} />
-                                        <CustomDisableWithConfirm
+                                        {/* <CustomDisableWithConfirm
                                             icon={<ReplayIcon style={{ color:"#bdbdbd" }} />}
                                             confirmTitle="Are you sure?"
                                             confirmContent="Do you want to create a returning request for this asset?"
@@ -126,6 +127,12 @@ export default () => {
                                             isOpen={false}
                                             setDeleting={setDeleting}
                                             record={record}
+                                        /> */}
+                                        <AdminCustomReturnAssetWithConfirm
+                                            icon={<ReplayIcon />}
+                                            confirmTitle=""
+                                            confirmContent=""
+                                            disabled
                                         />
                                     </ButtonGroup>
 
@@ -138,7 +145,7 @@ export default () => {
                                             sx={listStyle.buttonToolbar} />
                                         <DeleteButton icon={<ClearIcon />} disabled variant="text" size="small" label=""
                                             sx={listStyle.buttonToolbar} />
-                                        <CustomDisableWithConfirm
+                                        {/* <CustomDisableWithConfirm
                                             icon={<ReplayIcon style={{ color: !(record.state === 0) ? "#bdbdbd" : "#5f73e4" }} />}
                                             confirmTitle="Are you sure?"
                                             confirmContent="Do you want to create a returning request for this asset?"
@@ -147,6 +154,12 @@ export default () => {
                                             isOpen={false}
                                             setDeleting={setDeleting}
                                             record={record}
+                                        /> */}
+                                        <AdminCustomReturnAssetWithConfirm
+                                            icon={<ReplayIcon />}
+                                            confirmTitle="Are you sure?"
+                                            confirmContent="Do you want to create a returning request for this asset?"
+                                            disabled={!(record.state === 0)}
                                         />
                                     </ButtonGroup>
                                 )
