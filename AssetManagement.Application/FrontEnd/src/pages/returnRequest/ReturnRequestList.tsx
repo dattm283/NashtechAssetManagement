@@ -182,7 +182,7 @@ export default () => {
             <FunctionField
               render={(record) => (
                 <CustomDeleteWithConfirmButton
-                  icon={<ClearIcon sx={{color: "black"}}/>}
+                  icon={<ClearIcon sx={{color: record.state == 0 ? "black" : "grey"}}/>}
                   confirmTitle="Are you sure?"
                   confirmContent="Do you want to cancel this returning request?"
                   mutationOptions={{ onSuccess: (data) => refresh() }}
