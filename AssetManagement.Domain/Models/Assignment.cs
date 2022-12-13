@@ -14,7 +14,7 @@ namespace AssetManagement.Domain.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public DateTime AssignedDate { get; set; }
-        public DateTime ReturnedDate { get; set; }
+        public DateTime? ReturnedDate { get; set; }
         public AssetManagement.Domain.Enums.Assignment.State State { get; set; }
 
         public int? AssetId { get; set; }

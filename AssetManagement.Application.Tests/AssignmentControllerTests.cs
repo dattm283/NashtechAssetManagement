@@ -3,7 +3,6 @@ using AssetManagement.Contracts.Assignment.Response;
 using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.AutoMapper;
 using AssetManagement.Data.EF;
-using AssetManagement.Domain.Enums.Asset;
 using AssetManagement.Domain.Models;
 using AutoMapper;
 using Castle.Core.Configuration;
@@ -11,12 +10,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Xunit;
-using Newtonsoft.Json;
 using static AssetManagement.Application.Tests.TestHelper.ConverterFromIActionResult;
 using FluentAssertions;
 using AssetManagement.Contracts.Assignment.Request;
 using AssetManagement.Application.Tests.TestHelper;
 using Microsoft.AspNetCore.Identity;
+using Moq;
+using Microsoft.AspNetCore.Http;
 
 namespace AssetManagement.Application.Tests
 {
@@ -26,7 +26,7 @@ namespace AssetManagement.Application.Tests
         private readonly AssetManagementDbContext _context;
         private readonly IMapper _mapper;
         private readonly IConfiguration _config;
-        private readonly UserManager<AppUser> _userManager; 
+        private readonly UserManager<AppUser> _userManager;
 
         public AssignmentControllerTests()
         {
@@ -78,89 +78,6 @@ namespace AssetManagement.Application.Tests
             result.Should().BeOfType<BadRequestResult>();
         }
         #endregion
-
-        //private void SeedData()
-        //{
-        //    _context.Database.EnsureDeleted();
-        //    //Create roles data
-        //    List<AppRole> _roles = new()
-        //    {
-        //        new AppRole()
-        //        {
-        //            Id = new Guid("12147FE0-4571-4AD2-B8F7-D2C863EB78A5"),
-        //            Name = "Admin",
-        //            Description = "Admin role"
-        //        },
-
-        //        new AppRole()
-        //        {
-        //            Id = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC"),
-        //            Name = "Staff",
-        //            Description = "Staff role"
-        //        }
-        //    };
-        //    //Create users data
-        //    List<AppUser> _users = new()
-        //    {
-        //        new AppUser()
-        //        {
-        //            Id = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE"),
-        //            FirstName = "Binh",
-        //            LastName = "Nguyen Van",
-        //            UserName = "binhnv",
-        //            Email = "bnv@gmail.com",
-        //            PasswordHash = "abc",
-        //            Gender = Domain.Enums.AppUser.UserGender.Male,
-        //            Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-        //            //RoleId = _roles[0].Id,
-        //            IsLoginFirstTime = true,
-        //            StaffCode = "SD01",
-        //        },
-
-        //        new AppUser()
-        //        {
-        //            Id = new Guid("70BD714F-9576-45BA-B5B7-F00649BE00DE"),
-        //            FirstName = "An",
-        //            LastName = "Nguyen Van",
-        //            UserName = "annv",
-        //            Email = "anv@gmail.com",
-        //            PasswordHash = "xyz",
-        //            Gender = Domain.Enums.AppUser.UserGender.Male,
-        //            Location = Domain.Enums.AppUser.AppUserLocation.HaNoi,
-        //            //RoleId = _roles[1].Id,
-        //            IsLoginFirstTime = true,
-        //            StaffCode = "SD02",
-        //        }
-        //    };
-        //    //Add roles
-        //    _context.AppRoles.AddRange(_roles);
-        //    //Add users
-        //    _context.AppUsers.AddRange(_users);
-        //    _context.Assets.Add(new Asset
-        //    {
-        //        Id = 1,
-        //        Name = $"Laptop 1",
-        //        AssetCode = $"LT000001",
-        //        Specification = $"This is laptop #1",
-        //        InstalledDate = DateTime.Now.AddDays(-1),
-        //        Category = null,
-        //        Location = Domain.Enums.AppUser.AppUserLocation.HoChiMinh,
-        //        State = State.Available,
-        //        IsDeleted = false
-        //    });
-        //    _context.Assignments.Add(new Assignment
-        //    {
-        //        Id = 1,
-        //        AssignedDate = DateTime.Now,
-        //        ReturnedDate = DateTime.Now,
-        //        State = Domain.Enums.Assignment.State.Accepted,
-        //        AssetId = 1,
-        //        AssignedTo = _users[0].Id,
-        //        AssignedBy = _users[1].Id,
-        //        Note = "Co len",
-        //    });
-        //    _context.SaveChanges();
-        //}
 
         [Fact]
         public void GetAssignmentListByAssetCodeId_ReturnResults()
@@ -301,7 +218,7 @@ namespace AssetManagement.Application.Tests
             var result = await assignmentController.Get(1, 2, searchString);
 
             var list = _context.Assignments
-                .Where(x => !x.IsDeleted && (x.Asset.Name.Contains(searchString) ||  x.Asset.AssetCode.Contains(searchString)))
+                .Where(x => !x.IsDeleted && (x.Asset.Name.Contains(searchString) || x.Asset.AssetCode.Contains(searchString)))
                 .Select(x => new ViewListAssignmentResponse
                 {
                     Id = x.Id,
@@ -472,6 +389,132 @@ namespace AssetManagement.Application.Tests
         }
         #endregion
 
+        #region GetHome
+        [Fact]
+        public async Task GetHome_ForDefault()
+        {
+            // Arrange 
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.SetupGet(x => x.User.Identity.Name).Returns("staff1");
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
+            assignmentController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            // Act 
+            var result = await assignmentController.GetHome(1, 2);
+            string userName = "staff1";
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted && x.AssignedToAppUser.UserName.Equals(userName) &&
+                    x.AssignedDate.Date <= DateTime.Today.Date &&
+                    x.State != Domain.Enums.Assignment.State.Declined &&
+                    x.State != Domain.Enums.Assignment.State.Returned)
+                .Select(x => new MyAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    CategoryName = x.Asset.Category.Name,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+
+            var expected = JsonConvert.SerializeObject(
+                StaticFunctions<MyAssignmentResponse>.Paging(list, 1, 2));
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewListPageResult<MyAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
+
+            Assert.Equal(expected, assignmentsList);
+        }
+
+        [Fact]
+        public async Task GetHome_ForDefaultSortedByAssetCode()
+        {
+            // Arrange 
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.SetupGet(x => x.User.Identity.Name).Returns("staff1");
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
+            assignmentController.ControllerContext.HttpContext = mockHttpContext.Object;
+            var sortType = "assetCode";
+            // Act 
+            var result = await assignmentController.GetHome(1, 2, sort: sortType);
+
+            string userName = "staff1";
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted && x.AssignedToAppUser.UserName.Equals(userName) &&
+                    x.AssignedDate.Date <= DateTime.Today.Date &&
+                    x.State != Domain.Enums.Assignment.State.Declined &&
+                    x.State != Domain.Enums.Assignment.State.Returned)
+                .Select(x => new MyAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    CategoryName = x.Asset.Category.Name,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.AssetCode);
+
+            var expected = JsonConvert.SerializeObject(
+                StaticFunctions<MyAssignmentResponse>.Paging(list, 1, 2));
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewListPageResult<MyAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
+
+            Assert.Equal(expected, assignmentsList);
+        }
+
+        [Fact]
+        public async Task GetHome_ForDefault_InvalidPaging()
+        {
+            // Arrange 
+            var mockHttpContext = new Mock<HttpContext>();
+            mockHttpContext.SetupGet(x => x.User.Identity.Name).Returns("staff1");
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
+            assignmentController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            // Act 
+            var result = await assignmentController.GetHome(-1, 2);
+            string userName = "staff1";
+
+            var list = _context.Assignments
+                .Where(x => !x.IsDeleted && x.AssignedToAppUser.UserName.Equals(userName) &&
+                    x.AssignedDate.Date <= DateTime.Today.Date &&
+                    x.State != Domain.Enums.Assignment.State.Declined &&
+                    x.State != Domain.Enums.Assignment.State.Returned)
+                .Select(x => new MyAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    CategoryName = x.Asset.Category.Name,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                })
+                .OrderBy(x => x.Id);
+
+            var expected = JsonConvert.SerializeObject(
+                StaticFunctions<MyAssignmentResponse>.Paging(list, -1, 2));
+
+            var okobjectResult = (OkObjectResult)result.Result;
+
+            var resultValue = (ViewListPageResult<MyAssignmentResponse>)okobjectResult.Value;
+
+            var assignmentsList = JsonConvert.SerializeObject(resultValue.Data);
+
+            Assert.Equal(expected, assignmentsList);
+        }
+        #endregion
+
         #region UpdateAssignment
         [Fact]
         public async Task UpdateAssignment_Success_ReturnUpdatedAssignment()
@@ -483,7 +526,7 @@ namespace AssetManagement.Application.Tests
             var updatingAssignment = await _context.Assignments
                 .Include(a => a.Asset)
                 .Include(a => a.AssignedToAppUser)
-                .Where(a => a.Id == 9)
+                .Where(a => a.Id == 7)
                 .FirstOrDefaultAsync();
             DateTime updatedDate = DateTime.Now;
 
@@ -501,7 +544,7 @@ namespace AssetManagement.Application.Tests
             updatedAssignment.AssignedDate = updatedDate;
             updatedAssignment.Note = "haha";
 
-            var response = await assignmentController.UpdateAssignment(9, updateRequest);
+            var response = await assignmentController.UpdateAssignment(7, updateRequest);
             string result = ConvertOkObject<UpdateAssignmentResponse>(response);
             string expected = JsonConvert.SerializeObject(updatedAssignment);
 
@@ -614,16 +657,77 @@ namespace AssetManagement.Application.Tests
         //}
 
         #endregion
+        #region AcceptAssignment
+        [Theory]
+        [InlineData(11)]
+        public async Task AcceptAssignment_Success_ReturnAcceptAssignmentResponse(int id)
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
 
+            // Act 
+            var response = await assignmentController.AcceptAssignment(id);
+            // string result = ConvertOkObject<AcceptAssignmentResponse>(response);
+            // string expected = JsonConvert.SerializeObject(updatedAssignment);
+
+            //Assert
+            response.Should().BeOfType<OkObjectResult>();
+        }
+        [Theory]
+        [InlineData(2)]
+        public async Task AcceptAssignment_AssignmentStateNotAccepted_ReturnBadRequest(int id)
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
+
+            // Act 
+            var response = await assignmentController.AcceptAssignment(id);
+            // string result = ConvertOkObject<AcceptAssignmentResponse>(response);
+            // string expected = JsonConvert.SerializeObject(updatedAssignment);
+
+            //Assert
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+        #endregion
+        #region DeclineAssignment
+        [Theory]
+        [InlineData(11)]
+        public async Task DeclineAssignment_Success_ReturnAcceptAssignmentResponse(int id)
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
+
+            // Act 
+            var response = await assignmentController.AcceptAssignment(id);
+            // string result = ConvertOkObject<AcceptAssignmentResponse>(response);
+            // string expected = JsonConvert.SerializeObject(updatedAssignment);
+
+            //Assert
+            response.Should().BeOfType<OkObjectResult>();
+        }
+        [Theory]
+        [InlineData(2)]
+        public async Task DeclineAssignment_AssignmentStateNotAccepted_ReturnBadRequest(int id)
+        {
+            // Arrange 
+            AssignmentsController assignmentController = new AssignmentsController(_context, _userManager, _mapper);
+
+            // Act 
+            var response = await assignmentController.DeclineAssignment(id);
+            // string result = ConvertOkObject<AcceptAssignmentResponse>(response);
+            // string expected = JsonConvert.SerializeObject(updatedAssignment);
+
+            //Assert
+            response.Should().BeOfType<BadRequestObjectResult>();
+        }
+        #endregion
         #region DeleteAssignment
-        #nullable disable
+#nullable disable
         #region DeleteSuccess
         [Theory]
         [InlineData(1)]
-        [InlineData(3)]
         [InlineData(5)]
         [InlineData(7)]
-        [InlineData(9)]
         public async Task Delete_SuccessAsync(int id)
         {
             //ARRANGE
@@ -667,7 +771,6 @@ namespace AssetManagement.Application.Tests
         [Theory]
         [InlineData(-1)]
         [InlineData(0)]
-        [InlineData(11)]
         [InlineData(999)]
         public async Task Delete_NotFoundAsync(int id)
         {
@@ -681,7 +784,7 @@ namespace AssetManagement.Application.Tests
             //ASSERT
             Assert.NotNull(result);
             Assert.IsType<NotFoundObjectResult>(result);
-            
+
             Assert.Equal("\"Assignment does not exist\"", data);
         }
         #endregion
@@ -708,6 +811,7 @@ namespace AssetManagement.Application.Tests
 
         async ValueTask IAsyncDisposable.DisposeAsync()
         {
+            await _context.Database.CloseConnectionAsync();
             await _context.Database.EnsureDeletedAsync();
             await _context.DisposeAsync();
         }

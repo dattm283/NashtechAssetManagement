@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -28,20 +29,54 @@ namespace AssetManagement.Application.Controllers
             _mapper = mapper;
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteReturnRequest(int id)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> CreateReturnRequest(int id)
         {
-            Assignment? assignment = await _dbContext.Assignments
+            string userName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+            AppUser currentUser = _dbContext.AppUsers.FirstOrDefault(x => x.UserName == userName);
+            if (currentUser == null)
+            {
+                return BadRequest(new ErrorResponseResult<string>("Invalid User"));
+            }
+            Assignment assignment = _dbContext.Assignments.Where(x => x.Id == id).FirstOrDefault();
+            if (assignment == null)
+            {
+                return BadRequest(new ErrorResponseResult<string>("Invalid Assignment"));
+            }
+            ReturnRequest returnRequest = new ReturnRequest
+            {
+                AssignmentId = assignment.Id,
+                AssignedBy = currentUser.Id,
+                AcceptedBy = null,
+                ReturnedDate = null,
+                AssignedDate = assignment.AssignedDate,
+                State = Domain.Enums.ReturnRequest.State.WaitingForReturning
+            };
+
+            assignment.State = Domain.Enums.Assignment.State.WaitingForReturning;
+            await _dbContext.ReturnRequests.AddAsync(returnRequest);
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new SuccessResponseResult<string>("Create ReturningRequest successfully"));
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CancelReturnRequest(int id)
+        {
+            ReturnRequest? returnRequest = await _dbContext.ReturnRequests
+                .Include(a => a.Assignment)
                 .Where(a => a.Id == id && !a.IsDeleted &&
-                    a.State == Domain.Enums.Assignment.State.WaitingForReturning)
+                    a.State == Domain.Enums.ReturnRequest.State.WaitingForReturning)
                 .FirstOrDefaultAsync();
-            if (assignment != null)
+            if (returnRequest != null)
             {
                 try
                 {
-                    assignment.State = Domain.Enums.Assignment.State.Accepted;
+                    returnRequest.IsDeleted = true;
+                    returnRequest.Assignment.State = Domain.Enums.Assignment.State.Accepted;
                     await _dbContext.SaveChangesAsync();
-                    return Ok(_mapper.Map<AssignmentResponse>(assignment));
+                    return Ok(_mapper.Map<CancelReturnRequestResponse>(returnRequest));
                 }
                 catch (Exception e) { return BadRequest(e.Message); }
             }
@@ -60,21 +95,21 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? order = "ASC",
             [FromQuery] string? createdId = "")
         {
-            var list = _dbContext.Assignments
-                .Include(x => x.Asset)
-                .Include(x => x.AssignedToAppUser)
-                .Include(x => x.AssignedByAppUser)
-                .Where(x => !x.IsDeleted &&
-                    (x.State == Domain.Enums.Assignment.State.WaitingForReturning
-                    || x.State == Domain.Enums.Assignment.State.Completed))
+            //var tempList = _dbContext.ReturnRequests.ToList();
+            var list = _dbContext.ReturnRequests
+                .Include(x => x.AssignedByUser)
+                .Include(x => x.AcceptedByUser)
+                .Include(x => x.Assignment)
+                    .ThenInclude(a => a.Asset)
+                .Where(x => !x.IsDeleted)
                 .Select(x => new ViewListReturnRequestResponse
                 {
                     Id = x.Id,
                     NoNumber = x.Id,
-                    AssetCode = x.Asset.AssetCode,
-                    AssetName = x.Asset.Name,
-                    RequestedBy = x.AssignedToAppUser.UserName,
-                    AcceptedBy = x.AssignedByAppUser.UserName,
+                    AssetCode = x.Assignment.Asset.AssetCode,
+                    AssetName = x.Assignment.Asset.Name,
+                    RequestedBy = x.AssignedByUser.UserName,
+                    AcceptedBy = x.AcceptedByUser.UserName,
                     AssignedDate = x.AssignedDate,
                     ReturnedDate = x.ReturnedDate,
                     State = x.State,
@@ -86,7 +121,7 @@ namespace AssetManagement.Application.Controllers
             }
             if (!string.IsNullOrEmpty(returnedDateFilter))
             {
-                list = list.Where(x => x.ReturnedDate.Date == DateTime.Parse(returnedDateFilter).Date);
+                list = list.Where(x => x.ReturnedDate.Value.Date == DateTime.Parse(returnedDateFilter).Date);
             }
             if (!string.IsNullOrEmpty(stateFilter))
             {
@@ -176,6 +211,65 @@ namespace AssetManagement.Application.Controllers
             var sortedResult = StaticFunctions<ViewListReturnRequestResponse>.Paging(list, start, end);
 
             return Ok(new ViewListPageResult<ViewListReturnRequestResponse> { Data = sortedResult, Total = list.Count() });
+        }
+
+        [HttpPut("complete/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Complete(int id)
+        {
+            var returnRequest = await _dbContext.ReturnRequests.FindAsync(id);
+
+            if (returnRequest == null)
+            {
+                return NotFound(new ErrorResponseResult<string>("Return request does not exists!"));
+            }
+
+            var assignment = await _dbContext.Assignments.FindAsync(returnRequest.AssignmentId);
+
+            if (assignment == null)
+            {
+                return NotFound(new ErrorResponseResult<string>("Assigment does not exists!"));
+            }
+
+            var asset = await _dbContext.Assets.FindAsync(assignment.AssetId);
+
+            if (asset == null)
+            {
+                return NotFound(new ErrorResponseResult<string>("Asset does not exists!"));
+            }
+
+            var currentUserLogin = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName.Equals(User.Identity.Name));
+            
+            returnRequest.State = Domain.Enums.ReturnRequest.State.Completed;
+            returnRequest.ReturnedDate = DateTime.Now;
+            returnRequest.AcceptedBy = currentUserLogin.Id;
+
+            if (assignment.State == Domain.Enums.Assignment.State.WaitingForReturning)
+            {
+                assignment.State = Domain.Enums.Assignment.State.Returned;
+            }
+            else
+            {
+                return BadRequest(new ErrorResponseResult<string>("Assignment's state of this return request is invalid"));
+            }
+
+            if (asset.State == Domain.Enums.Asset.State.Assigned)
+            {
+                asset.State = Domain.Enums.Asset.State.Available;
+            }
+            else
+            {
+                return BadRequest(new ErrorResponseResult<string>("Asset's state of this assignment is invalid"));
+            }
+
+            var result = await _dbContext.SaveChangesAsync();
+
+            if (result > 0)
+            {
+                return Ok(new SuccessResponseResult<string>("Return request successfully!"));
+            }
+
+            return BadRequest("Return asset unsuccessfully!");
         }
     }
 }

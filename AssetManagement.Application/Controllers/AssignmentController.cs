@@ -5,22 +5,20 @@ using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-// using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-// using Microsoft.AspNetCore.Http;
 using AssetManagement.Domain.Enums.Assignment;
 using AssetManagement.Contracts.Assignment.Request;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-// using System;
-// using System.Globalization;
+using System;
+using AssetManagement.Application.Filters;
 
 namespace AssetManagement.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ApiController]
+    [FilterCheckIsChangeRole]
     public class AssignmentsController : ControllerBase
     {
         private readonly AssetManagementDbContext _dbContext;
@@ -124,6 +122,150 @@ namespace AssetManagement.Application.Controllers
             return Ok(_mapper.Map<UpdateAssignmentResponse>(updatingAssignment));
         }
 
+        [HttpPut("{id}/accept")]
+        [Authorize]
+        public async Task<IActionResult> AcceptAssignment(int id) {
+            Assignment updatingAssignment = await _dbContext.Assignments
+                .Include(a => a.Asset)
+                .Where(a => a.Id == id && a.IsDeleted == false && a.State == State.WaitingForAcceptance)
+                .FirstOrDefaultAsync();
+
+            try
+            {
+                if (updatingAssignment != null )
+                {
+                    Asset asset = await _dbContext.Assets
+                        .Where(a => a.Id == updatingAssignment.AssetId)
+                        .FirstOrDefaultAsync();
+
+                    if (asset != null)
+                    {
+                        switch (asset.State)
+                        { 
+                            case AssetManagement.Domain.Enums.Asset.State.Available: 
+                            {
+                                updatingAssignment.State = State.Accepted;
+                                asset.State = AssetManagement.Domain.Enums.Asset.State.Assigned;
+                                await _dbContext.SaveChangesAsync();
+                                break;
+                            } 
+                            case AssetManagement.Domain.Enums.Asset.State.NotAvailable:
+                            {
+                                throw new Exception("This asset is not available");
+                                break;
+                            }
+                            case AssetManagement.Domain.Enums.Asset.State.WaitingForRecycling:
+                            {
+                                throw new Exception("This asset is waiting for recycling");
+                                break;
+                            }
+                            case AssetManagement.Domain.Enums.Asset.State.Recycled:
+                            {
+                                throw new Exception("This asset is recycled");
+                                break;
+                            }
+                            case AssetManagement.Domain.Enums.Asset.State.Assigned: 
+                            {
+                                throw new Exception("This asset is already assigned to another assignment");
+                                break;
+                            }
+                            default:
+                            {
+                                throw new Exception("Asset of this assignment is invalid");
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Asset of this assignment is invalid");
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Cannot find a Waiting For Acceptance assignment with id: {id}");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponseResult<string>(ex.Message));
+            }
+
+            return Ok(_mapper.Map<AcceptAssignmentResponse>(updatingAssignment));
+        }
+
+        [HttpPut("{id}/decline")]
+        [Authorize]
+        public async Task<IActionResult> DeclineAssignment(int id) {
+            Assignment updatingAssignment = await _dbContext.Assignments
+                .Include(a => a.Asset)
+                .Where(a => a.Id == id && a.IsDeleted == false && a.State == State.WaitingForAcceptance)
+                .FirstOrDefaultAsync();
+
+            try
+            {
+                if (updatingAssignment != null )
+                {
+                    Asset asset = await _dbContext.Assets
+                        .Where(a => a.Id == updatingAssignment.AssetId)
+                        .FirstOrDefaultAsync();
+
+                    if (asset != null)
+                    {
+                        switch (asset.State)
+                        { 
+                            case AssetManagement.Domain.Enums.Asset.State.Available: 
+                            {
+                                updatingAssignment.State = State.Declined;
+                                await _dbContext.SaveChangesAsync();
+                                break;
+                            } 
+                            case AssetManagement.Domain.Enums.Asset.State.NotAvailable:
+                            {
+                                throw new Exception("This asset is not available");
+                                break;
+                            }
+                            case AssetManagement.Domain.Enums.Asset.State.WaitingForRecycling:
+                            {
+                                throw new Exception("This asset is waiting for recycling");
+                                break;
+                            }
+                            case AssetManagement.Domain.Enums.Asset.State.Recycled:
+                            {
+                                throw new Exception("This asset is recycled");
+                                break;
+                            }
+                            case AssetManagement.Domain.Enums.Asset.State.Assigned: 
+                            {
+                                throw new Exception("This asset is already assigned to another assignment");
+                                break;
+                            }
+                            default:
+                            {
+                                throw new Exception("Asset of this assignment is invalid");
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Asset of this assignment is invalid");
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Cannot find a Waiting For Acceptance assignment with id: {id}");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorResponseResult<string>(ex.Message));
+            }
+
+            return Ok(_mapper.Map<DeclineAssignmentResponse>(updatingAssignment));
+        }
+
+
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<ViewListPageResult<ViewListAssignmentResponse>>> Get(
@@ -137,7 +279,7 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? createdId = "")
         {
             var list = _dbContext.Assignments
-                .Where(x => !x.IsDeleted)
+                .Where(x => !x.IsDeleted && x.State != State.Returned)
                 .Select(x => new ViewListAssignmentResponse
                 {
                     Id = x.Id,
@@ -258,6 +400,8 @@ namespace AssetManagement.Application.Controllers
             return true;
         }
 
+        
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAsync(int id)
@@ -317,6 +461,78 @@ namespace AssetManagement.Application.Controllers
             _dbContext.SaveChanges();
             var mappedResult = _mapper.Map<CreateAssignmentResponse>(assignment);
             return Ok(mappedResult);
+        }
+
+        [HttpGet("/api/home")]
+        [Authorize]
+        public async Task<ActionResult<ViewListPageResult<MyAssignmentResponse>>> GetHome(
+            [FromQuery] int start,
+            [FromQuery] int end,
+            [FromQuery] string? sort = "id",
+            [FromQuery] string? order = "ASC")
+        {
+            var userName = User.Identity.Name;
+            var list = _dbContext.Assignments
+                .Include(x => x.AssignedToAppUser)
+                .Where(x => !x.IsDeleted && x.AssignedToAppUser.UserName.Equals(userName) &&
+                    x.AssignedDate.Date <= DateTime.Today.Date &&
+                    x.State != State.Declined && x.State != State.Returned)
+                .Select(x => new MyAssignmentResponse
+                {
+                    Id = x.Id,
+                    AssetCode = x.Asset.AssetCode,
+                    AssetName = x.Asset.Name,
+                    CategoryName = x.Asset.Category.Name,
+                    AssignedDate = x.AssignedDate,
+                    State = x.State,
+                });
+            switch (sort)
+            {
+                case "id":
+                    {
+                        list = list.OrderBy(x => x.Id);
+                        break;
+                    }
+                case "assetCode":
+                    {
+                        list = list.OrderBy(x => x.AssetCode);
+                        break;
+                    }
+                case "assetName":
+                    {
+                        list = list.OrderBy(x => x.AssetName);
+                        break;
+                    }
+                case "categoryName":
+                    {
+                        list = list.OrderBy(x => x.CategoryName);
+                        break;
+                    }
+                case "assignedDate":
+                    {
+                        list = list.OrderBy(x => x.AssignedDate);
+                        break;
+                    }
+                case "state":
+                    {
+                        list = list.OrderBy(x => x.State);
+                        break;
+                    }
+                default:
+                    {
+                        list = list.OrderBy(x => x.AssetCode);
+                        break;
+                    }
+            }
+
+            if (order == "DESC")
+            {
+                list = list.Reverse();
+            }
+
+            var sortedResult = StaticFunctions<MyAssignmentResponse>.Paging(list, start, end);
+
+            return Ok(new ViewListPageResult<MyAssignmentResponse> { Data = sortedResult, Total = list.Count() });
         }
     }
 }

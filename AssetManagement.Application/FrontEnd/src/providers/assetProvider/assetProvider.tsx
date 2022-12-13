@@ -90,5 +90,10 @@ export const assetProvider: DataProvider = {
         return axiosInstance(url).then(res => {
             return Promise.resolve({ data: res.data.data, total: res.data.total });
         });
+    },
+    returnAsset: (resource, params) => {
+        return axiosInstance.post(`/api/${resource}/${params.id}`).then(res => {
+            return res
+        })
     }
 };

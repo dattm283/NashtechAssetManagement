@@ -8,5 +8,6 @@
         public string UserName { get; set; }
         public DateTime JoinedDate { get; set; }
         public string Type { get; set; }
+        public int ValidAssignments { get; set; }
     }
 }

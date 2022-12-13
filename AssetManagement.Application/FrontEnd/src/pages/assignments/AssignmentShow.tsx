@@ -74,7 +74,7 @@ const AssignmentShow = ({ isOpened, toggle, assignment }) => {
                         <DataText><TextField source="assetName" /></DataText>
                         <DataLabel label="Specification" />
                         <DataText><TextField source="specification" /></DataText>
-                        <DataLabel label="Assigned To" />
+                        <DataLabel label="Assigned to" />
                         <DataText><TextField source="assignToAppUser" /></DataText>
                         <DataLabel label="Assigned by" />
                         <DataText><TextField source="assignByAppUser" /></DataText>
@@ -82,13 +82,25 @@ const AssignmentShow = ({ isOpened, toggle, assignment }) => {
                         <DataText><DateField source="assignedDate" locales="en-GB" /></DataText>
                         <DataLabel label="State" />
                         <DataText>
-                        <FunctionField  render={record =>  record ? (record.state == 0
-                                ? "Accepted"
-                                : record.state == 1
-                                ? "Waiting for acceptance"
-                                : "") : ""
-                            }/>
-                            
+                            <FunctionField render={record => {
+                                switch (record.state) {
+                                    case 0: {
+                                        return "Accepted";
+                                    }
+                                    case 1: {
+                                        return "Waiting For Acceptance";
+                                    }
+                                    case 2: {
+                                        return "Returned";
+                                    }
+                                    case 3: {
+                                        return "Waiting For Returning";
+                                    }
+                                    case 4: {
+                                        return "Declined";
+                                    }
+                                }
+                            }} />
                         </DataText>
                         <DataLabel label="Note" />
                         <DataText><TextField source="note" /></DataText>

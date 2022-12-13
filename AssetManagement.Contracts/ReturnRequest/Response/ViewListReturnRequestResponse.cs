@@ -1,4 +1,4 @@
-﻿using AssetManagement.Domain.Enums.Assignment;
+﻿using AssetManagement.Domain.Enums.ReturnRequest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace AssetManagement.Contracts.ReturnRequest.Response
         
         public string AcceptedBy { get; set; }
 
-        public DateTime ReturnedDate { get; set; }
+        public DateTime? ReturnedDate { get; set; }
 
         public State State { get; set; }
 

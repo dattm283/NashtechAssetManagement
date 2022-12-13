@@ -5,7 +5,8 @@
     "asset": "/api/Assets",
     "category": "/api/Category",
     "assignement": "/api/Assignments",
-    "user":"./api/User"
+    "user":"./api/User",
+    "returningRequest": "/api/ReturnRequest"
   },
   "encryption": {
     "key": "ahihi"

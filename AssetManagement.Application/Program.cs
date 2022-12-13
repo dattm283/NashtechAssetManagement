@@ -27,6 +27,7 @@ builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(UserProfile)));
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AssignmentProfile)));
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(AssetProfile)));
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(CategoryProfile)));
+builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(ReturnRequestProfile)));
 
 //password policy configuration
 builder.Services.Configure<IdentityOptions>(options =>
@@ -72,7 +73,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger asset managment solution", Version = "v1" });
-
+    c.CustomSchemaIds(type => type.ToString());
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n

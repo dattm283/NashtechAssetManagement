@@ -26,7 +26,7 @@ import { Button, ButtonProps } from 'react-admin';
 import { Padding } from '@mui/icons-material';
 
 export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>(
-    props: DeleteWithConfirmButtonProps<RecordType>
+  props: DeleteWithConfirmButtonProps<RecordType>
 ) => {
     const {
         className,
@@ -42,6 +42,8 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
         mutationOptions,
         isOpen,
         setDeleting,
+        acceptButtonLabel = "Delete",
+        cancelButtonLabel = "Cancel",
         ...rest
     } = props;
     const translate = useTranslate();
@@ -49,24 +51,23 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
     const resource = useResourceContext(props);
 
     const {
-        open,
-        isLoading,
-        handleDialogOpen,
-        handleDialogClose,
-        handleDelete,
-    } = useDeleteWithConfirmController({
-        record,
-        redirect,
-        mutationMode,
-        onClick,
-        mutationOptions,
-        resource,
+      open,
+      isLoading,
+      handleDialogOpen,
+      handleDialogClose,
+      handleDelete,
+  } = useDeleteWithConfirmController({
+      record,
+      redirect,
+      mutationMode,
+      onClick,
+      mutationOptions,
+      resource,
     });
 
     const titleStype = {
         bgcolor: '#F0EBEB',
         color: "#E80E0E",
-        border: "1px solid #000",
         // borderRadius: "1px 1px 0px 0px"
         borderTopLeftRadius: "4px",
         borderTopRightRadius: "4px",
@@ -74,7 +75,6 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
     }
 
     const contentStyle = {
-        border: "1px solid #000",
         borderBottomLeftRadius: '4px',
         borderBottomRightRadius: '4px',
         color: "#000"
@@ -83,35 +83,42 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
     const deleteButtonStyle = {
         bgcolor: "#E80E0E",
         color: "#FFFFFF",
-        border: "1px solid #000",
+        border: "1px solid #E80E0E",
         borderRadius: 1,
 
         "&:hover": {
-            color: "#000"
+            color: "#fff",
+            bgcolor: "#424242",
+            border: "1px solid #424242",
         },
     }
 
     const confirmButtonStyle = {
         bgcolor: "#F0EBEB",
         color: "#000",
-        border: "1px solid #000",
+        border: "1px solid #424242",
         borderRadius: 1,
+        "&:hover": {
+            color: "#fff",
+            bgcolor: "#424242",
+            border: "1px solid #424242",
+        },
     }
 
-    const handleOpen = (e) => {
-        setDeleting(true);
-        handleDialogOpen(e);
-    } 
+  const handleOpen = (e) => {
+    setDeleting(true);
+    handleDialogOpen(e);
+  }
 
-    const handleClose = (e) => {
-        setDeleting(false);
-        handleDialogClose(e);
-    }
+  const handleClose = (e) => {
+    setDeleting(false);
+    handleDialogClose(e);
+  }
 
-    const customHandleDelete = (e) => {
-        setDeleting(false);
-        handleDelete(e);
-    }
+  const customHandleDelete = (e) => {
+    setDeleting(false);
+    handleDelete(e);
+  }
 
     return (
         <Fragment>
@@ -148,8 +155,8 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
                         </DialogContentText>
                     </DialogContentText>
                     <DialogActions>
-                        <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
-                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
+                        <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle}>{acceptButtonLabel}</MUIButton>
+                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>{cancelButtonLabel}</MUIButton>
                         <div style={{ flex: '1 0 0' }} />
                     </DialogActions>
                 </DialogContent>
@@ -161,8 +168,8 @@ export const CustomDeleteWithConfirmButton = <RecordType extends RaRecord = any>
 const defaultIcon = <ActionDelete />;
 
 export interface DeleteWithConfirmButtonProps<
-    RecordType extends RaRecord = any,
-    MutationOptionsError = unknown
+  RecordType extends RaRecord = any,
+  MutationOptionsError = unknown
 > extends ButtonProps {
     confirmTitle?: string;
     confirmContent?: React.ReactNode;
@@ -181,37 +188,39 @@ export interface DeleteWithConfirmButtonProps<
     resource?: string;
     isOpen: boolean;
     setDeleting: Function;
+    acceptButtonLabel?: string;
+    cancelButtonLabel?: string;
 }
 
 CustomDeleteWithConfirmButton.propTypes = {
-    className: PropTypes.string,
-    confirmTitle: PropTypes.string,
-    confirmContent: PropTypes.string,
-    label: PropTypes.string,
-    mutationMode: PropTypes.oneOf(['pessimistic', 'optimistic', 'undoable']),
-    record: PropTypes.any,
-    redirect: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.bool,
-        PropTypes.func,
-    ]),
-    resource: PropTypes.string,
-    icon: PropTypes.element,
-    translateOptions: PropTypes.object,
+  className: PropTypes.string,
+  confirmTitle: PropTypes.string,
+  confirmContent: PropTypes.string,
+  label: PropTypes.string,
+  mutationMode: PropTypes.oneOf(['pessimistic', 'optimistic', 'undoable']),
+  record: PropTypes.any,
+  redirect: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+    PropTypes.func,
+  ]),
+  resource: PropTypes.string,
+  icon: PropTypes.element,
+  translateOptions: PropTypes.object,
 };
 
 const PREFIX = 'RaDeleteWithConfirmButton';
 
 const StyledButton = styled(Button, {
-    name: PREFIX,
-    overridesResolver: (props, styles) => styles.root,
+  name: PREFIX,
+  overridesResolver: (props, styles) => styles.root,
 })(({ theme }) => ({
-    color: theme.palette.error.main,
-    // '&:hover': {
-    //     backgroundColor: alpha(theme.palette.error.main, 0.12),
-    //     // Reset on mouse devices
-    //     '@media (hover: none)': {
-    //         backgroundColor: 'transparent',
-    //     },
-    // },
+  color: theme.palette.error.main,
+  // '&:hover': {
+  //     backgroundColor: alpha(theme.palette.error.main, 0.12),
+  //     // Reset on mouse devices
+  //     '@media (hover: none)': {
+  //         backgroundColor: 'transparent',
+  //     },
+  // },
 }));

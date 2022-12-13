@@ -19,13 +19,16 @@ import {
     useResourceContext,
     useTranslate,
     RedirectionSideEffect,
+    useRefresh
 } from 'ra-core';
 import { Button as MUIButton, ButtonGroup } from '@mui/material';
 import { Confirm, DeleteButton } from 'react-admin';
 import { Button, ButtonProps } from 'react-admin';
+import { declineAssignment } from "../../services/assignment";
 import { Padding } from '@mui/icons-material';
+import { useNotify, useUnselect, useRedirect } from 'ra-core';
 
-export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any>(
+export const DeclineAssignment = <RecordType extends RaRecord = any>(
     props: DeleteWithConfirmButtonProps<RecordType>
 ) => {
     const {
@@ -42,11 +45,49 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
         mutationOptions,
         isOpen,
         setDeleting,
+        acceptButtonLabel = "Decline",
+        cancelButtonLabel = "Cancel",
         ...rest
     } = props;
     const translate = useTranslate();
     const record = useRecordContext(props);
     const resource = useResourceContext(props);
+    const notify = useNotify();
+    const unselect = useUnselect(resource);
+    const refresh = useRefresh();
+
+    function handleAccept() {
+        if (record) {
+            declineAssignment(record.id)
+                .then((response) => {
+                    notify('Decline assignment success', {
+                        type: 'info',
+                        messageArgs: { smart_count: 1 },
+                        undoable: mutationMode === 'undoable',
+                    });
+                    unselect([record.id]);
+                    refresh();
+                })
+                .catch((error) => {
+                    notify(
+                        typeof error === 'string'
+                            ? error
+                            : error.response.data.message || 'ra.notification.http_error',
+                        {
+                            type: 'warning',
+                            messageArgs: {
+                                _:
+                                    typeof error === 'string'
+                                        ? error
+                                        : error && error.response.data.message
+                                            ? error.response.data.message
+                                            : undefined,
+                            },
+                        }
+                    );
+                })
+        }
+    }
 
     const {
         open,
@@ -106,7 +147,7 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     const handleOpen = (e) => {
         setDeleting(true);
         handleDialogOpen(e);
-    } 
+    }
 
     const handleClose = (e) => {
         setDeleting(false);
@@ -116,6 +157,13 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
     const customHandleDelete = (e) => {
         setDeleting(false);
         handleDelete(e);
+    }
+
+    const handleAcceptAssignment = (e) => {
+        setDeleting(false);
+        handleAccept();
+        setDeleting(false);
+        handleDialogClose(e);
     }
 
     return (
@@ -129,9 +177,11 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
                 {...rest}
                 sx={{
                     "span": {
-                        margin: 0
+                        margin: 0,
+                        color: "#424242"
                     }
                 }}
+                disabled={props.disabled}
             >
                 {icon}
             </StyledButton>
@@ -154,8 +204,8 @@ export const CustomDisableWithConfirmButton = <RecordType extends RaRecord = any
                         </DialogContentText>
                     </DialogContentText>
                     <DialogActions>
-                        <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Disable</MUIButton>
-                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
+                        <MUIButton onClick={handleAcceptAssignment} sx={deleteButtonStyle}>{acceptButtonLabel}</MUIButton>
+                        <MUIButton sx={confirmButtonStyle} onClick={handleClose}>{cancelButtonLabel}</MUIButton>
                         <div style={{ flex: '1 0 0' }} />
                     </DialogActions>
                 </DialogContent>
@@ -187,9 +237,11 @@ export interface DeleteWithConfirmButtonProps<
     resource?: string;
     isOpen: boolean;
     setDeleting: Function;
+    acceptButtonLabel?: string;
+    cancelButtonLabel?: string;
 }
 
-CustomDisableWithConfirmButton.propTypes = {
+DeclineAssignment.propTypes = {
     className: PropTypes.string,
     confirmTitle: PropTypes.string,
     confirmContent: PropTypes.string,
