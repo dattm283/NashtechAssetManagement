@@ -106,8 +106,7 @@ function CustomDisableWithConfirm(props) {
                 <DialogContent sx={contentStyle}>
                     <DialogContentText component={"div"} id="alert-dialog-description">
                         <DialogContentText sx={{
-                            padding: 3,
-                            paddingRight: 20
+                            padding: 3
                         }}>
                             {confirmContent}
                         </DialogContentText>
