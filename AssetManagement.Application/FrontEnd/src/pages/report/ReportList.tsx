@@ -49,8 +49,8 @@ export default () => {
                     <TextField label="Total" source="total" />
                     <TextField label="Assigned" source="assigned" />
                     <TextField label="Available" source="available" />
-                    <TextField label="Not Available" source="notAvailable" />
-                    <TextField label="Waiting For Recycling" source="waitingForRecycling" />
+                    <TextField label="Not available" source="notAvailable" />
+                    <TextField label="Waiting for recycling" source="waitingForRecycling" />
                     <TextField label="Recycled" source="recycled" />
                 </Datagrid>
             </ListBase>
