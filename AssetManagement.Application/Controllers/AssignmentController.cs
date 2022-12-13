@@ -20,6 +20,7 @@ namespace AssetManagement.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiController]
     public class AssignmentsController : ControllerBase
     {
         private readonly AssetManagementDbContext _dbContext;

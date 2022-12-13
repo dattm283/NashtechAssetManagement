@@ -1,4 +1,5 @@
-﻿using AssetManagement.Contracts.Assignment.Response;
+﻿using AssetManagement.Application.Filters;
+using AssetManagement.Contracts.Assignment.Response;
 using AssetManagement.Contracts.Common;
 using AssetManagement.Contracts.ReturnRequest.Response;
 using AssetManagement.Data.EF;
@@ -13,6 +14,7 @@ namespace AssetManagement.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [FilterCheckIsChangeRole]
     public class ReturnRequestController : ControllerBase
     {
         private readonly AssetManagementDbContext _dbContext;
