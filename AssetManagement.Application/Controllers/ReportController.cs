@@ -32,6 +32,7 @@ namespace AssetManagement.Application.Controllers
             List<Category> categories = await _dbContext.Categories.ToListAsync();
 
             IQueryable<ViewReportResponse> viewReportResponses = _dbContext.Assets
+                .Where(x => !x.IsDeleted)
                 .GroupBy(x => x.CategoryId)
                 .Select(grAsset => new ViewReportResponse
                 {
