@@ -150,7 +150,7 @@ const UserEdit = () => {
             >
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  First Name *
+                  First Name <span className="red">*</span>
                 </Typography>
                 <TextInput
                   label={false}
@@ -166,7 +166,7 @@ const UserEdit = () => {
               </Box>
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Last Name *
+                  Last Name <span className="red">*</span>
                 </Typography>
                 <TextInput
                   label={false}
@@ -182,7 +182,7 @@ const UserEdit = () => {
               </Box>
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Date of Birth *
+                  Date of Birth <span className="red">*</span>
                 </Typography>
                 <DateInput
                   label={false}
@@ -197,7 +197,7 @@ const UserEdit = () => {
               </Box>
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Gender *
+                  Gender <span className="red">*</span>
                 </Typography>
                 <RadioButtonGroup
                   label={false}
@@ -215,7 +215,7 @@ const UserEdit = () => {
               </Box>
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Joined Date *
+                  Joined Date <span className="red">*</span>
                 </Typography>
                 <DateInput
                   label={false}
@@ -231,7 +231,7 @@ const UserEdit = () => {
               </Box>
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Type *
+                  Type <span className="red">*</span>
                 </Typography>
 
                 <SelectInput

@@ -114,7 +114,7 @@ export default () => {
                             if (data.userName != localStorage.getItem("userName")) {
                                 return <>
                                     <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
-                                    <CustomDeleteUserWithConfirmButton
+                                    <CustomDisableWithConfirmButton
                                         icon={<HighlightOffIcon />}
                                         confirmTitle="Are you sure?"
                                         confirmContent="Do you want to disable this user?"

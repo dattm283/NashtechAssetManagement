@@ -62,7 +62,7 @@ const AssetShow = (props) => {
         .then((response) => {
           setAssignments(response);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   }, [record]);
 
@@ -132,8 +132,8 @@ const AssetShow = (props) => {
                     record.state == "NotAvailable"
                       ? "Not available"
                       : record.state == "WaitingForRecycling"
-                      ? "Waiting for recycling"
-                      : record.state
+                        ? "Waiting for recycling"
+                        : record.state
                   }
                 />
               </DataText>
@@ -145,8 +145,8 @@ const AssetShow = (props) => {
                       record.location == "HoChiMinh"
                         ? "HCM"
                         : record.location == "HaNoi"
-                        ? "HN"
-                        : record.location
+                          ? "HN"
+                          : record.location
                     }
                   />
                 </DataText>
@@ -186,7 +186,7 @@ const AssetShow = (props) => {
                               {row.assignedBy}
                             </TableCell>
                             <TableCell align="right">
-                              {isDateAndRestyle(row.returnedDate)}
+                              {row.returnedData && isDateAndRestyle(row.returnedDate)}
                             </TableCell>
                           </TableRow>
                         )
