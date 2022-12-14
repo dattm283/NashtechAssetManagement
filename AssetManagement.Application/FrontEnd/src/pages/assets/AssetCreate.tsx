@@ -105,7 +105,7 @@ function NewCategoryCreate() {
                                     variant="h6"
                                     sx={formStyle.typographyStyle}
                                 >
-                                    Name *
+                                    Name <span className="red">*</span>
                                 </Typography>
                                 <TextInput
                                     fullWidth
@@ -123,7 +123,7 @@ function NewCategoryCreate() {
                                     variant="h6"
                                     sx={formStyle.typographyStyle}
                                 >
-                                    Category *
+                                    Category <span className="red">*</span>
                                 </Typography>
                                 {/* Custom Dropdown Selection (Category) */}
                                 <SelectBoxWithFormInside
@@ -145,7 +145,7 @@ function NewCategoryCreate() {
                                     variant="h6"
                                     sx={formStyle.typographyStyle}
                                 >
-                                    Specification *
+                                    Specification <span className="red">*</span>
                                 </Typography>
                                 <TextInput
                                     fullWidth
@@ -165,7 +165,7 @@ function NewCategoryCreate() {
                                     variant="h6"
                                     sx={formStyle.typographyStyle}
                                 >
-                                    Installed Date *
+                                    Installed Date <span className="red">*</span>
                                 </Typography>
                                 <DateInput
                                     fullWidth
@@ -185,7 +185,7 @@ function NewCategoryCreate() {
                                     variant="h6"
                                     sx={formStyle.typographyStyle}
                                 >
-                                    State *
+                                    State <span className="red">*</span>
                                 </Typography>
                                 <RadioButtonGroup
                                     label=""

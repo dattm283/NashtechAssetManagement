@@ -101,7 +101,7 @@ namespace AssetManagement.Application.Controllers
                 .Include(x => x.AcceptedByUser)
                 .Include(x => x.Assignment)
                     .ThenInclude(a => a.Asset)
-                .Where(x => !x.IsDeleted)
+                .Where(x => !x.IsDeleted && x.ReturnedDate.Value.Date <= DateTime.Now.Date)
                 .Select(x => new ViewListReturnRequestResponse
                 {
                     Id = x.Id,

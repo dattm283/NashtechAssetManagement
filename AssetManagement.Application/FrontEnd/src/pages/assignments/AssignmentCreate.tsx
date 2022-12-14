@@ -42,7 +42,10 @@ const AssignmentCreate = () => {
         top: 0,
         height: 0,
     });
-    const [selectedAsset, setSelectedAsset] = useState("");
+    const [selectedAsset, setSelectedAsset] = useState({
+        assetCode: "",
+        assetName: ""
+    });
     const [userChoiceOpen, setUserChoiceOpen] = useState(false);
     const [userChoicePos, setUserChoicePos] = useState({
         left: 0,
@@ -51,7 +54,10 @@ const AssignmentCreate = () => {
     })
     const assetRef = useRef<HTMLElement>(null);
     const userRef = useRef<HTMLElement>(null);
-    const [selectedUser, setSelectedUser] = useState("");
+    const [selectedUser, setSelectedUser] = useState({
+        staffCode: "",
+        fullname: ""
+    });
     const { id } = useParams();
     let appTheme = createTheme(theme);
     appTheme = unstable_createMuiStrictModeTheme(appTheme);
@@ -68,14 +74,6 @@ const AssignmentCreate = () => {
     const toggleUserChoice = () => {
         setUserChoiceOpen(!userChoiceOpen);
     }
-
-    useEffect(() => {
-        var assetTextBox = document.getElementById("edit_assignment_asset_choice");
-        if (assetTextBox) {
-            let assetTextBoxValue = assetTextBox;
-            assetTextBox.setAttribute("value", selectedAsset);
-        }
-    }, [selectedAsset])
 
     useEffect(() => {
         let assetTextBox = assetRef.current;
@@ -103,8 +101,14 @@ const AssignmentCreate = () => {
         assetProvider.getOne("assignments", { id: id })
             .then((response) => {
                 let updatingAssignment = response.data
-                setSelectedAsset(updatingAssignment.assetCode);
-                setSelectedUser(updatingAssignment.assignToAppUserStaffCode);
+                setSelectedAsset({
+                    assetCode: updatingAssignment.assetCode,
+                    assetName: updatingAssignment.assetName
+                });
+                setSelectedUser({
+                    staffCode: updatingAssignment.assignToAppUserStaffCode,
+                    fullname: updatingAssignment.assignToAppUserFullName
+                });
             })
             .catch((error) => console.log(error));
     }, []);
@@ -177,13 +181,13 @@ const AssignmentCreate = () => {
                                             variant="h6"
                                             sx={formStyle.typographyStyle}
                                         >
-                                            User *
+                                            User <span className="red">*</span>
                                         </Typography>
                                     </Grid>
 
                                     <InputWithSelectModal
                                         handleClick={toggleUserChoice}
-                                        source="assignToAppUserStaffCode"
+                                        source="assignToAppUserFullName"
                                         innerRef={userRef}
                                     />
                                     <SelectUserModal
@@ -200,11 +204,11 @@ const AssignmentCreate = () => {
                                         variant="h6"
                                         sx={formStyle.typographyStyle}
                                     >
-                                        Asset *
+                                        Asset <span className="red">*</span>
                                     </Typography>
                                     <InputWithSelectModal
                                         handleClick={toggleAssetChoice}
-                                        source="assetCode"
+                                        source="assetName"
                                         innerRef={assetRef}
                                     />
 
@@ -222,7 +226,7 @@ const AssignmentCreate = () => {
                                         variant="h6"
                                         sx={formStyle.typographyStyle}
                                     >
-                                        Assigned Date *
+                                        Assigned Date <span className="red">*</span>
                                     </Typography>
                                     <DateInput
                                         fullWidth
@@ -242,7 +246,7 @@ const AssignmentCreate = () => {
                                         variant="h6"
                                         sx={formStyle.typographyStyle}
                                     >
-                                        Note *
+                                        Note <span className="red">*</span>
                                     </Typography>
                                     <TextInput
                                         fullWidth

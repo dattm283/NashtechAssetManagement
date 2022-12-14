@@ -133,7 +133,7 @@ function UserCreate() {
             >
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  First Name *
+                  First Name <span className="red">*</span>
                 </Typography>
                 <TextInput
                   inputProps={{ maxLength: 50 }}
@@ -149,7 +149,7 @@ function UserCreate() {
 
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Last Name *
+                  Last Name <span className="red">*</span>
                 </Typography>
                 <TextInput
                   inputProps={{ maxLength: 50 }}
@@ -165,7 +165,7 @@ function UserCreate() {
 
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Date of Birth *
+                  Date of Birth <span className="red">*</span>
                 </Typography>
                 <DateInput
                   fullWidth
@@ -181,7 +181,7 @@ function UserCreate() {
 
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Gender *
+                  Gender <span className="red">*</span>
                 </Typography>
                 <RadioButtonGroup
                   label=""
@@ -208,7 +208,7 @@ function UserCreate() {
 
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Joined Date *
+                  Joined Date <span className="red">*</span>
                 </Typography>
                 <DateInput
                   fullWidth
@@ -223,7 +223,7 @@ function UserCreate() {
               </Box>
               <Box sx={formStyle.boxStyle}>
                 <Typography variant="h6" sx={formStyle.typographyStyle}>
-                  Type *
+                  Type <span className="red">*</span>
                 </Typography>
                 <SelectInput
                   validate={required()}

@@ -123,7 +123,7 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
                                         <Grid container>
                                             <Grid item xs={12} sm={3}>
                                                 <Typography variant="h6">
-                                                    Username *
+                                                    Username <span className="red">*</span>
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={12} sm={9}>
@@ -147,7 +147,7 @@ const LoginPage = ({ checkIsLoginFirstTime }) => {
                                         <Grid container>
                                             <Grid item xs={12} sm={3}>
                                                 <Typography variant="h6">
-                                                    Password *
+                                                    Password <span className="red">*</span>
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={12} sm={9}>

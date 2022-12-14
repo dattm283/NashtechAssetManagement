@@ -32,6 +32,8 @@ namespace AssetManagement.Contracts.AutoMapper
                    (src.State).ToString()))
                .ForMember(dest => dest.AssignToAppUserStaffCode, opt => opt.MapFrom(src =>
                    src.AssignedToAppUser.StaffCode))
+               .ForMember(dest => dest.AssignToAppUserFullName, opt => opt.MapFrom(src =>
+                   src.AssignedToAppUser.FirstName + " " + src.AssignedToAppUser.LastName))
                .ForMember(dest => dest.AssetCode, opt => opt.MapFrom(src => src.Asset.AssetCode))
                .ForMember(dest => dest.AssetName, opt => opt.MapFrom(src => src.Asset.Name))
                .ForMember(dest => dest.Specification, opt => opt.MapFrom(src => src.Asset.Specification))

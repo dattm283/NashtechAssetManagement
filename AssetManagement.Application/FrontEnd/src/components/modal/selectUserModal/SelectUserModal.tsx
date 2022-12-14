@@ -30,7 +30,11 @@ const StyledDialogContent = styled(DialogContent)`
 const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser, setChanged }) => {
     const [tempChoice, setTempChoice] = useState(selectedUser);
     const postRowClick = (id, resource, record) => {
-        setTempChoice(record.staffCode);
+        console.log("user record", record)
+        setTempChoice({
+            staffCode: record.staffCode,
+            fullname: record.fullName
+        });
         return "";
     };
 
@@ -38,8 +42,12 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser,
         setTempChoice(selectedUser);
     }, [selectedUser])
 
-    const handleChange = (staffCode) => {
-        setTempChoice(staffCode);
+    const handleChange = (user) => {
+        console.log("user change", user);
+        setTempChoice({
+            staffCode: user.staffCode,
+            fullname: user.fullName
+        });
     };
 
     const handleSave = () => {
@@ -58,7 +66,8 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser,
     const { setValue } = useFormContext();
 
     useEffect(() => {
-        setValue("assignToAppUserStaffCode", selectedUser);
+        setValue("assignToAppUserFullName", selectedUser.fullname);
+        setValue("assignToAppUserStaffCode", selectedUser.staffCode);
     }, [selectedUser])
 
     const usersFilter = [
@@ -69,8 +78,6 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser,
             alwaysOn
         />
     ];
-
-    const getStaffCode = record => record.staffCode;
 
     return (
         <StyledDialog
@@ -118,8 +125,8 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser,
                         >
                             <RadioChoice
                                 handleChange={handleChange}
-                                selectedValue={tempChoice}
-                                propsGetter={getStaffCode}
+                                selectedValue={tempChoice.staffCode}
+                                propsGetter={record => record.staffCode}
                             />
                             <TextField label="Staff Code" source="staffCode" />
                             <TextField label="Full Name" source="fullName" />

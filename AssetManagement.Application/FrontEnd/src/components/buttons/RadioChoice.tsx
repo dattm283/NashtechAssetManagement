@@ -8,7 +8,9 @@ const RadioChoice = ({ handleChange, selectedValue, propsGetter }) => {
     return (
         <Radio
             checked={selectedValue === propsGetter(record)}
-            onChange={() => { handleChange(propsGetter(record)) }}
+            onChange={() => {
+                handleChange(record);
+            }}
             value={propsGetter(record)}
             name="radio-buttons"
             inputProps={{ 'aria-label': 'A' }}

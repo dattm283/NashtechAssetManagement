@@ -29,13 +29,18 @@ const StyledDialogContent = styled(DialogContent)`
 const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAsset, setChanged }) => {
     const [tempChoice, setTempChoice] = useState(selectedAsset);
     const postRowClick = (id, resource, record) => {
-        setTempChoice(record.assetCode);
+        console.log("record", record);
+        setTempChoice({
+            assetCode: record.assetCode,
+            assetName: record.name
+        });
         return record.assetCode;
     };
 
     const { setValue } = useFormContext();
 
     useEffect(() => {
+        console.log("selected asset", selectedAsset);
         setTempChoice(selectedAsset);
     }, [selectedAsset])
 
@@ -47,8 +52,12 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
         toggle();
     }
 
-    const handleChange = (assetCode) => {
-        setTempChoice(assetCode);
+    const handleChange = (asset) => {
+        console.log("asset", asset);
+        setTempChoice({
+            assetCode: asset.assetCode,
+            assetName: asset.name
+        });
     };
 
     const handleClose = () => {
@@ -57,14 +66,13 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
     }
 
     useEffect(() => {
-        setValue("assetCode", selectedAsset);
+        setValue("assetName", selectedAsset.assetName);
+        setValue("assetCode", selectedAsset.assetCode);
     }, [selectedAsset])
 
     const assetsFilter = [
         <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
     ];
-
-    const getAssetCode = record => record.assetCode;
 
     return (
         <StyledDialog
@@ -115,8 +123,8 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
                         >
                             <RadioChoice
                                 handleChange={handleChange}
-                                selectedValue={tempChoice}
-                                propsGetter={getAssetCode}
+                                selectedValue={tempChoice.assetCode}
+                                propsGetter={record => record.assetCode}
                             />
                             <TextField source="assetCode" />
                             <TextField label="Asset Name" source="name" />

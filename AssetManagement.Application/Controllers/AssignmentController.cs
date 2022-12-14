@@ -440,7 +440,7 @@ namespace AssetManagement.Application.Controllers
                 x.AssetId == assetId &&
                 x.AssignedTo == staffId &&
                 x.IsDeleted == false && 
-                (x.State == State.Declined || x.State == State.Returned)) == null;
+                !(x.State == State.Declined || x.State == State.Returned)) == null;
             if (!isUnique)
             {
                 return BadRequest(new ErrorResponseResult<string>("Create Assignment unsuccessfully. Existed an assignment with selected User and Asset"));

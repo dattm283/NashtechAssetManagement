@@ -23,7 +23,10 @@ const AssignmentEdit = () => {
         top: 0,
         height: 0,
     });
-    const [selectedAsset, setSelectedAsset] = useState("");
+    const [selectedAsset, setSelectedAsset] = useState({
+        assetCode: "",
+        assetName: ""
+    });
     const [userChoiceOpen, setUserChoiceOpen] = useState(false);
     const [userChoicePos, setUserChoicePos] = useState({
         left: 0,
@@ -32,9 +35,11 @@ const AssignmentEdit = () => {
     })
     const assetRef = useRef<HTMLElement>(null);
     const userRef = useRef<HTMLElement>(null);
-    const [selectedUser, setSelectedUser] = useState("");
+    const [selectedUser, setSelectedUser] = useState({
+        staffCode: "",
+        fullname: ""
+    });
     const { id } = useParams();
-    const { innerWidth: width, innerHeight: height } = window;
     let appTheme = createTheme(theme);
     appTheme = unstable_createMuiStrictModeTheme(appTheme);
     const navigate = useNavigate();
@@ -74,8 +79,15 @@ const AssignmentEdit = () => {
         assetProvider.getOne("assignments", { id: id })
             .then((response) => {
                 let updatingAssignment = response.data
-                setSelectedAsset(updatingAssignment.assetCode);
-                setSelectedUser(updatingAssignment.assignToAppUserStaffCode);
+                console.log("updating assignment ", updatingAssignment);
+                setSelectedAsset({
+                    assetCode: updatingAssignment.assetCode,
+                    assetName: updatingAssignment.assetName
+                });
+                setSelectedUser({
+                    staffCode: updatingAssignment.assignToAppUserStaffCode,
+                    fullname: updatingAssignment.assignToAppUserFullName
+                });
             })
             .catch((error) => console.log(error));
     }, []);
@@ -138,17 +150,9 @@ const AssignmentEdit = () => {
                             toolbar={<AssignmentEditToolbar changed={changed} isEnable={!isInvalid} />}
                         >
                             <FunctionField render={(record) => {
-                                console.log(record);
                                 if (record.state !== 1) {
                                     navigate("/assignments");
                                 }
-                                // else {
-                                //     let today = (new Date()).toISOString()
-                                //     console.log(record.assignedDate < today);
-                                //     if (record.assignedDate < today) {
-                                //         record.assignedDate = new Date();
-                                //     }
-                                // }
                             }} />
                             <Grid container>
                                 <Box sx={formStyle.boxStyle}>
@@ -157,13 +161,13 @@ const AssignmentEdit = () => {
                                             variant="h6"
                                             sx={formStyle.typographyStyle}
                                         >
-                                            User *
+                                            User <span className="red">*</span>
                                         </Typography>
                                     </Grid>
 
                                     <InputWithSelectModal
                                         handleClick={toggleUserChoice}
-                                        source="assignToAppUserStaffCode"
+                                        source="assignToAppUserFullName"
                                         innerRef={userRef}
                                     />
 
@@ -182,13 +186,13 @@ const AssignmentEdit = () => {
                                             variant="h6"
                                             sx={formStyle.typographyStyle}
                                         >
-                                            Asset *
+                                            Asset <span className="red">*</span>
                                         </Typography>
                                     </Grid>
 
                                     <InputWithSelectModal
                                         handleClick={toggleAssetChoice}
-                                        source="assetCode"
+                                        source="assetName"
                                         innerRef={assetRef}
                                     />
 
@@ -207,7 +211,7 @@ const AssignmentEdit = () => {
                                             variant="h6"
                                             sx={formStyle.typographyStyle}
                                         >
-                                            Assigned Date *
+                                            Assigned Date <span className="red">*</span>
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={8}>
@@ -231,7 +235,7 @@ const AssignmentEdit = () => {
                                             variant="h6"
                                             sx={formStyle.typographyStyle}
                                         >
-                                            Note *
+                                            Note <span className="red">*</span>
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={8}>
