@@ -86,16 +86,7 @@ const SelectAssetModal = ({ isOpened, toggle, pos, selectedAsset, setSelectedAss
             maxWidth="sm"
             disableEnforceFocus
         >
-            <Grid sx={{
-                position: "fixed",
-                top: (pos.top + 5) + "px",
-                left: (pos.left + 5) + "px",
-                width: "45%",
-                borderRadius: "10px",
-                border: "1px solid",
-                maxHeight: "50vh",
-                overflow: "scroll",
-            }}>
+            <Grid>
                 <StyledDialogContent>
                     <ListBase
                         perPage={5}

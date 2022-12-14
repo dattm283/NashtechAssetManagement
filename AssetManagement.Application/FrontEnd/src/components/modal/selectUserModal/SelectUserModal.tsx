@@ -91,18 +91,7 @@ const SelectUserModal = ({ isOpened, toggle, pos, selectedUser, setSelectedUser,
             maxWidth="sm"
             disableEnforceFocus
         >
-            <Grid item xs={0}
-                sx={{
-                    position: "fixed",
-                    top: (pos.top + 5) + "px",
-                    left: (pos.left + 5) + "px",
-                    width: "45%",
-                    borderRadius: "10px",
-                    border: "1px solid",
-                    maxHeight: "50vh",
-                    overflow: "scroll",
-                }}
-            >
+            <Grid item xs={0}>
                 <StyledDialogContent>
                     <ListBase
                         perPage={5}
