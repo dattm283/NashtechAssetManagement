@@ -409,7 +409,7 @@ namespace AssetManagement.Application.Controllers
             {
                 return BadRequest(new ErrorResponseResult<string>("Can't find this user"));
             }
-            StaticValues.Usernames.Remove(deletingUser.UserName);
+            StaticValues.Usernames.Remove(deletingUser.UserName);   
             return Ok(_mapper.Map<DeleteUserResponse>(deletingUser));
         }
 

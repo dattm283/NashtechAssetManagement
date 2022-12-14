@@ -47,7 +47,7 @@ export default () => {
   };
   const postRowClick = (id, resource) => {
     assetProvider.getOne("assignments", { id: id })
-    .then(response => {
+      .then(response => {
         setAssignment(response.data);
       })
       .catch(err => {
@@ -59,23 +59,23 @@ export default () => {
 
   const refresh = useRefresh();
 
-    const assignmentsFilter = [
-        <StateFilterSelect
-            source="states"
-            label="State"
-            sx={{ width: "250px" }}
-            statesList={[
-                { value: 0, text: "Accepted" },
-                { value: 1, text: "Waiting for acceptance" },
-                { value: 3, text: "Waiting For Returning" },
-                { value: 4, text: "Declined" }
-            ]}
-            defaultSelect={[0, 1, 3, 4]}
-            alwaysOn
-        />,
-        <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn id="DateAssignedFilterAssignment" />,
-        <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
-    ];
+  const assignmentsFilter = [
+    <StateFilterSelect
+      source="states"
+      label="State"
+      sx={{ width: "250px" }}
+      statesList={[
+        { value: 0, text: "Accepted" },
+        { value: 1, text: "Waiting for acceptance" },
+        { value: 3, text: "Waiting for returning" },
+        { value: 4, text: "Declined" }
+      ]}
+      defaultSelect={[0, 1, 3, 4]}
+      alwaysOn
+    />,
+    <DateAssignedFilterSelect source="assignedDateFilter" alwaysOn id="DateAssignedFilterAssignment" />,
+    <SearchInput InputLabelProps={{ shrink: false }} source="searchString" alwaysOn />
+  ];
 
   return (
     <Container component="main" sx={{ padding: "20px 10px" }}>
@@ -92,7 +92,7 @@ export default () => {
               flexGrow: 1,
               "form": {
                 "div:nth-of-type(2)": {
-                    marginRight: "auto"
+                  marginRight: "auto"
                 }
               }
             }}><FilterForm filters={assignmentsFilter} /></Typography>
@@ -108,102 +108,101 @@ export default () => {
           </div>
         </Stack>
 
-                <Datagrid
-                    rowClick={!deleting ? postRowClick : (id, resource) => ""}
-                    empty={
-                        <p>
-                            <h2>No Data found</h2>
-                        </p>
-                    }
-                    bulkActionButtons={false}
-                >
-                    <TextField label="No" source="noNumber" />
-                    <TextField label="Asset Code" source="assetCode" />
-                    <TextField label="Asset Name" source="assetName" />
-                    <TextField label="Assigned to" source="assignedTo" />
-                    <TextField label="Assigned by" source="assignedBy" />
-                    <DateField label="Assigned Date" source="assignedDate" locales="en-GB" />
-                    <FunctionField source="state" render={(record) => {
-                        console.log(record.state);
-                        switch (record.state) {
-                            case 0: {
-                                return "Accepted";
-                            }
-                            case 1: {
-                                return "Waiting For Acceptance";
-                            }
-                            case 2: {
-                                return "Returned";
-                            }
-                            case 3: {
-                                return "Waiting For Returning";
-                            }
-                            case 4: {
-                                return "Declined";
-                            }
-                        }
-                    }} />
-                    <ButtonGroup sx={{ border: null }}>
-                        <FunctionField render={(record) => {
-                            if (record.state === 1) {
-                                return (
-                                    <ButtonGroup>
-                                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
-                                        <CustomDeleteWithConfirmButton
-                                            icon={<HighlightOffIcon />}
-                                            confirmTitle="Are you sure?"
-                                            confirmContent="Do you want to delete this assignment?"
-                                            mutationOptions={{ onSuccess: () => refresh() }} isOpen={deleting} setDeleting={setDeleting} />
-                                        <AdminCustomReturnAssetWithConfirm
-                                            icon={<ReplayIcon />}
-                                            confirmTitle=""
-                                            confirmContent=""
-                                            setDeleting={setDeleting}
-                                            disabled
-                                          />
-                                    </ButtonGroup>
-                                )
-                            }
-                            else {
-                              if(record.state === 0)
-                              {
-                                return (
-                                  <ButtonGroup>
-                                      <EditButton disabled variant="text" size="small" label=""
-                                          sx={listStyle.buttonToolbar} />
-                                      <DeleteButton icon={<HighlightOffIcon />} disabled variant="text" size="small" label=""
-                                          sx={listStyle.buttonToolbar} />
-                                      <AdminCustomReturnAssetWithConfirm
-                                          icon={<ReplayIcon />}
-                                          confirmTitle="Are you sure?"
-                                          confirmContent="Do you want to create a returning request for this asset?"
-                                          setDeleting={setDeleting}
-                                        />
-                                  </ButtonGroup>
-                              )
-                              }else{
-                                return (
-                                    <ButtonGroup>
-                                        <EditButton disabled variant="text" size="small" label=""
-                                            sx={listStyle.buttonToolbar} />
-                                        <DeleteButton icon={<HighlightOffIcon />} disabled variant="text" size="small" label=""
-                                            sx={listStyle.buttonToolbar} />
-                                        <AdminCustomReturnAssetWithConfirm
-                                            icon={<ReplayIcon />}
-                                            confirmTitle=""
-                                            confirmContent=""
-                                            setDeleting={setDeleting}
-                                            disabled
-                                          />
-                                    </ButtonGroup>
-                                )
-                              }
-                            }
-                        }} />
+        <Datagrid
+          rowClick={!deleting ? postRowClick : (id, resource) => ""}
+          empty={
+            <p>
+              <h2>No Data found</h2>
+            </p>
+          }
+          bulkActionButtons={false}
+        >
+          <TextField label="No" source="noNumber" />
+          <TextField label="Asset Code" source="assetCode" />
+          <TextField label="Asset Name" source="assetName" />
+          <TextField label="Assigned to" source="assignedTo" />
+          <TextField label="Assigned by" source="assignedBy" />
+          <DateField label="Assigned Date" source="assignedDate" locales="en-GB" />
+          <FunctionField source="state" render={(record) => {
+            console.log(record.state);
+            switch (record.state) {
+              case 0: {
+                return "Accepted";
+              }
+              case 1: {
+                return "Waiting for acceptance";
+              }
+              case 2: {
+                return "Returned";
+              }
+              case 3: {
+                return "Waiting for returning";
+              }
+              case 4: {
+                return "Declined";
+              }
+            }
+          }} />
+          <ButtonGroup sx={{ border: null }}>
+            <FunctionField render={(record) => {
+              if (record.state === 1) {
+                return (
+                  <ButtonGroup>
+                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
+                    <CustomDeleteWithConfirmButton
+                      icon={<HighlightOffIcon />}
+                      confirmTitle="Are you sure?"
+                      confirmContent="Do you want to delete this assignment?"
+                      mutationOptions={{ onSuccess: () => refresh() }} isOpen={deleting} setDeleting={setDeleting} />
+                    <AdminCustomReturnAssetWithConfirm
+                      icon={<ReplayIcon />}
+                      confirmTitle=""
+                      confirmContent=""
+                      setDeleting={setDeleting}
+                      disabled
+                    />
+                  </ButtonGroup>
+                )
+              }
+              else {
+                if (record.state === 0) {
+                  return (
+                    <ButtonGroup>
+                      <EditButton disabled variant="text" size="small" label=""
+                        sx={listStyle.buttonToolbar} />
+                      <DeleteButton icon={<HighlightOffIcon />} disabled variant="text" size="small" label=""
+                        sx={listStyle.buttonToolbar} />
+                      <AdminCustomReturnAssetWithConfirm
+                        icon={<ReplayIcon />}
+                        confirmTitle="Are you sure?"
+                        confirmContent="Do you want to create a returning request for this asset?"
+                        setDeleting={setDeleting}
+                      />
                     </ButtonGroup>
-                </Datagrid>
-                <AssetsPagination />
-            </ListBase>
+                  )
+                } else {
+                  return (
+                    <ButtonGroup>
+                      <EditButton disabled variant="text" size="small" label=""
+                        sx={listStyle.buttonToolbar} />
+                      <DeleteButton icon={<HighlightOffIcon />} disabled variant="text" size="small" label=""
+                        sx={listStyle.buttonToolbar} />
+                      <AdminCustomReturnAssetWithConfirm
+                        icon={<ReplayIcon />}
+                        confirmTitle=""
+                        confirmContent=""
+                        setDeleting={setDeleting}
+                        disabled
+                      />
+                    </ButtonGroup>
+                  )
+                }
+              }
+            }} />
+          </ButtonGroup>
+        </Datagrid>
+        <AssetsPagination />
+      </ListBase>
 
       <AssignmentShow
         isOpened={isOpened}
