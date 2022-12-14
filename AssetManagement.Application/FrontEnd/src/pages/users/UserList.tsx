@@ -110,17 +110,19 @@ export default () => {
 
                     {/* Button (Edit, Delete) */}
                     <ButtonGroup sx={{ border: null }}>
-                        <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                         <FunctionField source="userName" render={data => {
                             if (data.userName != localStorage.getItem("userName")) {
-                                return <CustomDeleteUserWithConfirmButton
-                                    icon={<HighlightOffIcon />}
-                                    confirmTitle="Are you sure?"
-                                    confirmContent="Do you want to disable this user?"
-                                    mutationOptions={{ onSuccess: () => refresh() }}
-                                    isOpen={deleting}
-                                    setDeleting={setDeleting}
-                                />
+                                return <>
+                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
+                                    <CustomDeleteUserWithConfirmButton
+                                        icon={<HighlightOffIcon />}
+                                        confirmTitle="Are you sure?"
+                                        confirmContent="Do you want to disable this user?"
+                                        mutationOptions={{ onSuccess: () => refresh() }}
+                                        isOpen={deleting}
+                                        setDeleting={setDeleting}
+                                    />
+                                </>
                             }
                         }} />
 
