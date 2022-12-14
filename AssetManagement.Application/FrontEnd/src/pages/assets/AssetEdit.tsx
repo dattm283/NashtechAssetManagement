@@ -16,7 +16,7 @@ import { formStyle } from "../../styles/formStyle";
 
 function EditAssetInformations() {
     const [category, setCategory] = useState([]);
-    const [isValid, setIsValid] = useState(true);
+    const [isValid, setIsValid] = useState(false);
     const { id } = useParams();
     const [asset, setAsset] = useState({
         name: null,
@@ -66,7 +66,7 @@ function EditAssetInformations() {
         if (Object.keys(errors).length === 0) {
             setIsValid(false);
         } else {
-            setIsValid(true);
+            setIsValid(false);
         }
         if (errors.name == "This field must be least than 100 characters") {
             return { name: "This field must be least than 100 characters" };
