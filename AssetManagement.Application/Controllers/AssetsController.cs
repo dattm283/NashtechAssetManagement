@@ -184,7 +184,11 @@ namespace AssetManagement.Application.Controllers
                         arrNumberChar.Add(int.Parse(arrayChar[i]));
                     }
                 }
-                list = list.Where(x => arrNumberChar.Contains((int)x.State));
+                if(!string.IsNullOrEmpty(createdId)) {
+                    list = list.Where(x => arrNumberChar.Contains((int)x.State) || x.Id == int.Parse(createdId));
+                } else {
+                    list = list.Where(x => arrNumberChar.Contains((int)x.State));
+                }
             }
             switch (sort)
             {
