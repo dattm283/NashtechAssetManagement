@@ -68,7 +68,7 @@ const AssetShow = (props) => {
 
   function isDateAndRestyle(sentence) {
     if (sentence === null) {
-      return "Unknown";
+      return "";
     }
     if (typeof sentence === "string") {
       var parsedDate = Date.parse(sentence);
@@ -186,7 +186,7 @@ const AssetShow = (props) => {
                               {row.assignedBy}
                             </TableCell>
                             <TableCell align="right">
-                              {row.returnedData && isDateAndRestyle(row.returnedDate)}
+                              {isDateAndRestyle(row.returnedDate)}
                             </TableCell>
                           </TableRow>
                         )

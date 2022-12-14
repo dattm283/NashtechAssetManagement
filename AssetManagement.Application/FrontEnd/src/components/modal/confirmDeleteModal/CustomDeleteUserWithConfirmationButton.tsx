@@ -108,7 +108,7 @@ export const CustomDeleteUserWithConfirmButton = <RecordType extends RaRecord = 
         getCount();
         setDeleting(true);
         handleDialogOpen(e);
-    } 
+    }
 
     const handleClose = (e) => {
         setDeleting(false);
@@ -129,21 +129,23 @@ export const CustomDeleteUserWithConfirmButton = <RecordType extends RaRecord = 
                 className={clsx('ra-delete-button', className)}
                 key="button"
                 {...rest}
-                sx={{"span": { 
-                    margin: 0
-                }}}
+                sx={{
+                    "span": {
+                        margin: 0
+                    }
+                }}
                 disabled={props.disabled}
             >
                 {icon}
             </StyledButton>
-                <Dialog
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="alert-dialog-title"
-                    aria-describedby="alert-dialog-description"
-                >
-                    <DialogTitle id="alert-dialog-title" sx={titleStype}>
-                        {!(assignementsCount > 0) ? confirmTitle : 
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title" sx={titleStype}>
+                    {!(assignementsCount > 0) ? confirmTitle :
                         <>Can not disable user <IconButton
                             aria-label="close"
                             onClick={handleClose}
@@ -156,10 +158,10 @@ export const CustomDeleteUserWithConfirmButton = <RecordType extends RaRecord = 
                         >
                             <CloseIcon />
                         </IconButton></>}
-                    </DialogTitle>
-                    <DialogContent sx={contentStyle}>
-                        { !(assignementsCount > 0) ?
-                            <>
+                </DialogTitle>
+                <DialogContent sx={contentStyle}>
+                    {!(assignementsCount > 0) ?
+                        <>
                             <DialogContentText component={"div"} id="alert-dialog-description">
                                 <DialogContentText sx={{
                                     padding: 3,
@@ -169,24 +171,24 @@ export const CustomDeleteUserWithConfirmButton = <RecordType extends RaRecord = 
                                 </DialogContentText>
                             </DialogContentText>
                             <DialogActions>
-                                <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Delete</MUIButton>
+                                <MUIButton onClick={customHandleDelete} sx={deleteButtonStyle} >Disable</MUIButton>
                                 <MUIButton sx={confirmButtonStyle} onClick={handleClose}>Cancel</MUIButton>
                                 <div style={{ flex: '1 0 0' }} />
                             </DialogActions>
-                            </> : <>
+                        </> : <>
                             <DialogContentText component={"div"} id="alert-dialog-description">
                                 <DialogContentText sx={{
                                     padding: 3
                                 }}>
                                     There are valid assignments belonging to this user.
-                                    <br/>
+                                    <br />
                                     Please close all assignments before disabling user.
                                 </DialogContentText>
                             </DialogContentText>
-                            </> 
-                        }
-                    </DialogContent>
-                </Dialog>
+                        </>
+                    }
+                </DialogContent>
+            </Dialog>
         </Fragment>
     );
 };
