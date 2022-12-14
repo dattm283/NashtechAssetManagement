@@ -126,12 +126,14 @@ export const AdminCustomReturnAssetWithConfirm = (
 
   const handleClick = (e) => {
     setReturning(true);
+    props.setDeleting(true);
     e.stopPropagation();
   };
 
   const handleUpdate = (e) => {
     mutate();
     e.stopPropagation();
+    props.setDeleting(false);
     //setReturning(true);
     if (typeof onClick === "function") {
       onClick(e);
@@ -139,6 +141,7 @@ export const AdminCustomReturnAssetWithConfirm = (
   };
   const handleClose = (e) => {
     setReturning(false);
+    props.setDeleting(false);
     e.stopPropagation();
   };
 
@@ -166,6 +169,7 @@ export const AdminCustomReturnAssetWithConfirm = (
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        onClick={(e) => e.stopPropagation()}
       >
         <DialogTitle id="alert-dialog-title" sx={titleStyle}>
           {confirmTitle}
@@ -215,6 +219,7 @@ export interface AdminCustomReturnAssetWithConfirm
   onSuccess?: () => void;
   onError?: (error: any) => void;
   mutationMode?: MutationMode;
+  setDeleting: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 AdminCustomReturnAssetWithConfirm.propTypes = {
