@@ -132,6 +132,7 @@ export default () => {
                                             icon={<ReplayIcon />}
                                             confirmTitle=""
                                             confirmContent=""
+                                            setDeleting={setDeleting}
                                             disabled
                                         />
                                     </ButtonGroup>
@@ -159,6 +160,7 @@ export default () => {
                                             icon={<ReplayIcon />}
                                             confirmTitle="Are you sure?"
                                             confirmContent="Do you want to create a returning request for this asset?"
+                                            setDeleting={setDeleting}
                                             disabled={!(record.state === 0)}
                                         />
                                     </ButtonGroup>
