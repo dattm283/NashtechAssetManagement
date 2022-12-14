@@ -4,8 +4,10 @@ using AssetManagement.Contracts.Report.Response;
 using AssetManagement.Data.EF;
 using AssetManagement.Domain.Models;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Principal;
 using Xunit;
 
 namespace AssetManagement.Application.Tests
@@ -35,6 +37,15 @@ namespace AssetManagement.Application.Tests
         {
             // Arrange
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
             IQueryable<Category> categories = _context.Categories;
 
             // Act
@@ -59,6 +70,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "category";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
             IQueryable<Category> categories = _context.Categories;
 
             // Act
@@ -83,6 +103,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "category";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
             IQueryable<Category> categories = _context.Categories;
 
             // Act
@@ -107,6 +136,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "total";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
 
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
@@ -130,6 +168,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "assigned";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
 
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
@@ -153,6 +200,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "available";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
 
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
@@ -176,6 +232,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "notAvailable";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
 
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
@@ -199,6 +264,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "waitingForRecycling";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
 
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
@@ -222,6 +296,15 @@ namespace AssetManagement.Application.Tests
             // Arrange
             string sortType = "recycled";
             ReportController reportController = new ReportController(_context);
+            AppUser user = _context.Users.FirstOrDefault();
+            //Create context for controller with fake login
+            reportController.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext
+                {
+                    User = new GenericPrincipal(new GenericIdentity(user.UserName), null)
+                }
+            };
 
             // Act
             var result = await reportController.GetReport(sortType, "ASC");
