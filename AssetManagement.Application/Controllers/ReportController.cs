@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -29,10 +30,12 @@ namespace AssetManagement.Application.Controllers
             [FromQuery] string? sort = "category",
             [FromQuery] string? order = "ASC")
         {
+            string userName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+            AppUser currentUser = await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.UserName == userName);
             List<Category> categories = await _dbContext.Categories.ToListAsync();
 
             IQueryable<ViewReportResponse> viewReportResponses = _dbContext.Assets
-                .Where(x => !x.IsDeleted)
+                .Where(x => !x.IsDeleted && x.Location == currentUser.Location)
                 .GroupBy(x => x.CategoryId)
                 .Select(grAsset => new ViewReportResponse
                 {
