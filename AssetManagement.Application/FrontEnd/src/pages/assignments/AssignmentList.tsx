@@ -30,6 +30,18 @@ import { assetProvider } from "../../providers/assetProvider/assetProvider";
 import AssignmentShow from "./AssignmentShow";
 import { listStyle } from "../../styles/listStyle";
 import { AdminCustomReturnAssetWithConfirm } from "../../components/modal/confirmReturnModal/AdminCustomReturnAssetWithConfirm";
+import { BulkDeleteButton } from 'react-admin';
+
+// import ResetViewsButton from './ResetViewsButton';
+
+const AssignmentBulkActionButtons = () => (
+  <>
+    {/* <ResetViewsButton label="Reset Views" /> */}
+    {/* default bulk delete action */}
+    <BulkDeleteButton />
+  </>
+);
+
 
 export default () => {
   const [isOpened, setIsOpened] = useState(false);
@@ -115,7 +127,8 @@ export default () => {
               <h2>No Data found</h2>
             </p>
           }
-          bulkActionButtons={false}
+          bulkActionButtons={<AssignmentBulkActionButtons />}
+          isRowSelectable={record => record.state === 1}
         >
           <TextField label="No" source="noNumber" />
           <TextField label="Asset Code" source="assetCode" />

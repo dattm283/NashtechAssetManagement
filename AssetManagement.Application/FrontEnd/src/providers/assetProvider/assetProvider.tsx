@@ -6,7 +6,6 @@ import config from "../../connectionConfigs/config.json";
 
 export const assetProvider: DataProvider = {
     // getList: (resource, params) => {
-
     // },
     getOne: function <RecordType extends RaRecord = any>(resource: string, params: GetOneParams<any>): Promise<GetOneResult<RecordType>> {
         return axiosInstance.get(`/api/${resource}/${params.id}`).then(res => {
@@ -45,9 +44,15 @@ export const assetProvider: DataProvider = {
         var response = await axiosInstance.delete(url);
         return response.data;
     },
-    deleteMany: function <RecordType extends RaRecord = any>(resource: string, params: DeleteManyParams<RecordType>): Promise<DeleteManyResult<RecordType>> {
-        throw new Error("Function not implemented.");
-    },
+    deleteMany: (resource, params) =>
+        Promise.all(
+            params.ids.map(id =>
+                axiosInstance.delete(`/api/${resource}/${id}`)
+            )
+        ).then(res => ({
+            data: res.map(record => record.data)
+        }))
+    ,
     getList: function <RecordType extends RaRecord = any>(resource: string, params: GetListParams): Promise<GetListResult<RecordType>> {
         const { page, perPage } = params.pagination;
         const { states, searchString, categories, assignedDateFilter, returnedDateFilter, noNumber } = params.filter;
