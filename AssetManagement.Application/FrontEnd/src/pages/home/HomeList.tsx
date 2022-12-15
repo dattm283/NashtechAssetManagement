@@ -64,7 +64,7 @@ export default () => {
 
     return (
         <Container component="main" sx={{ padding: "20px 10px" }}>
-            <Title title="Manage Assignment" />
+            <Title title="Home" />
             <ListBase
                 perPage={5}
                 sort={{ field: "noNumber", order: "ASC" }}
@@ -106,12 +106,12 @@ export default () => {
                             if (record.state === 1) {
                                 return (
                                     <ButtonGroup>
-                                        <AcceptAssignment 
-                                            icon={<CheckIcon/>}
+                                        <AcceptAssignment
+                                            icon={<CheckIcon />}
                                             confirmTitle="Are you sure?"
                                             confirmContent="Do you want to accept this assignment?"
-                                            mutationOptions={{ onSuccess: () => refresh() }} isOpen={deleting} 
-                                            setDeleting={setDeleting} 
+                                            mutationOptions={{ onSuccess: () => refresh() }} isOpen={deleting}
+                                            setDeleting={setDeleting}
                                         />
                                         <DeclineAssignment
                                             icon={<ClearIcon />}
@@ -142,7 +142,7 @@ export default () => {
                             else {
                                 return (
                                     <ButtonGroup>
-                                        <EditButton icon={<CheckIcon/>} disabled variant="text" size="small" label=""
+                                        <EditButton icon={<CheckIcon />} disabled variant="text" size="small" label=""
                                             sx={listStyle.buttonToolbar} />
                                         <DeleteButton icon={<ClearIcon />} disabled variant="text" size="small" label=""
                                             sx={listStyle.buttonToolbar} />

@@ -82,7 +82,7 @@ function NewCategoryCreate() {
 
     return (
         <ThemeProvider theme={theme}>
-            <Title title="Manage Asset > Create Asset" />
+            <Title title="Manage Asset > Create New Asset" />
             <Container component="main">
                 {/* <CssBaseline /> */}
                 <Box sx={formStyle.boxTitleStyle}>

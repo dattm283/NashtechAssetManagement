@@ -25,6 +25,14 @@ import { useLocation } from "react-router-dom";
 import { listStyle } from "../../styles/listStyle";
 import { CustomDisableWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDisableWithConfirm";
 import { CustomDeleteUserWithConfirmButton } from "../../components/modal/confirmDeleteModal/CustomDeleteUserWithConfirmationButton";
+import { BulkDeleteButton } from 'react-admin';
+
+// import ResetViewsButton from './ResetViewsButton';
+
+const UserBulkActionButtons = () => (
+    <BulkDeleteButton />
+);
+
 
 
 export default () => {
@@ -97,7 +105,8 @@ export default () => {
                         return "";
                     } : (id, resource) => ""}
                     empty={<h2>No User found</h2>}
-                    bulkActionButtons={false}
+                    bulkActionButtons={<UserBulkActionButtons />}
+                    isRowSelectable={record => record.userName != localStorage.getItem("userName")}
                 >
                     <TextField label="Staff Code" source="staffCode" />
                     <TextField label="Full Name" source="fullName" />

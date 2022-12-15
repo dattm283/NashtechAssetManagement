@@ -128,7 +128,7 @@ const AssignmentEdit = () => {
 
     return (
         <ThemeProvider theme={appTheme}>
-            <Title title="Manage Asset > Edit Asset" />
+            <Title title="Manage Assignment > Edit Assignment" />
             <Container component="main">
                 {/* <CssBaseline /> */}
                 <Box sx={formStyle.boxTitleStyle}>

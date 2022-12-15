@@ -89,7 +89,7 @@ export default () => {
 
     return (
         <Container component="main" sx={{ padding: "20px 10px" }}>
-            <Title title="Manage Assignment" />
+            <Title title="Request for Returning" />
             <ListBase perPage={5} sort={{ field: "noNumber", order: "ASC" }}>
                 <h2 style={{ color: "#cf2338" }}>Request List</h2>
                 <Stack direction="row" justifyContent="end" alignContent="center">

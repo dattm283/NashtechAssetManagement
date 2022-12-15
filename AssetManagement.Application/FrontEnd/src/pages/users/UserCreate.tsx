@@ -118,7 +118,7 @@ function UserCreate() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Title title="Manage Asset > Create User" />
+      <Title title="Manage User > Create New User" />
       <Container component="main">
         {/* <CssBaseline /> */}
         <Box sx={formStyle.boxTitleStyle}>

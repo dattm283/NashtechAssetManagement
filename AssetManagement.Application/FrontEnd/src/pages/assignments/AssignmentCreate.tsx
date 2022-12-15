@@ -154,7 +154,7 @@ const AssignmentCreate = () => {
 
     return (
         <ThemeProvider theme={theme}>
-            <Title title="Manage Asset > Edit Asset" />
+            <Title title="Manage Assignment > Create New Assignment" />
             <Container component="main">
                 {/* <CssBaseline /> */}
                 <Box sx={formStyle.boxTitleStyle}>

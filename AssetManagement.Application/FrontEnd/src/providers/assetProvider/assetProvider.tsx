@@ -51,7 +51,8 @@ export const assetProvider: DataProvider = {
             )
         ).then(res => ({
             data: res.map(record => record.data)
-        }))
+        }), err => Promise.reject(err.response.data.message))
+
     ,
     getList: function <RecordType extends RaRecord = any>(resource: string, params: GetListParams): Promise<GetListResult<RecordType>> {
         const { page, perPage } = params.pagination;
