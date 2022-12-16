@@ -7,7 +7,7 @@ import NextButton from '../buttons/NextButton';
 
 export default () => {
    const { page, hasPreviousPage, hasNextPage, setPage, total, perPage } = useListContext();
-   if (!hasPreviousPage && !hasNextPage) return null;
+   // if (!hasPreviousPage && !hasNextPage) return null;
    const pageNumber = Math.ceil(total / perPage);
 
    const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
