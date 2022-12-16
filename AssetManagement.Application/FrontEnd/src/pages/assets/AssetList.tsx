@@ -85,7 +85,6 @@ export default () => {
         <Container component="main" sx={{ padding: "20px 10px" }}>
             <Title title="Manage Asset" />
             <ListBase
-                perPage={5}
                 sort={{ field: "assetCode", order: "ASC" }}
                 filterDefaultValues={{ states: ["0", "1", "4"] }}
             >
@@ -139,7 +138,7 @@ export default () => {
                         <FunctionField render={(record) => {
                             if (record.isEditable == true) {
                                 return (
-                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar}/>
+                                    <EditButton variant="text" size="small" label="" sx={listStyle.buttonToolbar} />
                                 )
                             }
                             else {
