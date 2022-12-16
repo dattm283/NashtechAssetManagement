@@ -83,7 +83,7 @@ const exporter = posts => {
         }
     }
 
-    newWorksheet["!ref"] = "C2:J6";
+    newWorksheet["!ref"] = `C2:J${posts.length+3}`;
     newWorksheet["!merges"] = [{ s:{c:2,r:1}, e:{c:9,r:1} }];
     newWorksheet["C2"] = {
         t:'s',
