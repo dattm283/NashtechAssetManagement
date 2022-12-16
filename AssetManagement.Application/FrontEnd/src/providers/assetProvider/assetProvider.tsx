@@ -16,8 +16,12 @@ export const assetProvider: DataProvider = {
     //     httpClient(`${apiUrl}/${resource}/${params.id}`).then(({ json }) => ({
     //         data: json,
     //     })),
-    getMany: function <RecordType extends RaRecord = any>(resource: string, params: GetManyParams): Promise<GetManyResult<RecordType>> {
-        throw new Error("Function not implemented.");
+    getMany: (resource, params) => {
+        const query = {
+            filter: JSON.stringify({ id: params.ids }),
+        };
+        const url = `/api/${resource}?${stringify(query)}`;
+        return axiosInstance(url).then((res) => (res));
     },
     getManyReference: function <RecordType extends RaRecord = any>(resource: string, params: GetManyReferenceParams): Promise<GetManyReferenceResult<RecordType>> {
         throw new Error("Function not implemented.");
