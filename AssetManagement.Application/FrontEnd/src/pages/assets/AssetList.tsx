@@ -87,6 +87,7 @@ export default () => {
             <ListBase
                 sort={{ field: "assetCode", order: "ASC" }}
                 filterDefaultValues={{ states: ["0", "1", "4"] }}
+                perPage={5}
             >
                 <h2 style={{ color: "#cf2338" }}>Asset List</h2>
                 <Stack
