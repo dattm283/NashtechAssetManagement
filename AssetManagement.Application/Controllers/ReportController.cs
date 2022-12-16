@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -51,7 +52,7 @@ namespace AssetManagement.Application.Controllers
 
             List<ViewReportResponse> result = await viewReportResponses.ToListAsync();
 
-            foreach(Category category in categories)
+            foreach (Category category in categories)
             {
                 if (!viewReportResponses.Any(x => x.Category == category.Name))
                 {
@@ -119,10 +120,136 @@ namespace AssetManagement.Application.Controllers
             }
 
             return Ok(new ViewListPageResult<ViewReportResponse>
+            {
+                Data = result,
+                Total = result.Count
+            });
+        }
+
+        [HttpGet("getMany")]
+        public async Task<ActionResult<ViewListPageResult<ViewReportResponse>>> GetManyReport(
+            [FromQuery] string ids,
+            [FromQuery] string? sort = "category",
+            [FromQuery] string? order = "ASC")
+        {
+
+
+            string userName = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+            AppUser currentUser = await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.UserName == userName);
+            List<Category> categories = await _dbContext.Categories.ToListAsync();
+
+            IQueryable<ViewReportResponse> viewReportResponses = _dbContext.Assets
+                .Where(x => !x.IsDeleted && x.Location == currentUser.Location)
+                .GroupBy(x => x.CategoryId)
+                .Select(grAsset => new ViewReportResponse
                 {
-                    Data = result,
-                    Total = result.Count
+                    ID = grAsset.FirstOrDefault().Category.Name,
+                    Category = grAsset.FirstOrDefault().Category.Name,
+                    Total = grAsset.Count(),
+                    Assigned = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Assigned),
+                    Available = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Available),
+                    NotAvailable = grAsset.Count(x => x.State == Domain.Enums.Asset.State.NotAvailable),
+                    WaitingForRecycling = grAsset.Count(x => x.State == Domain.Enums.Asset.State.WaitingForRecycling),
+                    Recycled = grAsset.Count(x => x.State == Domain.Enums.Asset.State.Recycled)
                 });
+
+            var temp = viewReportResponses.ToList();
+
+            var arrStringChar = new List<string>();
+
+            if (!string.IsNullOrEmpty(ids))
+            {
+                var arrayChar = ids.Split("&");
+                
+                for (int i = 0; i < arrayChar.Length - 1; i++)
+                {
+                    arrStringChar.Add(arrayChar[i]);
+                }
+                arrayChar.Select(x =>
+                {
+                    var tmp = -1;
+                    int.TryParse(x, out tmp);
+                    return tmp;
+                }).Where(a => a > -1);
+                viewReportResponses = viewReportResponses.Where(x => arrStringChar.Contains(x.Category));
+            }
+
+            List<ViewReportResponse> result = await viewReportResponses.ToListAsync();
+
+            foreach (Category category in categories)
+            {
+                if (!viewReportResponses.Any(x => x.Category == category.Name))
+                {
+                    if (arrStringChar.Contains(category.Name)) {
+                        result.Add(new ViewReportResponse
+                        {
+                            ID = category.Name,
+                            Category = category.Name,
+                            Total = 0,
+                            Assigned = 0,
+                            Available = 0,
+                            NotAvailable = 0,
+                            WaitingForRecycling = 0,
+                            Recycled = 0
+                        });
+                    }
+                }
+            }
+
+            switch (sort)
+            {
+                case "category":
+                    {
+                        result = result.OrderBy(x => x.Category).ToList();
+                        break;
+                    }
+                case "total":
+                    {
+                        result = result.OrderBy(x => x.Total).ToList();
+                        break;
+                    }
+                case "assigned":
+                    {
+                        result = result.OrderBy(x => x.Assigned).ToList();
+                        break;
+                    }
+                case "available":
+                    {
+                        result = result.OrderBy(x => x.Available).ToList();
+                        break;
+                    }
+                case "notAvailable":
+                    {
+                        result = result.OrderBy(x => x.NotAvailable).ToList();
+                        break;
+                    }
+                case "waitingForRecycling":
+                    {
+                        result = result.OrderBy(x => x.WaitingForRecycling).ToList();
+                        break;
+                    }
+                case "recycled":
+                    {
+                        result = result.OrderBy(x => x.Recycled).ToList();
+                        break;
+                    }
+                default:
+                    {
+                        result = result.OrderBy(x => x.Category).ToList();
+                        break;
+                    }
+            }
+
+            if (order == "DESC")
+            {
+                result.Reverse();
+            }
+
+            return Ok(new ViewListPageResult<ViewReportResponse>
+            {
+                Data = result,
+                Total = result.Count
+            });
         }
     }
 }

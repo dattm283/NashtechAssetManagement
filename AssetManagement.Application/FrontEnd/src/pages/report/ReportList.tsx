@@ -5,7 +5,8 @@ import {
     TextField,
     ListBase,
     ExportButton,
-    downloadCSV
+    downloadCSV,
+    BulkExportButton
 } from "react-admin";
 import { Stack, Container } from "@mui/material";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
@@ -118,11 +119,11 @@ const exporter = posts => {
         {wch: 10},
         {wch: 15},
         {wch: 23},
-        {wch: 10}
-    ];;
+        {wch: 10},
+    ];
     newWorksheet["!rows"] = [
         {hpt: 0},
-        {hpt: 24}
+        {hpt: 24},
     ];
     newWorksheet["!margins"]={left:0.25,right:0.25,top:0.75,bottom:0.75,header:0.3,footer:0.3};
     
@@ -131,6 +132,12 @@ const exporter = posts => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
     XLSX.writeFile(workbook, "Report.xlsx");
 };
+
+const PostBulkActionButtons = () => (
+    <>
+        <BulkExportButton />
+    </>
+);
 
 export default () => {
 
@@ -156,7 +163,7 @@ export default () => {
 
                 <Datagrid
                     empty={<h2>No Category found</h2>}
-                    bulkActionButtons={false}
+                    bulkActionButtons={<PostBulkActionButtons />}
                 >
                     <TextField label="Category" source="category" />
                     <TextField label="Total" source="total" />
