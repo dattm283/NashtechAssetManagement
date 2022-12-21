@@ -81,9 +81,8 @@ export default () => {
     ];
 
     function createMany(e){
-        e.preventDefault();
-        console.log(e.target.import.files[0]);
-        importAssets(e.target.import.files[0])
+        console.log(e.target.files[0]);
+        importAssets(e.target.files[0])
     }
 
     return (
@@ -114,13 +113,10 @@ export default () => {
                             label="Create new asset"
                             icon={<></>}
                         />
-                        <form encType="multipart/form-data" onSubmit={createMany}>
                             <IconButton color="primary" aria-label="upload picture" component="label">
-                                <input hidden name="import" accept=".xlsx" type="file" />
+                                <input hidden name="import" accept=".xlsx" type="file" onChange={createMany}/>
                                 <UploadFile/>
                             </IconButton>
-                            <button type="submit">Import</button>
-                        </form>
                     </div>
                 </Stack>
 

@@ -274,24 +274,27 @@ namespace AssetManagement.Application.Controllers
             string name = file.FileName;
             if (name!=null)
             {
-                Stream FileStream = file.File.OpenReadStream();
-                IExcelDataReader reader = ExcelReaderFactory.CreateOpenXmlReader(FileStream);
+                Stream fileStream = file.File.OpenReadStream();
+                IExcelDataReader reader = ExcelReaderFactory.CreateOpenXmlReader(fileStream);
                 DataSet data = reader.AsDataSet();
                 DataTable record = data.Tables[0];
+                int failCount = 0;
                 foreach(DataRow row in record.Rows)
                 {
                     CreateAssetRequest asset = new()
                     {
-                        CategoryId = (int?)row[0],
+                        CategoryId = (int?)Math.Floor((double)row[0]),
                         Name = (string)row[1],
                         Specification = (string)row[2],
                         InstalledDate = (DateTime)row[3],
                         State = (int)State.Available
                     };
 
-                    await CreateAssetAsync(asset);
+                    IActionResult result = await CreateAssetAsync(asset);
+                    if (result.GetType() != typeof(OkObjectResult)) failCount++;
                 }
-                return Ok();
+                if(failCount < record.Rows.Count) return Ok($"{failCount} failed");
+                return BadRequest();
             }
 
             return BadRequest();
