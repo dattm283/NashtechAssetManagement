@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using AssetManagement.Domain.Enums.Asset;
 using AssetManagement.Application.Filters;
+using ExcelDataReader;
+using System.Data;
 
 namespace AssetManagement.Application.Controllers
 {
@@ -263,6 +265,39 @@ namespace AssetManagement.Application.Controllers
                 .Count();
 
             return Ok(historicalAssignmentsCount);
+        }
+
+        [HttpPost("import")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateManyAsync([FromForm] AssetImportRequest file)
+        {
+            string name = file.FileName;
+            if (name!=null)
+            {
+                Stream fileStream = file.File.OpenReadStream();
+                IExcelDataReader reader = ExcelReaderFactory.CreateOpenXmlReader(fileStream);
+                DataSet data = reader.AsDataSet();
+                DataTable record = data.Tables[0];
+                int failCount = 0;
+                foreach(DataRow row in record.Rows)
+                {
+                    CreateAssetRequest asset = new()
+                    {
+                        CategoryId = (int?)Math.Floor((double)row[0]),
+                        Name = (string)row[1],
+                        Specification = (string)row[2],
+                        InstalledDate = (DateTime)row[3],
+                        State = (int)State.Available
+                    };
+
+                    IActionResult result = await CreateAssetAsync(asset);
+                    if (result.GetType() != typeof(OkObjectResult)) failCount++;
+                }
+                if(failCount < record.Rows.Count) return Ok($"{failCount} failed");
+                return BadRequest();
+            }
+
+            return BadRequest();
         }
     }
 }

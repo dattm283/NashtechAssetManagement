@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {
     Datagrid,
-    List,
     Title,
     TextField,
-    TextInput,
     EditButton,
     useDataProvider,
     FunctionField,
@@ -20,11 +18,12 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import AssetsPagination from "../../components/pagination/AssetsPagination";
 import StateFilterSelect from "../../components/select/StateFilterSelect";
 import AssetShow from "./AssetShow";
-import { ButtonGroup, Stack, Container } from "@mui/material";
+import { ButtonGroup, Stack, Container, IconButton } from "@mui/material";
 import CategoryFilterSelect from "../../components/select/CategoryFilterSelect";
-import { useNavigate } from "react-router-dom";
-import FilterSearchForm from "../../components/forms/FilterSearchForm";
 import { listStyle } from "../../styles/listStyle";
+import { UploadFile } from "@mui/icons-material";
+import axiosInstance from "../../connectionConfigs/axiosInstance";
+import { importAssets } from "../../services/import";
 
 
 export default () => {
@@ -81,6 +80,11 @@ export default () => {
         />,
     ];
 
+    function createMany(e){
+        console.log(e.target.files[0]);
+        importAssets(e.target.files[0])
+    }
+
     return (
         <Container component="main" sx={{ padding: "20px 10px" }}>
             <Title title="Manage Asset" />
@@ -109,6 +113,10 @@ export default () => {
                             label="Create new asset"
                             icon={<></>}
                         />
+                            <IconButton color="primary" aria-label="upload picture" component="label">
+                                <input hidden name="import" accept=".xlsx" type="file" onChange={createMany}/>
+                                <UploadFile/>
+                            </IconButton>
                     </div>
                 </Stack>
 
